@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class App extends StatefulWidget {
-
   App({Key? key}) : super(key: key);
 
   @override
@@ -14,12 +13,12 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  // final Color _primaryColor = HexColor('#DC54FE');
-
-final Color _primaryColor = HexColor('#252F3E');
-  // final Color _accentColor = HexColor('#5AD3BC');
-final Color _accentColor = HexColor('#F6F7F9');
-
+  final Color _primaryColor = HexColor('#252F3E');
+  final Color _accentColor = HexColor('#F6F7F9');
+  @override
+  initState() {
+    super.initState();
+  }
 
   // This widget is the root of your application.
   @override
@@ -41,13 +40,13 @@ final Color _accentColor = HexColor('#F6F7F9');
         ),
         initialRoute:
             //  NameScreen.Create_Experience_Page,
-            getRightInitRoute(),
+            getRightInitRoute() ,
         onGenerateRoute: GenerateScreen.onGenerate,
       ),
     );
   }
 
   String getRightInitRoute() {
-    return NameScreen.loginPage;
+    return NameScreen.splachScreen;
   }
 }

@@ -44,7 +44,14 @@ dependencies:
   flutter_screenutil: ^5.0.3
   collapsible_sidebar: ^2.0.1+2
   http_retry: ^0.2.0
-
+  image_picker: ^0.8.4+8
+  google_fonts: ^2.3.1
+  shared_preferences: ^2.0.13
+  shared_preferences_web: ^2.0.3
+  flare_splash_screen: ^4.0.0
+  flare_flutter: ^3.0.2
+  animated_text_kit: ^4.2.0
+  passwordfield: ^0.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -73,6 +80,8 @@ flutter:
   assets:
     - assets/images/brick.png
     - assets/images/useric.png
+    - assets/flare/bubble.flr
+    - assets/flare/welcome_page.flr
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

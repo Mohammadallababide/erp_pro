@@ -1,5 +1,4 @@
 import 'package:erb_mobo/common/common_widgets/app_snack_bar.dart';
-import 'package:erb_mobo/common/theme_helper.dart';
 import 'package:erb_mobo/models/user.dart';
 import 'package:erb_mobo/ui/auths/bloc/auths_bloc.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RequestApprovmentCard extends StatefulWidget {
   final User user;
-  RequestApprovmentCard({required this.user});
+  final Function usersRequestsCallBack;
+  const RequestApprovmentCard({
+    required this.user,
+    required this.usersRequestsCallBack,
+  });
 
   @override
   _RequestApprovmentCardState createState() => _RequestApprovmentCardState();
@@ -16,14 +19,33 @@ class RequestApprovmentCard extends StatefulWidget {
 
 class _RequestApprovmentCardState extends State<RequestApprovmentCard> {
   final AuthsBloc authsBloc = AuthsBloc();
+  late bool isActiveUser;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    isActiveUser = widget.user.isActive ?? false;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener(
       bloc: authsBloc,
       listener: (context, state) {
-        if(state is ErrorGettingSignupUsersRequests ){
-          ScaffoldMessenger.of(context).showSnackBar( getAppSnackBar(message: 'faild Process!!',context:context));
+        if (state is ErrorGettingSignupUsersRequests ||
+            state is ErrorApproveSignupUser ||
+            state is ErrorRejectSignupUser) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              getAppSnackBar(message: 'faild Process!!', context: context));
+        } else if (state is SuccessRejectSignupUser) {
+          setState(() {
+            widget.usersRequestsCallBack(state.user.id);
+          });
+        } else if (state is SuccessApproveSignupUser) {
+          setState(() {
+            widget.usersRequestsCallBack(state.user.id);
+          });
         }
       },
       child: _contentCard(),
@@ -56,13 +78,33 @@ class _RequestApprovmentCardState extends State<RequestApprovmentCard> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                widget.user.firstName + ' ' + widget.user.lastName,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: ScreenUtil().setSp(16),
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  Container(
+                    height: ScreenUtil().setSp(30),
+                    width: ScreenUtil().setSp(30),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage(
+                            'assets/images/useric.png',
+                          ),
+                          fit: BoxFit.contain,
+                        )),
+                  ),
+                  SizedBox(
+                    width: ScreenUtil().setWidth(8),
+                  ),
+                  Text(
+                    widget.user.firstName + ' ' + widget.user.lastName,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: ScreenUtil().setSp(18),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
               _getApprovmentCardState()
             ],
@@ -73,60 +115,43 @@ class _RequestApprovmentCardState extends State<RequestApprovmentCard> {
   }
 
   _getApprovmentCardState() {
-    return !(widget.user.isActive)!
-        ? BlocBuilder(
-            bloc: authsBloc,
-            builder: (context, state) {
-              if (state is SuccessApproveSignupUser) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: ScreenUtil().setWidth(20)),
-                  child: Icon(
-                    Icons.check_circle_outline,
-                    color: Colors.blue,
-                    size: ScreenUtil().setSp(35),
-                  ),
-                );
-              } else if (state is ProcessingApproveSignupUser) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: ScreenUtil().setWidth(20)),
-                  child: CircularProgressIndicator(
-                    color: Theme.of(context).primaryColor,
-                    strokeWidth: ScreenUtil().setWidth(3),
-                  ),
-                );
-              } else {
-                return Container(
-                  margin: EdgeInsets.symmetric(
-                      vertical: ScreenUtil().setHeight(7),
-                      horizontal: ScreenUtil().setWidth(0)),
-                  decoration: ThemeHelper().buttonBoxDecoration(context),
-                  child: ElevatedButton(
-                      style: ThemeHelper().buttonStyle(),
-                      child: Center(
-                        child: Text(
-                          'Accespt',
-                          style: TextStyle(
-                              fontSize: ScreenUtil().setSp(12),
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      ),
-                      onPressed: () =>
-                          authsBloc.add(ApproveSignupUser(widget.user.id))),
-                );
-              }
-            },
-          )
-        : Padding(
+    return BlocBuilder(
+      bloc: authsBloc,
+      builder: (context, state) {
+        if (state is ProcessingApproveSignupUser ||
+            state is ProcessingRejectSignupUser) {
+          return Padding(
             padding:
                 EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(20)),
-            child: Icon(
-              Icons.check_circle_outline,
-              color: Colors.blue,
-              size: ScreenUtil().setSp(35),
+            child: CircularProgressIndicator(
+              color: Theme.of(context).primaryColor,
+              strokeWidth: ScreenUtil().setWidth(3),
             ),
           );
+        } else {
+          return Row(
+            children: [
+              InkWell(
+                  onTap: () => authsBloc.add(RejectSignupUser(widget.user.id)),
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.red,
+                    size: ScreenUtil().setSp(35),
+                  )),
+              SizedBox(
+                width: ScreenUtil().setWidth(20),
+              ),
+              InkWell(
+                  onTap: () => authsBloc.add(ApproveSignupUser(widget.user.id)),
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.green,
+                    size: ScreenUtil().setSp(35),
+                  )),
+            ],
+          );
+        }
+      },
+    );
   }
 }

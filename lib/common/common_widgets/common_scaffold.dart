@@ -25,12 +25,13 @@ class CommonScaffold extends StatelessWidget {
             SafeArea(
                 child: Container(
               padding: EdgeInsets.fromLTRB(
-                ScreenUtil().setWidth(15),
-                ScreenUtil().setHeight(15),
-                ScreenUtil().setWidth(15),
+                ScreenUtil().setWidth(0),
+                ScreenUtil().setHeight(0),
+                ScreenUtil().setWidth(0),
                 ScreenUtil().setHeight(15),
               ),
-              margin: EdgeInsets.fromLTRB(ScreenUtil().setWidth(15), 0, ScreenUtil().setWidth(15), 0),
+              margin: EdgeInsets.fromLTRB(
+                  ScreenUtil().setWidth(15), 0, ScreenUtil().setWidth(15), 0),
               child: childWidget,
             )),
           ],

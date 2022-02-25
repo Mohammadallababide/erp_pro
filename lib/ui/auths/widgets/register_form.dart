@@ -3,9 +3,12 @@ import 'package:erb_mobo/common/generate_screen.dart';
 import 'package:erb_mobo/common/theme_helper.dart';
 import 'package:erb_mobo/core/validations/validtion.dart';
 import 'package:erb_mobo/ui/auths/bloc/auths_bloc.dart';
+import 'package:erb_mobo/common/common_widgets/pick_image_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({Key? key}) : super(key: key);
@@ -22,6 +25,7 @@ class _RegisterFormState extends State<RegisterForm> {
   late TextEditingController _passwordController;
   late TextEditingController _phoneNumController;
   final AuthsBloc authsBloc = AuthsBloc();
+
   @override
   void initState() {
     super.initState();
@@ -51,6 +55,13 @@ class _RegisterFormState extends State<RegisterForm> {
         key: formKey,
         child: Column(
           children: [
+            PickImageWidget(
+              authsBloc: authsBloc,
+              cirSize: 150,
+            ),
+            SizedBox(
+              height: ScreenUtil().setHeight(15),
+            ),
             Container(
               child: TextFormField(
                 controller: _firstNameController,
@@ -150,15 +161,17 @@ class _RegisterFormState extends State<RegisterForm> {
                   child: ElevatedButton(
                     style: ThemeHelper().buttonStyle(),
                     child: Center(
-                      child: Text(
-                        "Register".toUpperCase(),
-                        style: TextStyle(
-                          fontSize: ScreenUtil().setSp(20),
+                        child: Text(
+                      "Register".toUpperCase(),
+                      style: GoogleFonts.belleza(
+                        fontStyle: FontStyle.normal,
+                        textStyle: TextStyle(
+                          fontSize: ScreenUtil().setSp(26),
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
-                    ),
+                    )),
                     onPressed: () => submitForm(),
                   ),
                 );
@@ -181,7 +194,8 @@ class _RegisterFormState extends State<RegisterForm> {
         phoneNumber: _phoneNumController.value.text,
       ));
     } else {
-       ScaffoldMessenger.of(context).showSnackBar( getAppSnackBar(message: 'info not completed yet!!',context:context));
+      ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
+          message: 'info not completed yet!!', context: context));
     }
   }
 }

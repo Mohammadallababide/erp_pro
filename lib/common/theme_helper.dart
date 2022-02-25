@@ -1,33 +1,51 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
-class ThemeHelper{
 
-  InputDecoration textInputDecoration([String lableText="", String hintText = ""]){
+class ThemeHelper {
+  InputDecoration textInputDecoration(
+      [String lableText = "", String hintText = ""]) {
     return InputDecoration(
       labelText: lableText,
+      labelStyle: TextStyle(
+          color: Colors.grey,
+          fontSize: ScreenUtil().setSp(16),
+          fontWeight: FontWeight.bold),
       hintText: hintText,
       fillColor: Colors.white,
       filled: true,
       contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.grey)),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: const BorderSide(color: Colors.red, width: 2.0)),
-      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: const BorderSide(color: Colors.red, width: 2.0)),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        borderSide: const BorderSide(color: Colors.blue),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        borderSide: BorderSide(color: Colors.grey.shade400),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        borderSide: const BorderSide(color: Colors.red, width: 2.0),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(100.0),
+        borderSide: const BorderSide(color: Colors.red, width: 2.0),
+      ),
     );
   }
 
   BoxDecoration inputBoxDecorationShaddow() {
     return BoxDecoration(boxShadow: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.7),
+        color: Colors.black.withOpacity(0.1),
         blurRadius: 20,
         offset: const Offset(0, 5),
       )
     ]);
   }
 
-  BoxDecoration buttonBoxDecoration(BuildContext context, [String color1 = "", String color2 = ""]) {
+  BoxDecoration buttonBoxDecoration(BuildContext context,
+      [String color1 = "", String color2 = ""]) {
     Color c1 = Theme.of(context).primaryColor;
     Color c2 = Theme.of(context).accentColor;
     if (color1.isEmpty == false) {
@@ -39,7 +57,7 @@ class ThemeHelper{
 
     return BoxDecoration(
       boxShadow: [
-         BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
+        BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
       ],
       gradient: LinearGradient(
         begin: Alignment.topLeft,
@@ -87,27 +105,22 @@ class ThemeHelper{
       ],
     );
   }
-
 }
 
-class ThemeClass{
+class ThemeClass {
   static ThemeData lightTheme = ThemeData(
-    scaffoldBackgroundColor: Colors.white,
-    colorScheme: const ColorScheme.light(),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.blue,
-    )
-  );
- 
+      scaffoldBackgroundColor: Colors.white,
+      colorScheme: const ColorScheme.light(),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.blue,
+      ));
+
   static ThemeData darkTheme = ThemeData(
-    scaffoldBackgroundColor: Colors.black,
-    colorScheme: const ColorScheme.dark(),
+      scaffoldBackgroundColor: Colors.black,
+      colorScheme: const ColorScheme.dark(),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.black,
-      )
-  );
+      ));
 }
 
-class LoginFormStyle{
-
-}
+class LoginFormStyle {}

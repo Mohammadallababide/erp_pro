@@ -1,76 +1,89 @@
-import 'dart:async';
-
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:erb_mobo/common/generate_screen.dart';
+import 'package:erb_mobo/data/local_data_source/shared_pref.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class SplachPage extends StatefulWidget {
-  const SplachPage({ Key? key }) : super(key: key);
-
+class Splash extends StatefulWidget {
+  const Splash({Key? key}) : super(key: key);
   @override
-  _SplachPageState createState() => _SplachPageState();
+  State<Splash> createState() => _SplashState();
 }
 
-class _SplachPageState extends State<SplachPage> {
-  
-    bool _isVisible = false;
+class _SplashState extends State<Splash> {
+  late bool isTokenExist = false;
 
-  _SplachPageState(){
-
-     Timer(const Duration(milliseconds: 2000), (){
+  @override
+  void initState() {
+    if (SharedPref.getToken() != null) {
       setState(() {
-        Navigator.pushReplacementNamed(context, NameScreen.loginPage);
+        isTokenExist = true;
       });
-    });
-
-     Timer(
-      const Duration(milliseconds: 10),(){
-        setState(() {
-          _isVisible = true; // Now it is showing fade effect and navigating to Login page
-        });
-      }
-    );
-
+    }
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    return Container(
-      decoration:  BoxDecoration(
-        gradient:  LinearGradient(
-          colors: [Theme.of(context).colorScheme.secondary, Theme.of(context).primaryColor],
-          begin: const FractionalOffset(0, 0),
-          end: const FractionalOffset(1.0, 0.0),
-          stops: const [0.0, 1.0],
-          tileMode: TileMode.clamp,
-        ),
-      ),
-      child: AnimatedOpacity(
-        opacity: _isVisible ? 1.0 : 0,
-        duration: const Duration(milliseconds: 1200),
-        child: Center(
-          child: Container(
-            height: 140.0,
-            width: 140.0,
-            child: const Center(
-              child: ClipOval(
-                child:Image(image: AssetImage('assets/images/brick.png'),
-                )
-                // //put your logo here
+    return WillPopScope(
+      onWillPop: () async {
+        SystemNavigator.pop();
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        body: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: double.infinity,
+                height: ScreenUtil().setHeight(150),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/brick.png'),
+                  ),
+                ),
               ),
-            ),
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 2.0,
-                  offset: const Offset(5.0, 3.0),
-                  spreadRadius: 2.0,
-                )
-              ]
-            ),
+              SizedBox(
+                width: double.infinity,
+                height: ScreenUtil().setHeight(75),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: AnimatedTextKit(
+                    onFinished: () {
+                      Navigator.popAndPushNamed(
+                          context,
+                          !isTokenExist
+                              ? NameScreen.loginPage
+                              : NameScreen.homePage);
+                    },
+                    totalRepeatCount: 3,
+                    pause: const Duration(milliseconds: 1000),
+                    animatedTexts: [
+                      WavyAnimatedText(
+                        'WELCOME',
+                        textStyle: GoogleFonts.ultra(
+                          fontStyle: FontStyle.normal,
+                          textStyle: TextStyle(
+                            fontSize: ScreenUtil().setSp(26),
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: ScreenUtil().setSp(15),
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                    isRepeatingAnimation: true,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

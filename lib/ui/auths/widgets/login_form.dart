@@ -6,6 +6,7 @@ import 'package:erb_mobo/ui/auths/bloc/auths_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class _LoginFormState extends State<LoginForm> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   final AuthsBloc authsBloc = AuthsBloc();
+  late bool visableActionValue = false;
 
   @override
   void initState() {
@@ -57,15 +59,14 @@ class _LoginFormState extends State<LoginForm> {
               decoration: ThemeHelper().inputBoxDecorationShaddow(),
             ),
             SizedBox(
-              height: ScreenUtil().setHeight(20),
+              height: ScreenUtil().setHeight(30),
             ),
             Container(
               child: TextFormField(
                 controller: _passwordController,
-                obscureText: true,
+                obscureText: visableActionValue,
                 validator: (val) => Validation.passwordValidation(val!),
-                decoration: ThemeHelper()
-                    .textInputDecoration('Password', 'Enter your password'),
+                decoration: passwordInputDecoration(),
               ),
               decoration: ThemeHelper().inputBoxDecorationShaddow(),
             ),
@@ -89,7 +90,7 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ),
             SizedBox(
-              height: ScreenUtil().setHeight(35),
+              height: ScreenUtil().setHeight(85),
             ),
             BlocBuilder(
               bloc: authsBloc,
@@ -115,11 +116,15 @@ class _LoginFormState extends State<LoginForm> {
                       style: ThemeHelper().buttonStyle(),
                       child: Center(
                         child: Text(
-                          'Sign In'.toUpperCase(),
-                          style: TextStyle(
-                              fontSize: ScreenUtil().setSp(20),
+                          'Log In'.toUpperCase(),
+                          style: GoogleFonts.belleza(
+                            fontStyle: FontStyle.normal,
+                            textStyle: TextStyle(
+                              fontSize: ScreenUtil().setSp(26),
                               fontWeight: FontWeight.bold,
-                              color: Colors.white),
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                       onPressed: () => submitForm()),
@@ -128,6 +133,45 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  InputDecoration passwordInputDecoration() {
+    return InputDecoration(
+      suffixIcon: IconButton(
+        onPressed: () => setState(() {
+          visableActionValue = !visableActionValue;
+        }),
+        icon: Icon(
+          !visableActionValue ? Icons.visibility : Icons.visibility_off,
+          color: Colors.grey,
+        ),
+      ),
+      labelText: 'password',
+      labelStyle: TextStyle(
+          color: Colors.grey,
+          fontSize: ScreenUtil().setSp(16),
+          fontWeight: FontWeight.bold),
+      hintText: 'Enter your password',
+      fillColor: Colors.white,
+      filled: true,
+      contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        borderSide: const BorderSide(color: Colors.blue),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        borderSide: BorderSide(color: Colors.grey.shade400),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        borderSide: const BorderSide(color: Colors.red, width: 2.0),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(100.0),
+        borderSide: const BorderSide(color: Colors.red, width: 2.0),
       ),
     );
   }

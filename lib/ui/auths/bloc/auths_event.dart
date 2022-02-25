@@ -37,3 +37,16 @@ class ApproveSignupUser extends AuthsEvent {
 
   ApproveSignupUser(this.id);
 }
+
+class RejectSignupUser extends AuthsEvent {
+  final int id;
+
+  RejectSignupUser(this.id);
+}
+
+// for upload image internet
+class UploadImage extends AuthsEvent{
+final String filePath;
+
+  UploadImage(this.filePath);
+}

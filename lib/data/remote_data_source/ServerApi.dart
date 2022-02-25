@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:erb_mobo/data/local_data_source/shared_pref.dart';
 import 'package:erb_mobo/models/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_retry/http_retry.dart';
 
 class ServerApi {
   ServerApi._() {
@@ -20,17 +20,40 @@ class ServerApi {
     return {
       'Authorization': 'Bearer ${getLocalToken()}',
       // 'Authorization':
-      //     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyaWFAcmlhLmNvbSIsImlhdCI6MTY0MjI1NDc2NCwiZXhwIjoxNjQyMjU2NTY0fQ.B0tHLaZZ0Jp1YQlwXDtMFTad04wdkfAYUXZFVxGGBYg',
+      //     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyaWFAcmlhLmNvbSIsImlhdCI6MTY0NTIxMjY2MSwiZXhwIjoxNjQ1MjE0NDYxfQ.bomQH19tHC8Wd5gf9QOxHgWe7GBTKwUWOOFws-alXGY',
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
   }
 
-  String getLocalToken() {
-    return accessToken ?? '';
+  String? getLocalToken() {
+    return SharedPref.getToken();
   }
 
   //Auth
+
+  Future<String?> uploadImage(filepath) async {
+    try {
+      var postUri = Uri.parse(_baseUrl + '/app-files');
+      var request = http.MultipartRequest('POST', postUri);
+      request.files.add(http.MultipartFile('image',
+          File(filepath).readAsBytes().asStream(), File(filepath).lengthSync(),
+          filename: filepath.split("/").last));
+      var res = await request.send();
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        print('sucess uploading user image');
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
 
   Future<void> refreshToken() async {
     try {
@@ -42,6 +65,32 @@ class ServerApi {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final json = jsonDecode(response.body);
         accessToken = json['data']['refreshToken'];
+        SharedPref.setToken(accessToken!);
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<User?> fetchMyProfile() async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/users/me');
+      final response = await _httpClient.get(
+        uri,
+        headers: getHeaders(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final User user = User.fromJson(json['data']);
+
+        return user;
       }
     } on SocketException {
       //this in case internet problems
@@ -59,7 +108,7 @@ class ServerApi {
       {required String email, required String password}) async {
     try {
       final uri = Uri.parse(_baseUrl + '/auth/login');
-      Map<String, String> body = Map<String, String>();
+      Map<String, String> body = <String, String>{};
       body = {'email': email, 'password': password};
       final bodReq = jsonEncode(body);
       final response = await _httpClient.post(
@@ -75,6 +124,7 @@ class ServerApi {
         final User user = User.fromJson(json['data']);
         if (json['data']['accessToken'] != null) {
           accessToken = json['data']['accessToken'];
+          SharedPref.setToken(accessToken!);
         }
         return user;
       }
@@ -99,13 +149,14 @@ class ServerApi {
   }) async {
     try {
       final uri = Uri.parse(_baseUrl + '/auth/sign-up');
-      Map<String, String> body = Map<String, String>();
+      Map<String, dynamic> body = <String, dynamic>{};
       body = {
         'email': email,
         'password': password,
         'firstName': firstName,
         'lastName': lastName,
         'phoneNumber': phoneNumber,
+        'avatarId': null
       };
       final bodReq = jsonEncode(body);
       final response = await _httpClient.post(
@@ -140,7 +191,8 @@ class ServerApi {
     late List<User> result = [];
     try {
       // await refreshToken();
-      final uri = Uri.parse(_baseUrl + '/user/for-admin');
+      final uri = Uri.parse(
+          _baseUrl + '/users/for-admin?isActive=false&isVerified=false');
       final response = await _httpClient.get(uri, headers: getHeaders());
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonData = json.decode(response.body);
@@ -171,18 +223,27 @@ class ServerApi {
     return result;
   }
 
-  Future<bool> approveSignupUser(int userId) async {
+  Future<List<User>> getUsersApprovment() async {
+    late List<User> result = [];
     try {
-      final uri = Uri.parse(_baseUrl + '/auth-for-admin/approve-user/$userId');
-      final response = await _httpClient.post(uri, headers: getHeaders());
+      // await refreshToken();
+      final uri = Uri.parse(
+          _baseUrl + '/users/for-admin?isActive=true&isVerified=true');
+      final response = await _httpClient.get(uri, headers: getHeaders());
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return true;
+        final jsonData = json.decode(response.body);
+        result =
+            (jsonData['data'] as List).map((e) => User.fromJson(e)).toList();
+        return result;
       }
       if (response.statusCode == 401) {
         await refreshToken();
-        final response = await _httpClient.post(uri, headers: getHeaders());
+        final response = await _httpClient.get(uri, headers: getHeaders());
         if (response.statusCode == 200 || response.statusCode == 201) {
-          return true;
+          final jsonData = json.decode(response.body);
+          result =
+              (jsonData['data'] as List).map((e) => User.fromJson(e)).toList();
+          return result;
         }
       }
     } on SocketException {
@@ -195,6 +256,66 @@ class ServerApi {
       print(e.toString());
       return Future.error(e.toString());
     }
-    return false;
+    return result;
+  }
+
+  Future<User?> approveSignupUser(int userId) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/auth-for-admin/approve-user/$userId');
+      final response = await _httpClient.post(uri, headers: getHeaders());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final User user = User.fromJson(json['data']);
+        return user;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final User user = User.fromJson(json['data']);
+          return user;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<User?> rejectSignupUser(int userId) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/auth-for-admin/reject-user/$userId');
+      final response = await _httpClient.post(uri, headers: getHeaders());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final User user = User.fromJson(json['data']);
+        return user;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final User user = User.fromJson(json['data']);
+          return user;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
   }
 }

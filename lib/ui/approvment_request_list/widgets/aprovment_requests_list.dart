@@ -16,7 +16,16 @@ class ApprovmentRequestsList extends StatefulWidget {
 class _ApprovmentRequestsListState extends State<ApprovmentRequestsList> {
   late bool isFinishGettingUsersSignupRequests = false;
   List<User> usersRequests = [];
+
   final AuthsBloc authsBloc = AuthsBloc();
+
+  List<User> listenToApprovmentRequests(int userId) {
+    setState(() {
+      usersRequests.removeWhere((element) => element.id == userId);
+    });
+    return usersRequests;
+  }
+
   @override
   void initState() {
     authsBloc.add(GetUsersSignupRequests());
@@ -43,13 +52,24 @@ class _ApprovmentRequestsListState extends State<ApprovmentRequestsList> {
         }
       },
       child: isFinishGettingUsersSignupRequests
-          ? ListView.builder(
-              itemCount: usersRequests.length,
-              itemBuilder: (BuildContext context, int index) {
-                return RequestApprovmentCard(
-                  user: usersRequests[index],
-                );
-              })
+          ? usersRequests.isEmpty
+              ? Center(
+                  child: Text(
+                    'not approvment requests yet!',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: ScreenUtil().setSp(15),
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: usersRequests.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return RequestApprovmentCard(
+                      user: usersRequests[index],
+                      usersRequestsCallBack: listenToApprovmentRequests,
+                    );
+                  })
           : SizedBox(
               height: MediaQuery.of(context).size.height,
               child: Column(

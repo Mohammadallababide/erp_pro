@@ -45,8 +45,8 @@ class ErrorGettingSignupUsersRequests extends AuthsState {
 
 // approve signup user
 class SuccessApproveSignupUser extends AuthsState {
-  final bool isSuccess;
-  SuccessApproveSignupUser(this.isSuccess);
+  final User user;
+  SuccessApproveSignupUser(this.user);
 }
 
 class ProcessingApproveSignupUser extends AuthsState {}
@@ -55,4 +55,33 @@ class ErrorApproveSignupUser extends AuthsState {
   final String error;
 
   ErrorApproveSignupUser(this.error);
+}
+
+// reject signup user
+class SuccessRejectSignupUser extends AuthsState {
+  final User user;
+  SuccessRejectSignupUser(this.user);
+}
+
+class ProcessingRejectSignupUser extends AuthsState {}
+
+class ErrorRejectSignupUser extends AuthsState {
+  final String error;
+
+  ErrorRejectSignupUser(this.error);
+}
+// for uplode image state 
+class UploaddingImage extends AuthsState{
+
+}
+
+class SucessUploadImage extends AuthsState {
+  final String avterId;
+
+  SucessUploadImage(this.avterId);
+}
+class ErrorUploadImage extends AuthsState {
+  final String error;
+
+  ErrorUploadImage(this.error);
 }

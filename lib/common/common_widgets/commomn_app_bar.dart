@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-AppBar commonAppBar({required String title, required BuildContext context}) {
+AppBar commonAppBar({required String title, required BuildContext context }) {
   return AppBar(
     elevation: 0.0,
     centerTitle: true,

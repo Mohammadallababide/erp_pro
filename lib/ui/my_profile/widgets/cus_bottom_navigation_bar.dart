@@ -1,49 +1,16 @@
-import 'package:erb_mobo/common/common_widgets/commomn_app_bar.dart';
-import 'package:erb_mobo/ui/auths/bloc/auths_bloc.dart';
-import 'package:erb_mobo/ui/home/widgets/app_drawer/app_drawer.dart';
-import 'package:erb_mobo/ui/my_profile/bloc/myprofilebloc_bloc.dart';
-import 'package:erb_mobo/ui/my_profile/widgets/ReceiptDetailsWidgets/receipt_details.dart';
-import 'package:erb_mobo/ui/my_profile/widgets/PersonalDetailsWidgets/user_personal_info.dart';
-import 'package:erb_mobo/ui/my_profile/widgets/receipt_List.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class MyProfilePage extends StatefulWidget {
-  const MyProfilePage({Key? key}) : super(key: key);
+class CusBottomNavigationBar extends StatefulWidget {
+  const CusBottomNavigationBar({Key? key}) : super(key: key);
 
   @override
-  State<MyProfilePage> createState() => _MyProfilePageState();
+  _CusBottomNavigationBarState createState() => _CusBottomNavigationBarState();
 }
 
-class _MyProfilePageState extends State<MyProfilePage> {
-  @override
-  void initState() {
-    myprofileblocBloc.add(FetchMyProfileInfo());
-    super.initState();
-  }
-
-  final MyprofileblocBloc myprofileblocBloc = MyprofileblocBloc();
-  late int _selectedIndex = 0;
+class _CusBottomNavigationBarState extends State<CusBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
-    return  WillPopScope(
-      onWillPop: () async {
-        SystemNavigator.pop();
-        return false;
-      },
-      child: Scaffold(
-        appBar: commonAppBar(context: context, title: 'my Profile'),
-        drawer: const AppDrawer(),
-        body: _selectedIndex == 0
-            ? UserPersonalInfo(myprofileblocBloc: myprofileblocBloc)
-            : ReceiptList(myprofileblocBloc: myprofileblocBloc),
-        bottomNavigationBar: buildBottomBar(),
-      ),
-    );
-  }
-
-  Widget buildBottomBar() {
     return Padding(
       padding: EdgeInsets.symmetric(
           horizontal: ScreenUtil().setWidth(10),
@@ -65,11 +32,9 @@ class _MyProfilePageState extends State<MyProfilePage> {
                 ScreenUtil().radius(17),
               )),
           child: BottomNavigationBar(
-            onTap: _onItemTapped,
-            currentIndex: _selectedIndex,
             type: BottomNavigationBarType.fixed,
             enableFeedback: false,
-            backgroundColor: Theme.of(context).primaryColor,
+            backgroundColor: Colors.black87,
             elevation: 2,
             landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
             selectedFontSize: ScreenUtil().setSp(13),
@@ -91,18 +56,12 @@ class _MyProfilePageState extends State<MyProfilePage> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.attach_money_outlined),
-                label: 'Receipts Info',
+                label: 'Salary Info',
               ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 }

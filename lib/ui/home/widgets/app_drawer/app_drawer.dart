@@ -1,5 +1,8 @@
 import 'package:erb_mobo/common/generate_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../data/local_data_source/shared_pref.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
@@ -7,49 +10,52 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      elevation: 3.0,
-      backgroundColor: Colors.white70,
+      elevation: 0.0,
+      backgroundColor: Theme.of(context).primaryColor,
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           _createHeader(context),
           _createDrawerItem(
-            icon: Icons.account_circle,
-            text: 'My profile',
-             onTap: () => Navigator.pushReplacementNamed(
-              context,
-              NameScreen.myProfilePage,
-            ),
-          ),
-          _createDrawerItem(
-            icon: Icons.settings,
-            text: 'Setting',
-          ),
-          _createDrawerItem(
-            icon: Icons.event,
-            text: 'Events',
+            icon: Icons.notifications,
+            text: 'notifications',
           ),
           const Divider(
             thickness: 2,
+            color: Colors.white,
           ),
           _createDrawerItem(
-            icon: Icons.list_alt,
-            text: 'Requests Approvment',
+            icon: Icons.verified_user_sharp,
+            text: 'approvment requests',
             onTap: () => Navigator.pushReplacementNamed(
               context,
               NameScreen.aprovmentRequestsPage,
             ),
           ),
-          _createDrawerItem(
-            icon: Icons.note,
-            text: 'Notes',
-          ),
-           const Divider(
+          const Divider(
             thickness: 2,
+            color: Colors.white,
           ),
-          ListTile(
-            title: const Text('v.0.2'),
-            onTap: () {},
+          _createDrawerItem(
+            icon: Icons.supervised_user_circle_sharp,
+            text: 'approvment users',
+            onTap: () => Navigator.pushReplacementNamed(
+                context, NameScreen.usersListPage),
+          ),
+          const Divider(
+            thickness: 2,
+            color: Colors.white,
+          ),
+          _createDrawerItem(
+              icon: Icons.logout_outlined,
+              text: 'logout',
+              onTap: () {
+                SharedPref.logOut();
+                Navigator.pushReplacementNamed(context, NameScreen.loginPage);
+              }),
+          const Divider(
+            thickness: 2,
+            color: Colors.white,
           ),
         ],
       ),
@@ -61,10 +67,16 @@ class AppDrawer extends StatelessWidget {
     return ListTile(
       title: Row(
         children: <Widget>[
-          Icon(icon),
+          Icon(
+            icon,
+            color: Colors.white,
+          ),
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
-            child: Text(text!),
+            child: Text(
+              text!,
+              style: TextStyle(color: Colors.white),
+            ),
           )
         ],
       ),
@@ -73,14 +85,38 @@ class AppDrawer extends StatelessWidget {
   }
 
   Widget _createHeader(context) {
-    return DrawerHeader(
-      margin: EdgeInsets.zero,
-      padding: EdgeInsets.zero,
-      decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          image: const DecorationImage(
-              fit: BoxFit.fill, image: AssetImage('assets/images/brick.png'))),
-      child: null,
+    return InkWell(
+      onTap: () => Navigator.pushReplacementNamed(
+        context,
+        NameScreen.myProfilePage,
+      ),
+      child: UserAccountsDrawerHeader(
+        decoration: BoxDecoration(
+          color: Colors.black12
+        ),
+        currentAccountPictureSize: Size.square(ScreenUtil().setSp(80)),
+        accountName: Text(
+          "Michel Clerk",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: ScreenUtil().setSp(18),
+          ),
+        ),
+        accountEmail: Text("Michel@gmail.com",
+            style: TextStyle(
+              fontWeight: FontWeight.w200,
+              fontSize: ScreenUtil().setSp(14),
+            )),
+        currentAccountPicture: CircleAvatar(
+          backgroundColor: Colors.white,
+          child: Text(
+            "M",
+            style: TextStyle(
+              fontSize: ScreenUtil().setSp(40),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
