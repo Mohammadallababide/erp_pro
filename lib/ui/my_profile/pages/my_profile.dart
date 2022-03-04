@@ -1,13 +1,11 @@
 import 'package:erb_mobo/common/common_widgets/commomn_app_bar.dart';
-import 'package:erb_mobo/ui/auths/bloc/auths_bloc.dart';
-import 'package:erb_mobo/ui/home/widgets/app_drawer/app_drawer.dart';
 import 'package:erb_mobo/ui/my_profile/bloc/myprofilebloc_bloc.dart';
-import 'package:erb_mobo/ui/my_profile/widgets/ReceiptDetailsWidgets/receipt_details.dart';
 import 'package:erb_mobo/ui/my_profile/widgets/PersonalDetailsWidgets/user_personal_info.dart';
 import 'package:erb_mobo/ui/my_profile/widgets/receipt_List.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../common/common_widgets/app_drawer.dart';
 
 class MyProfilePage extends StatefulWidget {
   const MyProfilePage({Key? key}) : super(key: key);

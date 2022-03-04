@@ -111,7 +111,7 @@ class _LoginFormState extends State<LoginForm> {
                   );
                 }
                 return Container(
-                  decoration: ThemeHelper().buttonBoxDecoration(context),
+                  decoration: ThemeHelper().buttonBoxDecoration(context: context),
                   child: ElevatedButton(
                       style: ThemeHelper().buttonStyle(),
                       child: Center(

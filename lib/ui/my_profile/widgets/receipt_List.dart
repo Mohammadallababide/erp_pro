@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'ReceiptDetailsWidgets/receipt_details.dart';
+import '../../../common/common_widgets/ReceiptDetailsWidgets/receipt_details.dart';
+import '../../../models/deduction.dart';
+import '../../../models/salary.dart';
 
 class ReceiptList extends StatelessWidget {
   final MyprofileblocBloc myprofileblocBloc;
@@ -13,40 +15,87 @@ class ReceiptList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
-      // buildWhen: (previous, current) =>
-      //     previous != current && current is SuccessFetchMyProfileInfo ||
-      //     current is ErrorFetchMyProfileInfo,
-      bloc: myprofileblocBloc,
-      builder: (context, state) {
-        if (state is SuccessFetchMyProfileInfo) {
-          return state.user.receipts != null
-              ? ListView.builder(
-                  itemCount: state.user.receipts!.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return buildSalaryDetails(
-                        state.user.receipts![index].id.toString(),
-                        'Receipt Name :',
-                        context,
-                        state.user.receipts![index]);
-                  })
-              : const Center(
-                  child: Text('Not prepering receipts yet'),
-                );
-        } else if (state is ErrorFetchMyProfileInfo) {
-          return const Center(
-            child: Text('some thing is wrong'),
-          );
-        } else if (state is FetchingMyProfileInfo) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: Theme.of(context).primaryColor,
-            ),
-          );
-        }
-        return Container();
-      },
+    Receipt rec = Receipt(
+      id: 1,
+      userName: 'userNameT',
+      deductions: [
+        Deduction(amount: 10, reason: 'daily task ...', type: 'work deduction'),
+        Deduction(amount: 10, reason: 'daily task ...', type: 'work deduction'),
+        Deduction(amount: 10, reason: 'daily task ...', type: 'work deduction'),
+      ],
+      salary: Salary(
+        id: 1,
+        receiptId: 1,
+        allowance: 200,
+        amount: 100,
+        bonus: 30,
+        receiptName: 'receiptName',
+      ),
     );
+    return ListView(
+      padding: EdgeInsets.symmetric(
+        vertical: ScreenUtil().setHeight(15),
+      ),
+      children: [
+        Column(
+          children: [
+            buildSalaryDetails(
+              'salary name',
+              'Receipt Name :',
+              context,
+              rec,
+            ),
+            buildSalaryDetails(
+              'salary name',
+              'Receipt Name :',
+              context,
+              rec,
+            ),
+            buildSalaryDetails(
+              'salary name',
+              'Receipt Name :',
+              context,
+              rec,
+            ),
+          ],
+        ),
+      ],
+    );
+
+    // BlocBuilder(
+    //   // buildWhen: (previous, current) =>
+    //   //     previous != current && current is SuccessFetchMyProfileInfo ||
+    //   //     current is ErrorFetchMyProfileInfo,
+    //   bloc: myprofileblocBloc,
+    //   builder: (context, state) {
+    //     if (state is SuccessFetchMyProfileInfo) {
+    //       return state.user.receipts != null
+    //           ? ListView.builder(
+    //               itemCount: state.user.receipts!.length,
+    //               itemBuilder: (BuildContext context, int index) {
+    //                 return buildSalaryDetails(
+    //                     state.user.receipts![index].id.toString(),
+    //                     'Receipt Name :',
+    //                     context,
+    //                     state.user.receipts![index]);
+    //               })
+    //           : const Center(
+    //               child: Text('Not prepering receipts yet'),
+    //             );
+    //     } else if (state is ErrorFetchMyProfileInfo) {
+    //       return const Center(
+    //         child: Text('some thing is wrong'),
+    //       );
+    //     } else if (state is FetchingMyProfileInfo) {
+    //       return Center(
+    //         child: CircularProgressIndicator(
+    //           color: Theme.of(context).primaryColor,
+    //         ),
+    //       );
+    //     }
+    //     return Container();
+    //   },
+    // );
   }
 
   Widget buildSalaryDetails(String getValue, String title, BuildContext context,
@@ -86,8 +135,8 @@ class ReceiptList extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            ReceiptDetails(receipt: receiptDetails)),
+                        builder: (context) => ReceiptDetails(
+                            receipt: receiptDetails, isMyReceipt: false)),
                   );
                 },
                 child: Row(

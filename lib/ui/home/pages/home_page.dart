@@ -1,7 +1,7 @@
 import 'package:erb_mobo/common/common_widgets/commomn_app_bar.dart';
-import 'package:erb_mobo/ui/home/widgets/app_drawer/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../../common/common_widgets/app_drawer.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);

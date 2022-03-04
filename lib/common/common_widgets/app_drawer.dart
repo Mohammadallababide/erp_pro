@@ -25,6 +25,18 @@ class AppDrawer extends StatelessWidget {
             color: Colors.white,
           ),
           _createDrawerItem(
+            icon: Icons.attach_money,
+            text: 'users financial mange',
+            onTap: () => Navigator.pushReplacementNamed(
+              context,
+              NameScreen.usersFinacialPage,
+            ),
+          ),
+          const Divider(
+            thickness: 2,
+            color: Colors.white,
+          ),
+          _createDrawerItem(
             icon: Icons.verified_user_sharp,
             text: 'approvment requests',
             onTap: () => Navigator.pushReplacementNamed(
@@ -75,7 +87,7 @@ class AppDrawer extends StatelessWidget {
             padding: const EdgeInsets.only(left: 8.0),
             child: Text(
               text!,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           )
         ],
@@ -91,9 +103,7 @@ class AppDrawer extends StatelessWidget {
         NameScreen.myProfilePage,
       ),
       child: UserAccountsDrawerHeader(
-        decoration: BoxDecoration(
-          color: Colors.black12
-        ),
+        decoration: const BoxDecoration(color: Colors.black12),
         currentAccountPictureSize: Size.square(ScreenUtil().setSp(80)),
         accountName: Text(
           "Michel Clerk",
@@ -120,35 +130,3 @@ class AppDrawer extends StatelessWidget {
     );
   }
 }
-
-
-
-
-    //  _createDrawerItem(
-    //         icon: Icons.account_circle,
-    //         text: 'My profile',
-    //       ),
-    //       _createDrawerItem(
-    //         icon: Icons.settings,
-    //         text: 'Setting',
-    //       ),
-    //       _createDrawerItem(
-    //         icon: Icons.event,
-    //         text: 'Events',
-    //       ),
-    //       const Divider(
-    //         thickness: 2,
-    //       ),
-    //        _createDrawerItem(
-    //         icon: Icons.note,
-    //         text: 'Notes',
-    //       ),
-    //       _createDrawerItem(icon: Icons.collections_bookmark, text: 'Steps'),
-    //       _createDrawerItem(icon: Icons.face, text: 'Authors'),
-    //       _createDrawerItem(
-    //           icon: Icons.account_box, text: 'Flutter Documentation'),
-    //       _createDrawerItem(icon: Icons.stars, text: 'Useful Links'),
-    //       const Divider(
-    //         thickness: 2,
-    //       ),
-    //       _createDrawerItem(icon: Icons.bug_report, text: 'Report an issue'),

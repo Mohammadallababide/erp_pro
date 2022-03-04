@@ -6,9 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/common_widgets/app_snack_bar.dart';
 import '../../../common/common_widgets/commomn_app_bar.dart';
 import '../../../models/user.dart';
-import '../../home/widgets/app_drawer/app_drawer.dart';
 import '../bloc/users_bloc.dart';
 import '../widgets/userCard.dart';
+import '../../../common/common_widgets/app_drawer.dart';
 
 class UsersListPage extends StatefulWidget {
   const UsersListPage({Key? key}) : super(key: key);

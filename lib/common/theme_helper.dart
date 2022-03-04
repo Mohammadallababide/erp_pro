@@ -44,8 +44,8 @@ class ThemeHelper {
     ]);
   }
 
-  BoxDecoration buttonBoxDecoration(BuildContext context,
-      [String color1 = "", String color2 = ""]) {
+  BoxDecoration buttonBoxDecoration({required BuildContext context,
+      String color1 = "", String color2 = "", double radius = 30}) {
     Color c1 = Theme.of(context).primaryColor;
     Color c2 = Theme.of(context).accentColor;
     if (color1.isEmpty == false) {
@@ -69,7 +69,7 @@ class ThemeHelper {
         ],
       ),
       color: Colors.deepPurple.shade300,
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(radius),
     );
   }
 

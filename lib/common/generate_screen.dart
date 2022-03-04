@@ -7,7 +7,9 @@ import 'package:erb_mobo/ui/my_profile/pages/my_profile.dart';
 import 'package:erb_mobo/ui/splash/pages/splash_page.dart';
 import 'package:flutter/material.dart';
 
-import '../ui/users/pages/usersList.dart';
+import '../ui/users List/pages/users_list_page.dart';
+import '../ui/users_finacial_mange/pages/create_receipt_page.dart';
+import '../ui/users_finacial_mange/pages/users_finacial_page.dart';
 
 ///
 /// [GenerateScreen.onGenerate] function is responsible for returning the specific [Route] with the right data.
@@ -50,6 +52,17 @@ class GenerateScreen {
         {
           return MaterialPageRoute(builder: (context) => const UsersListPage());
         }
+      case NameScreen.usersFinacialPage:
+        {
+          return MaterialPageRoute(
+              builder: (context) => const UsersFinacialPage());
+        }
+      case NameScreen.createUserReceiptPage:
+        {
+          return MaterialPageRoute(
+              builder: (context) => const CreateUserReceiptPage());
+        }
+    
       // case NameScreen.receiptDetails:
       //   {
       //     return MaterialPageRoute(
@@ -91,5 +104,8 @@ class NameScreen {
   static const String aprovmentRequestsPage = '/aprovmentRequestsPage';
   static const String myProfilePage = '/myProfilePage';
   static const String usersListPage = '/usersListPage';
+  static const String usersFinacialPage = '/usersFinacialPage';
+  static const String createUserReceiptPage = '/createUserReceiptPage';
+
   // static const String receiptDetails = '/receiptDetails';
 }

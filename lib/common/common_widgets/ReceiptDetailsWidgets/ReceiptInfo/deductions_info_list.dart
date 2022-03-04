@@ -9,42 +9,38 @@ class DeductionsInfoList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: deductionList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return builddeductionCard(index.toString(), 'deduction num :',
-              context, deductionList[index]);
-        });
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: ScreenUtil().setHeight(15),
+      ),
+      child: ListView.builder(
+          itemCount: deductionList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Center(
+              child: builddeductionCard(index.toString(), 'deduction num :',
+                  context, deductionList[index]),
+            );
+          }),
+    );
   }
 
-  Future<void> _showChoiceDialog(BuildContext context, Deduction deduction) {
+  Future<void> _showDeductionDetails(
+      BuildContext context, Deduction deduction) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text(
-              "Choose option",
+              "Deduction details",
               style: TextStyle(color: Colors.blue),
             ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: [
-                  Divider(
-                    height: 2,
-                    color: Theme.of(context).primaryColor,
-                  ),
                   builddeductionDetails(deduction.amount.toString(),
                       'deduction amount :', context),
-                  Divider(
-                    height: 2,
-                    color: Theme.of(context).primaryColor,
-                  ),
                   builddeductionDetails(deduction.reason.toString(),
                       'deduction reason :', context),
-                  Divider(
-                    height: 2,
-                    color: Theme.of(context).primaryColor,
-                  ),
                   builddeductionDetails(
                       deduction.type.toString(), 'deduction type :', context),
                 ],
@@ -87,7 +83,7 @@ class DeductionsInfoList extends StatelessWidget {
                 ),
               ),
               child: InkWell(
-                onTap: () => _showChoiceDialog(context, deduction),
+                onTap: () => _showDeductionDetails(context, deduction),
                 child: Row(
                   children: [
                     Expanded(

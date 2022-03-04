@@ -47,6 +47,6 @@ class _AppState extends State<App> {
   }
 
   String getRightInitRoute() {
-    return NameScreen.splachScreen;
+    return NameScreen.homePage;
   }
 }

@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:erb_mobo/data/local_data_source/shared_pref.dart';
+import 'package:erb_mobo/models/salary.dart';
 import 'package:erb_mobo/models/user.dart';
 import 'package:http/http.dart' as http;
+
+import '../../models/deduction.dart';
+import '../../models/receipt.dart';
 
 class ServerApi {
   ServerApi._() {
@@ -305,6 +309,126 @@ class ServerApi {
           final json = jsonDecode(response.body);
           final User user = User.fromJson(json['data']);
           return user;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  // receipt Apis ...
+
+  Future<List<Receipt>> getReceipts([int page = 1]) async {
+    late List<Receipt> result = [];
+    try {
+      // await refreshToken();
+      final uri = Uri.parse(_baseUrl + '/financial/receipts');
+      final response = await _httpClient.get(uri, headers: getHeaders());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonData = json.decode(response.body);
+        result =
+            (jsonData['data'] as List).map((e) => Receipt.fromJson(e)).toList();
+        return result;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.get(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final jsonData = json.decode(response.body);
+          result = (jsonData['data'] as List)
+              .map((e) => Receipt.fromJson(e))
+              .toList();
+          return result;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return result;
+  }
+
+  Future<Receipt?> createReceipt(
+    int userId,
+    Salary salary,
+    List<Deduction> deductions,
+  ) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/financial/receipts');
+
+      Map<String, dynamic> body = <String, dynamic>{};
+      body = {
+        'userId': userId,
+        'salary': salary.toJson(),
+        'deductions': deductions.map((e) => e.toJson()).toList(),
+      };
+      final bodReq = jsonEncode(body);
+
+      final response = await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Receipt receipt = Receipt.fromJson(json['data']);
+        return receipt;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Receipt receipt = Receipt.fromJson(json['data']);
+          return receipt;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<Receipt?> deleteReceipt(
+    int receiptId,
+  ) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/financial/receipts/$receiptId');
+      final response = await _httpClient.delete(
+        uri,
+        headers: getHeaders(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Receipt receipt = Receipt.fromJson(json['data']);
+        return receipt;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Receipt receipt = Receipt.fromJson(json['data']);
+          return receipt;
         }
       }
     } on SocketException {
