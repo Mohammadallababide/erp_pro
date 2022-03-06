@@ -132,7 +132,7 @@ class _RequestApprovmentCardState extends State<RequestApprovmentCard> {
           return Row(
             children: [
               InkWell(
-                  onTap: () => authsBloc.add(RejectSignupUser(widget.user.id)),
+                  onTap: () => authsBloc.add(RejectSignupUser(widget.user.id!)),
                   child: Icon(
                     Icons.close,
                     color: Colors.red,
@@ -142,7 +142,7 @@ class _RequestApprovmentCardState extends State<RequestApprovmentCard> {
                 width: ScreenUtil().setWidth(20),
               ),
               InkWell(
-                  onTap: () => authsBloc.add(ApproveSignupUser(widget.user.id)),
+                  onTap: () => authsBloc.add(ApproveSignupUser(widget.user.id!)),
                   child: Icon(
                     Icons.check,
                     color: Colors.green,

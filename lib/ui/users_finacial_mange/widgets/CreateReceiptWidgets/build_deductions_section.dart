@@ -26,6 +26,8 @@ class _DeductionsSectionState extends State<DeductionsSection> {
   late TextEditingController _deductionReasonController =
       TextEditingController();
 
+      
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,11 @@ class _DeductionsSectionState extends State<DeductionsSection> {
               ),
             ),
             IconButton(
-              onPressed: () => showAddDeductionOnSalaryForm(context),
+              onPressed: () => showAddOrEditDeductionOnSalaryForm(
+                context: context,
+                index: null,
+                deduction: null,
+              ),
               icon: const Icon(Icons.add_circle),
               iconSize: ScreenUtil().setSp(30),
             ),
@@ -111,6 +117,7 @@ class _DeductionsSectionState extends State<DeductionsSection> {
                 itemBuilder: (BuildContext context, int index) {
                   return buildDeductionCard(
                     deduction: widget.deductions[index],
+                    index: index,
                   );
                 }),
           )
@@ -119,7 +126,7 @@ class _DeductionsSectionState extends State<DeductionsSection> {
     );
   }
 
-  Row buildDeductionCard({required Deduction deduction}) {
+  Row buildDeductionCard({required Deduction deduction, required int index}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -149,7 +156,7 @@ class _DeductionsSectionState extends State<DeductionsSection> {
         ),
         Expanded(
           child: IconButton(
-              onPressed: () => showDeductionDetails(deduction),
+              onPressed: () => showDeductionDetails(deduction, index),
               icon: Icon(Icons.arrow_forward_ios_outlined,
                   color: Theme.of(context).primaryColor),
               iconSize: ScreenUtil().setSp(15)),
@@ -160,7 +167,17 @@ class _DeductionsSectionState extends State<DeductionsSection> {
 
 // Add New Salary Deduction Section
 
-  Future<void> showAddDeductionOnSalaryForm(BuildContext context) {
+  Future<void> showAddOrEditDeductionOnSalaryForm({
+    required BuildContext context,
+    int? index,
+    Deduction? deduction,
+  }) {
+    if (deduction != null) {
+      _deductionAmountController.text = deduction.amount;
+      _deductionTypeController.text = deduction.type;
+      _deductionReasonController.text = deduction.reason;
+    }
+
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -225,9 +242,9 @@ class _DeductionsSectionState extends State<DeductionsSection> {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: TextButton(
-                      onPressed: () => submitForm(),
+                      onPressed: () => submitForm(index),
                       child: Text(
-                        'Add',
+                        index != null ? 'Edit' : 'Add',
                         style: TextStyle(
                           fontSize: ScreenUtil().setSp(18),
                           fontWeight: FontWeight.w700,
@@ -243,10 +260,20 @@ class _DeductionsSectionState extends State<DeductionsSection> {
         });
   }
 
-  void submitForm() {
+  void submitForm(int? index) {
     formKey.currentState!.save();
     if (formKey.currentState!.validate()) {
-      addNewItemToDeductionsList();
+      if (index == null) {
+        addNewItemToDeductionsList();
+      } else {
+        editItemInDeductionsList(
+          amount: _deductionAmountController.text,
+          type: _deductionTypeController.text,
+          reason: _deductionReasonController.text,
+          index: index,
+        );
+        Navigator.pop(context);
+      }
       _deductionAmountController = TextEditingController();
       _deductionTypeController = TextEditingController();
       _deductionReasonController = TextEditingController();
@@ -257,19 +284,10 @@ class _DeductionsSectionState extends State<DeductionsSection> {
     }
   }
 
-  void addNewItemToDeductionsList() {
-    setState(() {
-      widget.deductions.add(Deduction(
-        amount: _deductionAmountController.value.text,
-        reason: _deductionReasonController.value.text,
-        type: _deductionTypeController.value.text,
-      ));
-      widget.deductionsListCallBack(widget.deductions);
-    });
-  }
+// end Add New Salary Deduction Section
 
-// end Add New Salary Deduction Section 
-  Future<void> showDeductionDetails(Deduction deduction) {
+// show Dedection deatils section
+  Future<void> showDeductionDetails(Deduction deduction, int index) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -287,7 +305,11 @@ class _DeductionsSectionState extends State<DeductionsSection> {
                   children: [
                     IconButton(
                       icon: Icon(Icons.edit),
-                      onPressed: () {},
+                      onPressed: () => showAddOrEditDeductionOnSalaryForm(
+                        context: context,
+                        index: index,
+                        deduction: deduction,
+                      ),
                     ),
                     IconButton(
                       icon: const Icon(
@@ -295,7 +317,7 @@ class _DeductionsSectionState extends State<DeductionsSection> {
                         color: Colors.red,
                       ),
                       iconSize: ScreenUtil().setSp(30),
-                      onPressed: () {},
+                      onPressed: () => removeItemFromDeductionsList(index),
                     )
                   ],
                 ),
@@ -360,4 +382,42 @@ class _DeductionsSectionState extends State<DeductionsSection> {
           ],
         ),
       );
+
+//end show Dedection deatils section
+
+// function for process on deductions list (add new item , delete item , edit item)
+
+  void addNewItemToDeductionsList() {
+    setState(() {
+      widget.deductions.add(Deduction(
+        amount: _deductionAmountController.value.text,
+        reason: _deductionReasonController.value.text,
+        type: _deductionTypeController.value.text,
+      ));
+      widget.deductionsListCallBack(widget.deductions);
+    });
+  }
+
+  void editItemInDeductionsList(
+      {required dynamic amount,
+      required String type,
+      required String reason,
+      required int index}) {
+    setState(() {
+      widget.deductions[index] = Deduction(
+        amount: amount,
+        reason: type,
+        type: reason,
+      );
+      widget.deductionsListCallBack(widget.deductions);
+    });
+  }
+
+  void removeItemFromDeductionsList(int index) {
+    setState(() {
+      widget.deductions.removeAt(index);
+      widget.deductionsListCallBack(widget.deductions);
+    });
+    Navigator.pop(context);
+  }
 }

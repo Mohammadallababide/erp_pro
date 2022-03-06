@@ -7,7 +7,7 @@ part 'user.g.dart';
 @JsonSerializable()
 class User {
   @JsonKey(required: false)
-  final int id;
+  final int? id;
   @JsonKey(required: false)
   final String firstName;
   @JsonKey(required: false)
@@ -25,16 +25,15 @@ class User {
   @JsonKey(required: false)
   late final bool? isActive;
   @JsonKey(required: false)
+  final List<String>? roles;
   @JsonKey(required: false)
-  final List<String> roles;
-
-  final List<AssociatedRole> associatedRoles;
+  final List<AssociatedRole>? associatedRoles;
   @JsonKey(required: false)
   final List<Receipt>? receipts;
 
 // final Role role;
   User({
-    required this.id,
+    this.id,
     required this.firstName,
     required this.lastName,
     this.password,
@@ -43,9 +42,9 @@ class User {
     this.accessToken,
     this.refreshToken,
     this.isActive = false,
-    required this.associatedRoles,
-    required this.receipts,
-    required this.roles,
+    this.associatedRoles,
+    this.receipts,
+    this.roles,
   });
 
   factory User.fromJson(json) => _$UserFromJson(json);

@@ -4,26 +4,26 @@ part 'salary.g.dart';
 @JsonSerializable()
 class Salary {
   @JsonKey(required: false)
-  final int id;
+  final int? id;
   @JsonKey(required: false)
-  final int receiptId;
+  final int? receiptId;
   @JsonKey(required: false, name: 'receipt')
-  final String receiptName;
+  final String? receiptName;
   @JsonKey(required: false)
   final String? workStartDate;
   @JsonKey(required: false)
   final String? workEndDate;
   @JsonKey(required: false)
-  final int amount;
+  final dynamic amount;
   @JsonKey(required: false)
-  final int bonus;
+  final dynamic bonus;
   @JsonKey(required: false)
-  final int allowance;
+  final dynamic allowance;
 
   Salary({
-    required this.id,
-    required this.receiptId,
-    required this.receiptName,
+    this.id,
+    this.receiptId,
+    this.receiptName,
     this.workStartDate,
     this.workEndDate,
     required this.amount,

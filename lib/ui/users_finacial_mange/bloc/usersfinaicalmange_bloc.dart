@@ -24,6 +24,14 @@ class UsersfinaicalmangeBloc
           deductions: event.deductions);
     });
 
+    on<EditReceipt>((event, emit) async {
+      await _editReceipt(
+          emit: emit,
+          receiptId: event.receiptId,
+          salary: event.salary,
+          deductions: event.deductions);
+    });
+
     on<DeleteReceipt>((event, emit) async {
       await _deleteReceipt(emit: emit, id: event.id);
     });
@@ -50,11 +58,33 @@ class UsersfinaicalmangeBloc
   }) async {
     try {
       emit(CreatingReceipt());
-      final Receipt? receipt =
-          await ServerApi.apiClient.createReceipt(userId, salary, deductions);
+      final Receipt? receipt = await ServerApi.apiClient.createReceipt(
+        userId,
+        salary,
+        deductions,
+      );
       emit(SuccessCreatingReceipt(receipt!));
     } catch (e) {
       emit(ErrorCreatingReceipt((e.toString())));
+    }
+  }
+
+  Future<void> _editReceipt({
+    required int receiptId,
+    required Salary salary,
+    required List<Deduction> deductions,
+    required Emitter<UsersfinaicalmangeState> emit,
+  }) async {
+    try {
+      emit(EditingReceipt());
+      final Receipt? receipt = await ServerApi.apiClient.editReceipt(
+        receiptId,
+        salary,
+        deductions,
+      );
+      emit(SuccessEditingReceipt(receipt!));
+    } catch (e) {
+      emit(ErrorEditingReceipt((e.toString())));
     }
   }
 

@@ -1,13 +1,16 @@
-import 'package:erb_mobo/models/salary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../models/receipt.dart';
+
 class SalaryInfoDetails extends StatelessWidget {
-  final Salary salaryDetails;
+  final Receipt receiptDetails;
   final bool isMyReceipt;
-  const SalaryInfoDetails(
-      {Key? key, required this.salaryDetails, required this.isMyReceipt})
-      : super(key: key);
+  const SalaryInfoDetails({
+    Key? key,
+    required this.receiptDetails,
+    required this.isMyReceipt,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +45,11 @@ class SalaryInfoDetails extends StatelessWidget {
         height: ScreenUtil().setHeight(25),
       ),
       buildSalaryDetails(
-          salaryDetails.amount.toString(), 'Salary amount :', context),
+          receiptDetails.salary.amount.toString(), 'Salary amount :', context),
       buildSalaryDetails(
-          salaryDetails.bonus.toString(), 'bonus on salary :', context),
-      buildSalaryDetails(
-          salaryDetails.allowance.toString(), 'allowance amount :', context),
+          receiptDetails.salary.bonus.toString(), 'bonus on salary :', context),
+      buildSalaryDetails(receiptDetails.salary.allowance.toString(),
+          'allowance amount :', context),
     ]);
   }
 
@@ -93,7 +96,9 @@ class SalaryInfoDetails extends StatelessWidget {
                 width: ScreenUtil().setWidth(7),
               ),
               Text(
-                "Mohammad Al lababidi",
+                receiptDetails.user.firstName +
+                    ' ' +
+                    receiptDetails.user.lastName,
                 style: TextStyle(
                     fontSize: ScreenUtil().setSp(14),
                     fontWeight: FontWeight.w500),
@@ -134,7 +139,7 @@ class SalaryInfoDetails extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'From : 2020/1/10',
+              'From ${receiptDetails.salary.workStartDate}',
               style: TextStyle(
                 fontSize: ScreenUtil().setSp(14),
                 fontWeight: FontWeight.w500,
@@ -142,7 +147,7 @@ class SalaryInfoDetails extends StatelessWidget {
               ),
             ),
             Text(
-              'To : 2020/2/20',
+              'To ${receiptDetails.salary.workEndDate}',
               style: TextStyle(
                 fontSize: ScreenUtil().setSp(14),
                 fontWeight: FontWeight.w500,
@@ -192,7 +197,9 @@ class SalaryInfoDetails extends StatelessWidget {
         buildTermCalucationOfTotalSalary(
           context: context,
           title: 'Salary after calculate bonus and allowance :',
-          value: 200,
+          value: receiptDetails.salary.amount +
+              receiptDetails.salary.bonus +
+              receiptDetails.salary.allowance,
         ),
         const Align(
           alignment: Alignment.centerRight,
@@ -206,7 +213,7 @@ class SalaryInfoDetails extends StatelessWidget {
         buildTermCalucationOfTotalSalary(
           context: context,
           title: 'Total deductions :',
-          value: 30,
+          value: calculateTotalDeducionsValue(receiptDetails),
         ),
         buildCusDividorLine(context),
         SizedBox(
@@ -219,6 +226,21 @@ class SalaryInfoDetails extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  int calculateTotalSalarValue(Receipt receipt) {
+    return (receipt.salary.amount +
+            receipt.salary.bonus +
+            receipt.salary.allowance) -
+        calculateTotalDeducionsValue(receipt);
+  }
+
+  int calculateTotalDeducionsValue(Receipt receipt) {
+    int totalDedection = 0;
+    for (int i = 0; i < receipt.deductions.length; i++) {
+      totalDedection = totalDedection + receipt.deductions[i].amount as int;
+    }
+    return totalDedection;
   }
 
   Widget buildTermCalucationOfTotalSalary({

@@ -47,7 +47,7 @@ class UserPersonalInfo extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          state.user.roles[0],
+                          state.user.roles![0],
                           style: TextStyle(
                             fontSize: ScreenUtil().setSp(20),
                             fontWeight: FontWeight.bold,

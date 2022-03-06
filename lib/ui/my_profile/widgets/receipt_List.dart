@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/common_widgets/ReceiptDetailsWidgets/receipt_details.dart';
 import '../../../models/deduction.dart';
 import '../../../models/salary.dart';
+import '../../../models/user.dart';
 
 class ReceiptList extends StatelessWidget {
   final MyprofileblocBloc myprofileblocBloc;
@@ -17,7 +18,8 @@ class ReceiptList extends StatelessWidget {
   Widget build(BuildContext context) {
     Receipt rec = Receipt(
       id: 1,
-      userName: 'userNameT',
+           user: User(firstName: 'sas',lastName: 'dasdad',email: 'moha@gmail.com'),
+
       deductions: [
         Deduction(amount: 10, reason: 'daily task ...', type: 'work deduction'),
         Deduction(amount: 10, reason: 'daily task ...', type: 'work deduction'),

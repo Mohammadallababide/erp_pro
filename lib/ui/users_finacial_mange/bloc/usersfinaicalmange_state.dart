@@ -35,6 +35,21 @@ class ErrorCreatingReceipt extends UsersfinaicalmangeState {
   ErrorCreatingReceipt(this.error);
 }
 
+// for edit receipt
+class EditingReceipt extends UsersfinaicalmangeState {}
+
+class SuccessEditingReceipt extends UsersfinaicalmangeState {
+  final Receipt receipt;
+
+  SuccessEditingReceipt(this.receipt);
+}
+
+class ErrorEditingReceipt extends UsersfinaicalmangeState {
+  final String error;
+
+  ErrorEditingReceipt(this.error);
+}
+
 // for delete recipt
 class DeletingReceipt extends UsersfinaicalmangeState {}
 

@@ -21,6 +21,18 @@ class CreateReceipt extends UsersfinaicalmangeEvent {
   });
 }
 
+class EditReceipt extends UsersfinaicalmangeEvent {
+  final int receiptId;
+  final Salary salary;
+  final List<Deduction> deductions;
+
+  EditReceipt({
+    required this.receiptId,
+    required this.salary,
+    required this.deductions,
+  });
+}
+
 class DeleteReceipt extends UsersfinaicalmangeEvent {
   final int id;
 

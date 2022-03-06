@@ -6,11 +6,13 @@ import 'package:intl/intl.dart';
 class SlarayDateRangeFaild extends StatefulWidget {
   final String? startSalaryDate;
   final String? endSalaryDate;
+  final Function starAndEndtSalaryDateCallBack;
   final String title;
   SlarayDateRangeFaild({
     this.startSalaryDate,
     this.endSalaryDate,
     required this.title,
+    required this.starAndEndtSalaryDateCallBack,
   });
 
   @override
@@ -20,11 +22,13 @@ class SlarayDateRangeFaild extends StatefulWidget {
 class _SlarayDateRangeFaildState extends State<SlarayDateRangeFaild> {
   late String startSalaryDate;
   late String endSalaryDate;
+
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
       if (args.value is PickerDateRange) {
         startSalaryDate = DateFormat('dd/MM/yyyy').format(args.value.startDate);
-        endSalaryDate = DateFormat('dd/MM/yyyy').format(args.value.endDate);
+        endSalaryDate = DateFormat('dd/MM/yyyy')
+            .format(args.value.endDate ?? args.value.startDate);
       }
     });
   }
@@ -62,7 +66,10 @@ class _SlarayDateRangeFaildState extends State<SlarayDateRangeFaild> {
               children: [
                 Expanded(
                   child: Text(
-                    'From ${widget.startSalaryDate} To ${widget.endSalaryDate} ',
+                    widget.startSalaryDate!.length <= 1 &&
+                            widget.endSalaryDate!.length <= 1
+                        ? 'Not Selected Yet'
+                        : '${widget.startSalaryDate} => ${widget.endSalaryDate} ',
                     style: TextStyle(
                       fontSize: ScreenUtil().setSp(15),
                       height: ScreenUtil().setHeight(1.5),
@@ -109,23 +116,51 @@ class _SlarayDateRangeFaildState extends State<SlarayDateRangeFaild> {
                   SizedBox(height: ScreenUtil().setHeight(15)),
                   getDateRangePicker(),
                   Padding(
-                     padding: EdgeInsets.only(
-                      right: ScreenUtil().setWidth(10),
+                    padding: EdgeInsets.symmetric(
+                      vertical: ScreenUtil().setHeight(5),
+                      horizontal: ScreenUtil().setWidth(10),
                     ),
                     child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'Cancal',
-                          style: TextStyle(
-                            fontSize: ScreenUtil().setSp(15),
-                            fontWeight: FontWeight.w700,
-                            color: Theme.of(context).primaryColor,
+                      alignment: Alignment.bottomCenter,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Cancal',
+                              style: TextStyle(
+                                fontSize: ScreenUtil().setSp(15),
+                                fontWeight: FontWeight.w700,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
                           ),
-                        ),
+                          TextButton(
+                            onPressed: () {
+                              if (startSalaryDate.length > 1 &&
+                                  endSalaryDate.length > 1) {
+                                setState(() {
+                                  widget.starAndEndtSalaryDateCallBack(
+                                    startSalaryDate,
+                                    endSalaryDate,
+                                  );
+                                });
+                              }
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Ok',
+                              style: TextStyle(
+                                fontSize: ScreenUtil().setSp(15),
+                                fontWeight: FontWeight.w700,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   )
@@ -143,8 +178,12 @@ class _SlarayDateRangeFaildState extends State<SlarayDateRangeFaild> {
           onSelectionChanged: _onSelectionChanged,
           selectionMode: DateRangePickerSelectionMode.range,
           initialSelectedRange: PickerDateRange(
-              DateTime.now().subtract(const Duration(days: 4)),
-              DateTime.now().add(const Duration(days: 3))),
+              widget.startSalaryDate!.length > 1
+                  ? DateTime.parse(widget.startSalaryDate!)
+                  : DateTime.now().subtract(const Duration(days: 4)),
+              widget.endSalaryDate!.length > 1
+                  ? DateTime.parse(widget.endSalaryDate!)
+                  : DateTime.now().add(const Duration(days: 3))),
         ),
       ),
     );
