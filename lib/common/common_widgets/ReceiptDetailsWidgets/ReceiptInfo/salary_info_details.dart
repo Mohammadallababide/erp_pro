@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/utils/core_util_function.dart';
 import '../../../../models/receipt.dart';
 
 class SalaryInfoDetails extends StatelessWidget {
@@ -96,9 +97,9 @@ class SalaryInfoDetails extends StatelessWidget {
                 width: ScreenUtil().setWidth(7),
               ),
               Text(
-                receiptDetails.user.firstName +
+                receiptDetails.user!.firstName +
                     ' ' +
-                    receiptDetails.user.lastName,
+                    receiptDetails.user!.lastName,
                 style: TextStyle(
                     fontSize: ScreenUtil().setSp(14),
                     fontWeight: FontWeight.w500),
@@ -139,7 +140,9 @@ class SalaryInfoDetails extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'From ${receiptDetails.salary.workStartDate}',
+              'From  ${CorerUtilFunction.getFormalDate(
+                receiptDetails.salary.workStartDate!,
+              )}',
               style: TextStyle(
                 fontSize: ScreenUtil().setSp(14),
                 fontWeight: FontWeight.w500,
@@ -147,7 +150,9 @@ class SalaryInfoDetails extends StatelessWidget {
               ),
             ),
             Text(
-              'To ${receiptDetails.salary.workEndDate}',
+              'To ${CorerUtilFunction.getFormalDate(
+                receiptDetails.salary.workEndDate!,
+              )}',
               style: TextStyle(
                 fontSize: ScreenUtil().setSp(14),
                 fontWeight: FontWeight.w500,
@@ -222,7 +227,7 @@ class SalaryInfoDetails extends StatelessWidget {
         buildTermCalucationOfTotalSalary(
           context: context,
           title: 'Result :',
-          value: 230,
+          value: calculateTotalSalarValue(receiptDetails),
         ),
       ],
     );
@@ -238,7 +243,7 @@ class SalaryInfoDetails extends StatelessWidget {
   int calculateTotalDeducionsValue(Receipt receipt) {
     int totalDedection = 0;
     for (int i = 0; i < receipt.deductions.length; i++) {
-      totalDedection = totalDedection + receipt.deductions[i].amount as int;
+      totalDedection = totalDedection + receipt.deductions[i].amount;
     }
     return totalDedection;
   }

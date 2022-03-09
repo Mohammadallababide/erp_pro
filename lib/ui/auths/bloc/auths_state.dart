@@ -33,9 +33,10 @@ class AuthProcessing extends AuthsState {}
 //  just for Addmin
 //  ---------------
 class SucessGettingSignupUsersRequests extends AuthsState {
- final List<User> users;
- SucessGettingSignupUsersRequests(this.users);
+  final List<User> users;
+  SucessGettingSignupUsersRequests(this.users);
 }
+
 class GettingSignupUsersRequests extends AuthsState {}
 
 class ErrorGettingSignupUsersRequests extends AuthsState {
@@ -70,16 +71,16 @@ class ErrorRejectSignupUser extends AuthsState {
 
   ErrorRejectSignupUser(this.error);
 }
-// for uplode image state 
-class UploaddingImage extends AuthsState{
 
-}
+// for uplode image state
+class UploaddingImage extends AuthsState {}
 
 class SucessUploadImage extends AuthsState {
-  final String avterId;
+  final ImageModel image;
 
-  SucessUploadImage(this.avterId);
+  SucessUploadImage(this.image);
 }
+
 class ErrorUploadImage extends AuthsState {
   final String error;
 

@@ -5,7 +5,7 @@ part 'deduction.g.dart';
 @JsonSerializable()
 class Deduction {
   @JsonKey(required: false)
-  final dynamic amount;
+  final int amount;
   @JsonKey(required: false)
   final String type;
   @JsonKey(required: false)

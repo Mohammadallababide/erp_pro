@@ -16,14 +16,14 @@ class AppDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           _createHeader(context),
-          _createDrawerItem(
-            icon: Icons.notifications,
-            text: 'notifications',
-          ),
-          const Divider(
-            thickness: 2,
-            color: Colors.white,
-          ),
+          // _createDrawerItem(
+          //   icon: Icons.notifications,
+          //   text: 'notifications',
+          // ),
+          // const Divider(
+          //   thickness: 2,
+          //   color: Colors.white,
+          // ),
           _createDrawerItem(
             icon: Icons.attach_money,
             text: 'users financial mange',
@@ -104,23 +104,23 @@ class AppDrawer extends StatelessWidget {
       ),
       child: UserAccountsDrawerHeader(
         decoration: const BoxDecoration(color: Colors.black12),
-        currentAccountPictureSize: Size.square(ScreenUtil().setSp(80)),
+        currentAccountPictureSize: Size.square(ScreenUtil().setSp(70)),
         accountName: Text(
-          "Michel Clerk",
+          "ria ria",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: ScreenUtil().setSp(18),
+            fontSize: ScreenUtil().setSp(17),
           ),
         ),
-        accountEmail: Text("Michel@gmail.com",
+        accountEmail: Text("ria@ria.com",
             style: TextStyle(
-              fontWeight: FontWeight.w200,
+              fontWeight: FontWeight.w400,
               fontSize: ScreenUtil().setSp(14),
             )),
         currentAccountPicture: CircleAvatar(
           backgroundColor: Colors.white,
           child: Text(
-            "M",
+            "R",
             style: TextStyle(
               fontSize: ScreenUtil().setSp(40),
             ),

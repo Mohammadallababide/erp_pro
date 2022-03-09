@@ -7,8 +7,7 @@ class Salary {
   final int? id;
   @JsonKey(required: false)
   final int? receiptId;
-  @JsonKey(required: false, name: 'receipt')
-  final String? receiptName;
+
   @JsonKey(required: false)
   final String? workStartDate;
   @JsonKey(required: false)
@@ -23,7 +22,6 @@ class Salary {
   Salary({
     this.id,
     this.receiptId,
-    this.receiptName,
     this.workStartDate,
     this.workEndDate,
     required this.amount,

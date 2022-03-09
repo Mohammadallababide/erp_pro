@@ -7,8 +7,9 @@ part of 'receipt.dart';
 // **************************************************************************
 
 Receipt _$ReceiptFromJson(Map<String, dynamic> json) => Receipt(
-      id: json['id'] as int,
-      user: User.fromJson(json['user']),
+      userId: json['userId'] as int?,
+      id: json['id'] as int?,
+      user: json['user'] == null ? null : User.fromJson(json['user']),
       deductions: (json['deductions'] as List<dynamic>)
           .map((e) => Deduction.fromJson(e))
           .toList(),
@@ -20,4 +21,5 @@ Map<String, dynamic> _$ReceiptToJson(Receipt instance) => <String, dynamic>{
       'user': instance.user,
       'deductions': instance.deductions,
       'salary': instance.salary,
+      'userId': instance.userId,
     };

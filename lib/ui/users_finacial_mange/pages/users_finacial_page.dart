@@ -8,10 +8,13 @@ import '../../../common/common_widgets/ReceiptDetailsWidgets/receipt_details.dar
 import '../../../common/common_widgets/app_drawer.dart';
 import '../../../common/common_widgets/commomn_app_bar.dart';
 import '../../../common/theme_helper.dart';
+import '../../../core/utils/core_util_function.dart';
 import '../../../models/receipt.dart';
 import '../bloc/usersfinaicalmange_bloc.dart';
 import '../widgets/UsersFinacialPage/cus_filter_button.dart';
 import 'create_or_edit_receipt_page.dart';
+import 'package:intl/intl.dart';
+import 'dart:ui' as ui;
 
 class UsersFinacialPage extends StatefulWidget {
   const UsersFinacialPage({Key? key}) : super(key: key);
@@ -117,9 +120,10 @@ class _UsersFinacialPageState extends State<UsersFinacialPage> {
               bloc: receiptBloc,
               builder: (context, state) {
                 if (state is SuccessGettinReceipts) {
-                  receiptsList = state.receipts;
+                  receiptsList = state.receipts.reversed.toList();
                   return Expanded(
                     child: ListView.builder(
+                      itemCount: receiptsList.length,
                       itemBuilder: (BuildContext context, int index) {
                         return buildUserRececiptCard(
                           receipt: receiptsList[index],
@@ -227,8 +231,12 @@ class _UsersFinacialPageState extends State<UsersFinacialPage> {
         Row(
           children: [
             Text(
-              "From ${receipt.salary.workStartDate} To ${receipt.salary.workEndDate}",
-              textDirection: TextDirection.ltr,
+              "From ${CorerUtilFunction.getFormalDate(
+                receipt.salary.workStartDate!,
+              )} To ${CorerUtilFunction.getFormalDate(
+                receipt.salary.workEndDate!,
+              )}",
+              textDirection: ui.TextDirection.ltr,
               style: TextStyle(
                   fontSize: ScreenUtil().setSp(12),
                   fontWeight: FontWeight.bold),
@@ -289,7 +297,7 @@ class _UsersFinacialPageState extends State<UsersFinacialPage> {
   int calculateTotalSalarValue(Receipt receipt) {
     int totalDedection = 0;
     for (int i = 0; i < receipt.deductions.length; i++) {
-      totalDedection = totalDedection + receipt.deductions[i].amount as int;
+      totalDedection = totalDedection +receipt.deductions[i].amount;
     }
     return (receipt.salary.amount +
             receipt.salary.bonus +
@@ -305,7 +313,7 @@ class _UsersFinacialPageState extends State<UsersFinacialPage> {
           alignment: Alignment.centerRight,
           child: Text(
             "Total Salary :",
-            textDirection: TextDirection.rtl,
+            textDirection: ui.TextDirection.rtl,
             style: TextStyle(
                 fontSize: ScreenUtil().setSp(14), fontWeight: FontWeight.bold),
           ),
@@ -344,7 +352,7 @@ class _UsersFinacialPageState extends State<UsersFinacialPage> {
           alignment: Alignment.centerRight,
           child: Text(
             "Salary To Asignment :",
-            textDirection: TextDirection.rtl,
+            textDirection: ui.TextDirection.rtl,
             style: TextStyle(
                 fontSize: ScreenUtil().setSp(14), fontWeight: FontWeight.bold),
           ),
@@ -366,7 +374,7 @@ class _UsersFinacialPageState extends State<UsersFinacialPage> {
               width: ScreenUtil().setWidth(7),
             ),
             Text(
-              receipt.user.firstName + ' ' + receipt.user.lastName,
+              receipt.user!.firstName + ' ' + receipt.user!.lastName,
               style: TextStyle(
                   fontSize: ScreenUtil().setSp(14),
                   fontWeight: FontWeight.w500),

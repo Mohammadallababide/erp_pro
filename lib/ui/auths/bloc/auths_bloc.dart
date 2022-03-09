@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:erb_mobo/data/remote_data_source/ServerApi.dart';
 import 'package:erb_mobo/models/user.dart';
 
+import '../../../models/imageModel.dart';
+
 part 'auths_event.dart';
 part 'auths_state.dart';
 
@@ -43,8 +45,8 @@ class AuthsBloc extends Bloc<AuthsEvent, AuthsState> {
   Future<void> _uploadImage(String path, Emitter<AuthsState> emit) async {
     emit(ProcessingApproveSignupUser());
     try {
-      final result = await ServerApi.apiClient.uploadImage(path);
-      emit(SucessUploadImage(result!));
+      final ImageModel = await ServerApi.apiClient.uploadImage(path);
+      emit(SucessUploadImage(ImageModel!));
     } catch (e) {
       emit(ErrorApproveSignupUser((e.toString())));
     }

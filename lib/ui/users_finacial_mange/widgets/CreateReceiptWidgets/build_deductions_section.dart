@@ -26,8 +26,6 @@ class _DeductionsSectionState extends State<DeductionsSection> {
   late TextEditingController _deductionReasonController =
       TextEditingController();
 
-      
-
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -173,7 +171,7 @@ class _DeductionsSectionState extends State<DeductionsSection> {
     Deduction? deduction,
   }) {
     if (deduction != null) {
-      _deductionAmountController.text = deduction.amount;
+      _deductionAmountController.text = deduction.amount.toString();
       _deductionTypeController.text = deduction.type;
       _deductionReasonController.text = deduction.reason;
     }
@@ -267,7 +265,7 @@ class _DeductionsSectionState extends State<DeductionsSection> {
         addNewItemToDeductionsList();
       } else {
         editItemInDeductionsList(
-          amount: _deductionAmountController.text,
+          amount: int.parse(_deductionAmountController.text),
           type: _deductionTypeController.text,
           reason: _deductionReasonController.text,
           index: index,
@@ -303,21 +301,28 @@ class _DeductionsSectionState extends State<DeductionsSection> {
                 ),
                 Row(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.edit),
-                      onPressed: () => showAddOrEditDeductionOnSalaryForm(
-                        context: context,
-                        index: index,
-                        deduction: deduction,
+                    SizedBox(
+                      height: ScreenUtil().setHeight(30),
+                      width: ScreenUtil().setWidth(30),
+                      child: IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () => showAddOrEditDeductionOnSalaryForm(
+                          context: context,
+                          index: index,
+                          deduction: deduction,
+                        ),
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.red,
+                    SizedBox(
+                      height: ScreenUtil().setHeight(30),
+                      width: ScreenUtil().setWidth(30),
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        onPressed: () => removeItemFromDeductionsList(index),
                       ),
-                      iconSize: ScreenUtil().setSp(30),
-                      onPressed: () => removeItemFromDeductionsList(index),
                     )
                   ],
                 ),
@@ -390,7 +395,7 @@ class _DeductionsSectionState extends State<DeductionsSection> {
   void addNewItemToDeductionsList() {
     setState(() {
       widget.deductions.add(Deduction(
-        amount: _deductionAmountController.value.text,
+        amount: int.parse(_deductionAmountController.value.text),
         reason: _deductionReasonController.value.text,
         type: _deductionTypeController.value.text,
       ));
@@ -399,7 +404,7 @@ class _DeductionsSectionState extends State<DeductionsSection> {
   }
 
   void editItemInDeductionsList(
-      {required dynamic amount,
+      {required int amount,
       required String type,
       required String reason,
       required int index}) {

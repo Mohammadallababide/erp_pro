@@ -17,8 +17,8 @@ class DeductionsInfoList extends StatelessWidget {
           itemCount: deductionList.length,
           itemBuilder: (BuildContext context, int index) {
             return Center(
-              child: builddeductionCard(index.toString(), 'deduction num :',
-                  context, deductionList[index]),
+              child: builddeductionCard('#' + (index + 1).toString(),
+                  'deduction num :', context, deductionList[index]),
             );
           }),
     );

@@ -6,6 +6,7 @@ import 'package:erb_mobo/models/user.dart';
 import 'package:http/http.dart' as http;
 
 import '../../models/deduction.dart';
+import '../../models/imageModel.dart';
 import '../../models/receipt.dart';
 
 class ServerApi {
@@ -24,8 +25,8 @@ class ServerApi {
     return {
       'Authorization': 'Bearer ${getLocalToken()}',
       // 'Authorization':
-      //     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyaWFAcmlhLmNvbSIsImlhdCI6MTY0NTIxMjY2MSwiZXhwIjoxNjQ1MjE0NDYxfQ.bomQH19tHC8Wd5gf9QOxHgWe7GBTKwUWOOFws-alXGY',
-      'Content-Type': 'application/json',
+      //     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyaWFAcmlhLmNvbSIsImlhdCI6MTY0Njc2MDYwMywiZXhwIjoxNjQ3NjI0NjAzfQ.DOwLXjNUHNlq-16zLUUadPj4w6Z_XJ1ud-GsakuFoLE',
+      'content-type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
     };
   }
@@ -36,16 +37,20 @@ class ServerApi {
 
   //Auth
 
-  Future<String?> uploadImage(filepath) async {
+  Future<ImageModel?> uploadImage(filepath) async {
     try {
       var postUri = Uri.parse(_baseUrl + '/app-files');
       var request = http.MultipartRequest('POST', postUri);
-      request.files.add(http.MultipartFile('image',
+      request.files.add(http.MultipartFile('avatar',
           File(filepath).readAsBytes().asStream(), File(filepath).lengthSync(),
           filename: filepath.split("/").last));
-      var res = await request.send();
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        print('sucess uploading user image');
+      var streamedResponse = await request.send();
+      if (streamedResponse.statusCode == 200 ||
+          streamedResponse.statusCode == 201) {
+        var response = await http.Response.fromStream(streamedResponse);
+        final result = jsonDecode(response.body) as Map<String, dynamic>;
+        ImageModel image = ImageModel.fromJson(result['data']);
+        return image;
       }
     } on SocketException {
       //this in case internet problems
@@ -329,7 +334,8 @@ class ServerApi {
     late List<Receipt> result = [];
     try {
       // await refreshToken();
-      final uri = Uri.parse(_baseUrl + '/financial/receipts');
+      final uri =
+          Uri.parse(_baseUrl + '/financial/receipts/by-admin?page=$page');
       final response = await _httpClient.get(uri, headers: getHeaders());
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonData = json.decode(response.body);
@@ -368,19 +374,29 @@ class ServerApi {
   ) async {
     try {
       final uri = Uri.parse(_baseUrl + '/financial/receipts');
-
-      Map<String, dynamic> body = <String, dynamic>{};
+      List<Map<String, dynamic>> deductionsList = deductions
+          .map((d) => {
+                "amount": d.amount,
+                "type": d.type,
+                "reason": d.reason,
+              })
+          .toList();
+      Map<String, dynamic> body;
       body = {
-        'userId': userId,
-        'salary': salary.toJson(),
-        'deductions': deductions.map((e) => e.toJson()).toList(),
+        "userId": userId,
+        "salary": {
+          "workStartDate": salary.workStartDate!,
+          "workEndDate": salary.workEndDate!,
+          "amount": salary.amount,
+          "bonus": salary.bonus,
+          "allowance": salary.allowance,
+        },
+        "deductions": deductionsList
       };
-      final bodReq = jsonEncode(body);
-
       final response = await _httpClient.post(
         uri,
         headers: getHeaders(),
-        body: bodReq,
+        body: json.encode(body),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         final json = jsonDecode(response.body);
@@ -415,19 +431,31 @@ class ServerApi {
     List<Deduction> deductions,
   ) async {
     try {
-      final uri = Uri.parse(_baseUrl + '/financial/receipts$receiptId');
+      final uri = Uri.parse(_baseUrl + '/financial/receipts/$receiptId');
 
-      Map<String, dynamic> body = <String, dynamic>{};
+      List<Map<String, dynamic>> deductionsList = deductions
+          .map((d) => {
+                "amount": d.amount,
+                "type": d.type,
+                "reason": d.reason,
+              })
+          .toList();
+      Map<String, dynamic> body;
       body = {
-        'salary': salary.toJson(),
-        'deductions': deductions.map((e) => e.toJson()).toList(),
+        "salary": {
+          "workStartDate": salary.workStartDate!,
+          "workEndDate": salary.workEndDate!,
+          "amount": salary.amount,
+          "bonus": salary.bonus,
+          "allowance": salary.allowance,
+        },
+        "deductions": deductionsList
       };
-      final bodReq = jsonEncode(body);
 
       final response = await _httpClient.put(
         uri,
         headers: getHeaders(),
-        body: bodReq,
+        body: json.encode(body),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         final json = jsonDecode(response.body);

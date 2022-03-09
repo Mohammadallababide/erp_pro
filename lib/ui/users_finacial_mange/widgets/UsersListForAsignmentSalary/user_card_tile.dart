@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../models/user.dart';
+
 class UserTileCard extends StatelessWidget {
   final bool isSelected;
+  final User user;
   const UserTileCard({
     Key? key,
     required this.isSelected,
+    required this.user,
   }) : super(key: key);
 
   @override
@@ -60,7 +64,7 @@ class UserTileCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'user Name',
+                        user.firstName + ' ' + user.lastName,
                         style: TextStyle(
                           color: isSelected ? Colors.white : Colors.black,
                           fontSize: ScreenUtil().setSp(18),
@@ -68,7 +72,7 @@ class UserTileCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'user role',
+                        user.roles![0],
                         style: TextStyle(
                           color: isSelected ? Colors.white : Colors.black,
                           fontSize: ScreenUtil().setSp(14),

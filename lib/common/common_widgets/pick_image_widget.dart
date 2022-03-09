@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../core/utils/core_util_function.dart';
+
 class PickImageWidget extends StatefulWidget {
   final AuthsBloc authsBloc;
   late double cirSize;
@@ -46,13 +48,13 @@ class _PickImageWidgetState extends State<PickImageWidget> {
         child: Container(
             height: ScreenUtil().setSp(widget.cirSize),
             width: ScreenUtil().setSp(widget.cirSize),
-            decoration:  BoxDecoration(
+            decoration: BoxDecoration(
               color: Theme.of(context).primaryColor.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
             child: Stack(
               children: [
-                _imageFile != null
+                !isLoading && _imageFile != null
                     ? CircleAvatar(
                         radius: ScreenUtil().setHeight(widget.cirSize),
                         child: Center(
@@ -66,25 +68,21 @@ class _PickImageWidgetState extends State<PickImageWidget> {
                             ),
                           ),
                         ))
-                    : const Image(
-                        image: AssetImage('assets/images/useric.png'),
-                      ),
+                    : isLoading
+                        ? CorerUtilFunction.getShimmer(const Image(
+                            image: AssetImage('assets/images/useric.png'),
+                          ))
+                        : const Image(
+                            image: AssetImage('assets/images/useric.png'),
+                          ),
                 Positioned(
                   bottom: ScreenUtil().setHeight(-4),
                   right: ScreenUtil().setWidth(-2),
-                  child: isLoading
-                      ? SizedBox(
-                          height: ScreenUtil().setSp(30),
-                          width: ScreenUtil().setSp(30),
-                          child: CircularProgressIndicator(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        )
-                      : Icon(
-                          Icons.edit,
-                          size: ScreenUtil().setSp(30),
-                          color: Theme.of(context).primaryColor,
-                        ),
+                  child: Icon(
+                    Icons.edit,
+                    size: ScreenUtil().setSp(30),
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
               ],
             )),
@@ -94,7 +92,12 @@ class _PickImageWidgetState extends State<PickImageWidget> {
 
   void _pickImageFrom(ImageSource source) async {
     try {
-      final XFile? pickedFile = await _picker.pickImage(source: source);
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        imageQuality: 50,
+        maxHeight: 500,
+        maxWidth: 500,
+      );
       setState(() {
         _imageFile = pickedFile!;
       });

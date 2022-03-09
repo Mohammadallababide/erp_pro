@@ -3,11 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/utils/core_util_function.dart';
+
 class SlarayDateRangeFaild extends StatefulWidget {
   final String? startSalaryDate;
   final String? endSalaryDate;
   final Function starAndEndtSalaryDateCallBack;
   final String title;
+  // ignore: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
   SlarayDateRangeFaild({
     this.startSalaryDate,
     this.endSalaryDate,
@@ -26,8 +29,8 @@ class _SlarayDateRangeFaildState extends State<SlarayDateRangeFaild> {
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
       if (args.value is PickerDateRange) {
-        startSalaryDate = DateFormat('dd/MM/yyyy').format(args.value.startDate);
-        endSalaryDate = DateFormat('dd/MM/yyyy')
+        startSalaryDate = DateFormat('yyyy-MM-dd').format(args.value.startDate);
+        endSalaryDate = DateFormat('yyyy-MM-dd')
             .format(args.value.endDate ?? args.value.startDate);
       }
     });
@@ -69,7 +72,7 @@ class _SlarayDateRangeFaildState extends State<SlarayDateRangeFaild> {
                     widget.startSalaryDate!.length <= 1 &&
                             widget.endSalaryDate!.length <= 1
                         ? 'Not Selected Yet'
-                        : '${widget.startSalaryDate} => ${widget.endSalaryDate} ',
+                        : "From ${CorerUtilFunction.getFormalDate(widget.startSalaryDate!)} To ${CorerUtilFunction.getFormalDate(widget.endSalaryDate!)}",
                     style: TextStyle(
                       fontSize: ScreenUtil().setSp(15),
                       height: ScreenUtil().setHeight(1.5),
@@ -95,7 +98,7 @@ class _SlarayDateRangeFaildState extends State<SlarayDateRangeFaild> {
         builder: (BuildContext context) {
           return Dialog(
             child: SizedBox(
-              height: ScreenUtil().setHeight(380),
+              height: ScreenUtil().setHeight(480),
               child: Column(
                 children: [
                   Padding(
@@ -178,12 +181,14 @@ class _SlarayDateRangeFaildState extends State<SlarayDateRangeFaild> {
           onSelectionChanged: _onSelectionChanged,
           selectionMode: DateRangePickerSelectionMode.range,
           initialSelectedRange: PickerDateRange(
-              widget.startSalaryDate!.length > 1
-                  ? DateTime.parse(widget.startSalaryDate!)
-                  : DateTime.now().subtract(const Duration(days: 4)),
-              widget.endSalaryDate!.length > 1
-                  ? DateTime.parse(widget.endSalaryDate!)
-                  : DateTime.now().add(const Duration(days: 3))),
+              // widget.startSalaryDate!.isNotEmpty
+              // ? DateTime.parse(widget.startSalaryDate!)
+              // :
+              DateTime.now().subtract(const Duration(days: 0)),
+              // widget.endSalaryDate!.isNotEmpty
+              // ? DateTime.parse(widget.endSalaryDate!)
+              // :
+              DateTime.now().add(const Duration(days: 15))),
         ),
       ),
     );

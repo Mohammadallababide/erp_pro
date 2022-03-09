@@ -48,6 +48,7 @@ class _ReceiptDetailsState extends State<ReceiptDetails> {
   @override
   Widget build(BuildContext context) {
     return BlocListener(
+      bloc: receiptBloc,
       listener: (context, state) {
         if (state is SuccessDeletingReceipt) {
           setState(() {
@@ -74,9 +75,13 @@ class _ReceiptDetailsState extends State<ReceiptDetails> {
                       bloc: receiptBloc,
                       builder: (context, state) {
                         if (state is DeletingReceipt) {
-                          return CircularProgressIndicator(
-                            color: Colors.red,
-                            strokeWidth: ScreenUtil().setWidth(3),
+                          return SizedBox(
+                            height: ScreenUtil().setWidth(25),
+                            width: ScreenUtil().setWidth(25),
+                            child: CircularProgressIndicator(
+                              color: Colors.red,
+                              strokeWidth: ScreenUtil().setWidth(3),
+                            ),
                           );
                         }
                         return IconButton(
@@ -86,8 +91,9 @@ class _ReceiptDetailsState extends State<ReceiptDetails> {
                               Navigator.of(context).pop();
                             },
                             submitProcessFun: () {
+                              Navigator.of(context).pop();
                               receiptBloc.add(
-                                DeleteReceipt(widget.receipt.id),
+                                DeleteReceipt(widget.receipt.id!),
                               );
                             },
                             prcessedText:
