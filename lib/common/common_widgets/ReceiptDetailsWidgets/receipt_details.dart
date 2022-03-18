@@ -75,9 +75,8 @@ class _ReceiptDetailsState extends State<ReceiptDetails> {
                       bloc: receiptBloc,
                       builder: (context, state) {
                         if (state is DeletingReceipt) {
-                          return SizedBox(
-                            height: ScreenUtil().setWidth(25),
-                            width: ScreenUtil().setWidth(25),
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
                             child: CircularProgressIndicator(
                               color: Colors.red,
                               strokeWidth: ScreenUtil().setWidth(3),
@@ -98,6 +97,10 @@ class _ReceiptDetailsState extends State<ReceiptDetails> {
                             },
                             prcessedText:
                                 "Are You Sure Want To Delete this Receipt?",
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
                           ),
                           icon: const Icon(
                             Icons.delete,

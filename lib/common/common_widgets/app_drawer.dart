@@ -36,6 +36,16 @@ class AppDrawer extends StatelessWidget {
             thickness: 2,
             color: Colors.white,
           ),
+               _createDrawerItem(
+            icon: Icons.business_center,
+            text: 'jobs center',
+            onTap: () => Navigator.pushReplacementNamed(
+                context, NameScreen.jobsCenterPage),
+          ),
+          const Divider(
+            thickness: 2,
+            color: Colors.white,
+          ),
           _createDrawerItem(
             icon: Icons.verified_user_sharp,
             text: 'approvment requests',

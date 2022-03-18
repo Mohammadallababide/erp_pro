@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 import '../../models/deduction.dart';
 import '../../models/imageModel.dart';
+import '../../models/job.dart';
 import '../../models/receipt.dart';
 
 class ServerApi {
@@ -25,7 +26,7 @@ class ServerApi {
     return {
       'Authorization': 'Bearer ${getLocalToken()}',
       // 'Authorization':
-      //     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyaWFAcmlhLmNvbSIsImlhdCI6MTY0Njc2MDYwMywiZXhwIjoxNjQ3NjI0NjAzfQ.DOwLXjNUHNlq-16zLUUadPj4w6Z_XJ1ud-GsakuFoLE',
+      //     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyaWFAcmlhLmNvbSIsImlhdCI6MTY0NzU5NDQyOSwiZXhwIjoxNjQ4NDU4NDI5fQ.Ey2m663RpZpddLQrqwbJbZU56fLPHwJCiw5eLkG0AQ0',
       'content-type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
     };
@@ -314,6 +315,156 @@ class ServerApi {
           final json = jsonDecode(response.body);
           final User user = User.fromJson(json['data']);
           return user;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  // job Apis ...
+
+  Future<List<Job>> getJobs([int page = 1]) async {
+    late List<Job> jobs = [];
+    try {
+      // await refreshToken();
+      final uri = Uri.parse(_baseUrl + '/jobs?page=$page');
+      final response = await _httpClient.get(uri, headers: getHeaders());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonData = json.decode(response.body);
+        jobs = (jsonData['data'] as List).map((e) => Job.fromJson(e)).toList();
+        return jobs;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.get(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final jsonData = json.decode(response.body);
+          jobs =
+              (jsonData['data'] as List).map((e) => Job.fromJson(e)).toList();
+          return jobs;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return jobs;
+  }
+
+  Future<Job?> createJob(
+    String name,
+    String description,
+  ) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/jobs');
+      Map<String, dynamic> body = <String, dynamic>{};
+      body = {"name": name, "description": description};
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Job job = Job.fromJson(json['data']);
+        return job;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Job job = Job.fromJson(json['data']);
+          return job;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return null;
+  }
+
+  Future<Job?> editJob({
+    required int id,
+    required String name,
+    required String description,
+  }) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/jobs/$id');
+      Map<String, dynamic> body = <String, dynamic>{};
+      body = {"name": name, "description": description};
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.put(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Job job = Job.fromJson(json['data']);
+        return job;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Job job = Job.fromJson(json['data']);
+          return job;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return null;
+  }
+
+  Future<bool?> deleteJob(
+    int id,
+  ) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/jobs/$id');
+      final response = await _httpClient.delete(
+        uri,
+        headers: getHeaders(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          return true;
         }
       }
     } on SocketException {

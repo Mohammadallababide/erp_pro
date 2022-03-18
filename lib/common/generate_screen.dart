@@ -7,9 +7,12 @@ import 'package:erb_mobo/ui/my_profile/pages/my_profile.dart';
 import 'package:erb_mobo/ui/splash/pages/splash_page.dart';
 import 'package:flutter/material.dart';
 
+import '../ui/company_jobs/pages/company_jobs_center_page.dart';
+import '../ui/company_jobs/pages/job_details_page.dart';
 import '../ui/users List/pages/users_list_page.dart';
 import '../ui/users_finacial_mange/pages/create_or_edit_receipt_page.dart';
 import '../ui/users_finacial_mange/pages/users_finacial_page.dart';
+import 'common_widgets/ReceiptDetailsWidgets/receipt_details.dart';
 
 ///
 /// [GenerateScreen.onGenerate] function is responsible for returning the specific [Route] with the right data.
@@ -17,7 +20,7 @@ import '../ui/users_finacial_mange/pages/users_finacial_page.dart';
 class GenerateScreen {
   static Route<dynamic> onGenerate(RouteSettings value) {
     String? name = value.name;
-    // final Map args = value.arguments as Map<String, dynamic>;
+      // final arg = value.arguments as Map;
     switch (name) {
       case NameScreen.splachScreen:
         {
@@ -62,12 +65,26 @@ class GenerateScreen {
           return MaterialPageRoute(
               builder: (context) => const CreateOrEditUserReceiptPage());
         }
-    
-      // case NameScreen.receiptDetails:
+      case NameScreen.jobsCenterPage:
+        {
+          return MaterialPageRoute(
+              builder: (context) => const CompanyJobsCenterPage());
+        }
+      // case NameScreen.jobDetails:
       //   {
       //     return MaterialPageRoute(
-      //         builder: (context) => const ReceiptDetails(
-      //               receipt: args['s']
+      //         builder: (context) => JobDetailsPage(
+      //               jobDetails: arg['jobDetails'],
+      //             ));
+      //   }
+
+      // case NameScreen.receiptDetails:
+      //   {
+
+      //     return MaterialPageRoute(
+      //         builder: (context) => ReceiptDetails(
+      //               isMyReceipt: arg['isMyReceipt'],
+      //               receipt: arg['receipt'],
       //             ));
       //   }
       default:
@@ -106,6 +123,7 @@ class NameScreen {
   static const String usersListPage = '/usersListPage';
   static const String usersFinacialPage = '/usersFinacialPage';
   static const String createOrEditUserReceiptPage = '/createUserReceiptPage';
-
+  static const String jobsCenterPage = '/jobsCenterPage';
+  static const String jobDetails = '/jobDetials';
   // static const String receiptDetails = '/receiptDetails';
 }

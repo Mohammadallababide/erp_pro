@@ -38,15 +38,9 @@ class _AppState extends State<App> {
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey)
               .copyWith(secondary: _accentColor),
         ),
-        initialRoute:
-            //  NameScreen.Create_Experience_Page,
-            getRightInitRoute() ,
+        initialRoute: NameScreen.splachScreen,
         onGenerateRoute: GenerateScreen.onGenerate,
       ),
     );
-  }
-
-  String getRightInitRoute() {
-    return NameScreen.splachScreen;
   }
 }

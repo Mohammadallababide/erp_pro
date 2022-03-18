@@ -7,6 +7,7 @@ class ThemeHelper {
       [String lableText = "", String hintText = ""]) {
     return InputDecoration(
       labelText: lableText,
+      alignLabelWithHint: true,
       labelStyle: TextStyle(
           color: Colors.grey,
           fontSize: ScreenUtil().setSp(16),
