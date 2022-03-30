@@ -40,3 +40,15 @@ class DeleteJob extends JobEvent {
 
   DeleteJob(this.id);
 }
+
+class AssignJobToUser extends JobEvent {
+  final int userId;
+  final int jobId;
+  final String level;
+
+  AssignJobToUser({
+    required this.userId,
+    required this.jobId,
+    required this.level,
+  });
+}

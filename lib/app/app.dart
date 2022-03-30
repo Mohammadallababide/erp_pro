@@ -1,5 +1,4 @@
 import 'package:erb_mobo/common/generate_screen.dart';
-import 'package:erb_mobo/data/local_data_source/shared_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,7 +28,7 @@ class _AppState extends State<App> {
     ]);
     return ScreenUtilInit(
       designSize: const Size(360, 690),
-      builder: () => MaterialApp(
+        builder: () => MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'ERP Demo',
         theme: ThemeData(

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../assign_commpany_job/page/assign_job_center_page.dart';
+
 class RequestApprovmentCard extends StatefulWidget {
   final User user;
   final Function usersRequestsCallBack;
@@ -46,6 +48,12 @@ class _RequestApprovmentCardState extends State<RequestApprovmentCard> {
           setState(() {
             widget.usersRequestsCallBack(state.user.id);
           });
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AssignJobCenterPage(
+                        user: widget.user,
+                      )));
         }
       },
       child: _contentCard(),
@@ -142,7 +150,8 @@ class _RequestApprovmentCardState extends State<RequestApprovmentCard> {
                 width: ScreenUtil().setWidth(20),
               ),
               InkWell(
-                  onTap: () => authsBloc.add(ApproveSignupUser(widget.user.id!)),
+                  onTap: () =>
+                      authsBloc.add(ApproveSignupUser(widget.user.id!)),
                   child: Icon(
                     Icons.check,
                     color: Colors.green,

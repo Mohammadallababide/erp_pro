@@ -36,11 +36,22 @@ class AppDrawer extends StatelessWidget {
             thickness: 2,
             color: Colors.white,
           ),
-               _createDrawerItem(
+          _createDrawerItem(
             icon: Icons.business_center,
             text: 'jobs center',
             onTap: () => Navigator.pushReplacementNamed(
                 context, NameScreen.jobsCenterPage),
+          ),
+          const Divider(
+            thickness: 2,
+            color: Colors.white,
+          ),
+
+          _createDrawerItem(
+            icon: Icons.stacked_bar_chart,
+            text: 'company salary scales',
+            onTap: () => Navigator.pushReplacementNamed(
+                context, NameScreen.salaryScalesCenter),
           ),
           const Divider(
             thickness: 2,

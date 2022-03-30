@@ -9,6 +9,8 @@ import '../../models/deduction.dart';
 import '../../models/imageModel.dart';
 import '../../models/job.dart';
 import '../../models/receipt.dart';
+import '../../models/salary-scale-job.dart';
+import '../../models/salary-scale.dart';
 
 class ServerApi {
   ServerApi._() {
@@ -26,7 +28,7 @@ class ServerApi {
     return {
       'Authorization': 'Bearer ${getLocalToken()}',
       // 'Authorization':
-      //     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyaWFAcmlhLmNvbSIsImlhdCI6MTY0NzU5NDQyOSwiZXhwIjoxNjQ4NDU4NDI5fQ.Ey2m663RpZpddLQrqwbJbZU56fLPHwJCiw5eLkG0AQ0',
+      //     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyaWFAcmlhLmNvbSIsImlhdCI6MTY0ODU4NzMyNywiZXhwIjoxNjQ5NDUxMzI3fQ.GV1fil0onzCtxFReQLdcUlMlPniAPp4ln4ke47ElHhU',
       'content-type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
     };
@@ -40,15 +42,29 @@ class ServerApi {
 
   Future<ImageModel?> uploadImage(filepath) async {
     try {
-      var postUri = Uri.parse(_baseUrl + '/app-files');
-      var request = http.MultipartRequest('POST', postUri);
-      request.files.add(http.MultipartFile('avatar',
-          File(filepath).readAsBytes().asStream(), File(filepath).lengthSync(),
-          filename: filepath.split("/").last));
-      var streamedResponse = await request.send();
-      if (streamedResponse.statusCode == 200 ||
-          streamedResponse.statusCode == 201) {
-        var response = await http.Response.fromStream(streamedResponse);
+      var request =
+          http.MultipartRequest('POST', Uri.parse(_baseUrl + '/app-files'));
+      // request.fields['avatar'] = filepath;
+      request.files.add(
+        await http.MultipartFile.fromPath('avatar', filepath),
+      );
+      var res = await request.send();
+      print('RESPONSE HEADERS ...');
+      print(res.headers);
+      print('RESPONSE CONTENTLENGTH ...');
+      print(res.contentLength);
+      print('RESPONSE STREAM ...');
+      print(res.stream);
+      print('RESPONSE IS REDIRECT  ...');
+      print(res.isRedirect);
+      print('RESPONSE PERSISTENT CONTECTION ...');
+      print(res.persistentConnection);
+      print('RESPONSE REQUEST ...');
+      print(res.request);
+      print('RESPONSE STATUS CODE ...');
+      print(res.statusCode);
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        var response = await http.Response.fromStream(res);
         final result = jsonDecode(response.body) as Map<String, dynamic>;
         ImageModel image = ImageModel.fromJson(result['data']);
         return image;
@@ -329,12 +345,207 @@ class ServerApi {
     }
   }
 
+  // Salary Scales Apis ...
+  Future<SalaryScale?> createSalaryScale(
+      List<SalaryScaleJob> salaryScaleJobs) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/salary-scales');
+      List<Map<String, dynamic>> salaryScaleJobList = salaryScaleJobs
+          .map((e) => {
+                "jobId": e.jobId,
+                "amount": e.amount,
+                "employeeLevel": e.employeeLevel,
+              })
+          .toList();
+
+      Map<String, dynamic> body;
+      body = {"entities": salaryScaleJobList};
+
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final SalaryScale salaryScale = SalaryScale.fromJson(json['data']);
+        return salaryScale;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final SalaryScale salaryScale = SalaryScale.fromJson(json['data']);
+          return salaryScale;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<List<SalaryScale>> getSalaryScales([int page = 1]) async {
+    late List<SalaryScale> salaryScales = [];
+    try {
+      final uri = Uri.parse(_baseUrl + '/salary-scales');
+      final response = await _httpClient.get(uri, headers: getHeaders());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonData = json.decode(response.body);
+        salaryScales = (jsonData['data'] as List)
+            .map((e) => SalaryScale.fromJson(e))
+            .toList();
+        return salaryScales;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.get(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final jsonData = json.decode(response.body);
+          salaryScales = (jsonData['data'] as List<SalaryScale>)
+              .map((e) => SalaryScale.fromJson(e))
+              .toList();
+          return salaryScales;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return salaryScales;
+  }
+
+  Future<bool?> deleteSalaryScale(
+    int id,
+  ) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/salary-scales/$id');
+      final response = await _httpClient.delete(
+        uri,
+        headers: getHeaders(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          return true;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<bool> activateSalaryScale(int id) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/salary-scales/$id/activate');
+      Map<String, dynamic> body = <String, dynamic>{};
+
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.patch(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          return true;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return false;
+  }
+
   // job Apis ...
+
+  Future<User?> assignJob({
+    required int userId,
+    required int jobId,
+    required String level,
+  }) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/users/for-admin/$userId/assign-job');
+      Map<String, dynamic> body = <String, dynamic>{};
+      body = {
+        "jobId": jobId,
+        "level": level,
+      };
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.patch(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final User user = User.fromJson(json['data']);
+        return user;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final User user = User.fromJson(json['data']);
+          return user;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
 
   Future<List<Job>> getJobs([int page = 1]) async {
     late List<Job> jobs = [];
     try {
-      // await refreshToken();
       final uri = Uri.parse(_baseUrl + '/jobs?page=$page');
       final response = await _httpClient.get(uri, headers: getHeaders());
       if (response.statusCode == 200 || response.statusCode == 201) {

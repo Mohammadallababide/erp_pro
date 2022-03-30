@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 
 import '../../../data/remote_data_source/ServerApi.dart';
 import '../../../models/job.dart';
+import '../../../models/user.dart';
 
 part 'job_event.dart';
 part 'job_state.dart';
@@ -34,6 +35,31 @@ class JobBloc extends Bloc<JobEvent, JobState> {
         id: event.id,
       );
     });
+
+    on<AssignJobToUser>((event, emit) async {
+      await _assignJob(
+        emit: emit,
+        userId: event.userId,
+        jobId: event.jobId,
+        level: event.level,
+      );
+    });
+  }
+
+  Future<void> _assignJob({
+    required int userId,
+    required int jobId,
+    required String level,
+    required Emitter<JobState> emit,
+  }) async {
+    emit(AssigningJobToUser());
+    try {
+      final User? result = await ServerApi.apiClient
+          .assignJob(userId: userId, jobId: jobId, level: level);
+      emit(SuccessAssignJobToUser(result!));
+    } catch (e) {
+      emit(ErrorAssignJobToUser((e.toString())));
+    }
   }
 
   Future<void> _createJob({

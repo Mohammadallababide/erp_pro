@@ -30,9 +30,15 @@ class User {
   final List<AssociatedRole>? associatedRoles;
   @JsonKey(required: false)
   final List<Receipt>? receipts;
+  @JsonKey(required: false)
+  late final int? jobId;
+  @JsonKey(required: false)
+  final String? level;
 
 // final Role role;
   User({
+    this.jobId,
+    this.level,
     this.id,
     required this.firstName,
     required this.lastName,

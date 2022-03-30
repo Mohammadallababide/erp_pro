@@ -50,9 +50,8 @@ class JobDetailsPage extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: ScreenUtil().setWidth(10),
-              vertical: ScreenUtil().setHeight(5)
-            ),
+                horizontal: ScreenUtil().setWidth(10),
+                vertical: ScreenUtil().setHeight(5)),
             child: SizedBox(
               width: double.infinity,
               child: Card(
@@ -97,20 +96,20 @@ class JobDetailsPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                       SizedBox(
-                      height: ScreenUtil().setHeight(10),
-                    ),
-                    Text(
-                      jobDetails.description,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: ScreenUtil().setSp(16),
-                        fontWeight: FontWeight.bold,
+                      SizedBox(
+                        height: ScreenUtil().setHeight(10),
                       ),
-                    ),
-                    SizedBox(
-                      height: ScreenUtil().setHeight(10),
-                    ),
+                      Text(
+                        jobDetails.description,
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: ScreenUtil().setSp(16),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(
+                        height: ScreenUtil().setHeight(10),
+                      ),
                     ],
                   ),
                 ),

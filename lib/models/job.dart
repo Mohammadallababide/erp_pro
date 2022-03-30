@@ -13,8 +13,8 @@ class Job {
 
   Job({
     required this.id,
-    required this.name,
-    required this.description,
+     required this.name,
+     required this.description,
   });
   factory Job.fromJson(json) => _$JobFromJson(json);
   toJson() => _$JobToJson(this);

@@ -43,12 +43,12 @@ class AuthsBloc extends Bloc<AuthsEvent, AuthsState> {
   }
 
   Future<void> _uploadImage(String path, Emitter<AuthsState> emit) async {
-    emit(ProcessingApproveSignupUser());
+    emit(UploaddingImage());
     try {
       final ImageModel = await ServerApi.apiClient.uploadImage(path);
       emit(SucessUploadImage(ImageModel!));
     } catch (e) {
-      emit(ErrorApproveSignupUser((e.toString())));
+      emit(ErrorUploadImage((e.toString())));
     }
   }
 

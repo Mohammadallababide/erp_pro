@@ -5,9 +5,11 @@ AppBar commonAppBar({
   required String title,
   required BuildContext context,
   List<Widget>? actions,
+  bool automaticallyImplyLeading: true,
 }) {
   return AppBar(
     elevation: 0.0,
+    automaticallyImplyLeading: automaticallyImplyLeading,
     centerTitle: true,
     title: Text(
       title,

@@ -56,3 +56,17 @@ class ErrorDelettingJob extends JobState {
 
   ErrorDelettingJob(this.error);
 }
+
+class AssigningJobToUser extends JobState {}
+
+class SuccessAssignJobToUser extends JobState {
+  final User user;
+
+  SuccessAssignJobToUser(this.user);
+}
+
+class ErrorAssignJobToUser extends JobState {
+  final String error;
+
+  ErrorAssignJobToUser(this.error);
+}
