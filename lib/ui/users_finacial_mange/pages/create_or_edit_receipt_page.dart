@@ -38,7 +38,7 @@ class _CreateOrEditUserReceiptPageState
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late String startSalaryDate = '';
   late String endSalaryDate = '';
-  late TextEditingController _salaryAmountController;
+
   late TextEditingController _bounsAmountController;
   late TextEditingController _allowanceAmountController;
 
@@ -67,11 +67,10 @@ class _CreateOrEditUserReceiptPageState
   @override
   void initState() {
     super.initState();
-    _salaryAmountController = TextEditingController();
+
     _bounsAmountController = TextEditingController();
     _allowanceAmountController = TextEditingController();
     if (widget.receiptId != null) {
-      _salaryAmountController.text = widget.receipt!.salary.amount.toString();
       _bounsAmountController.text = widget.receipt!.salary.bonus.toString();
       _allowanceAmountController.text =
           widget.receipt!.salary.allowance.toString();
@@ -97,9 +96,9 @@ class _CreateOrEditUserReceiptPageState
           Navigator.pop(context);
         } else if (state is ErrorCreatingReceipt ||
             state is ErrorEditingReceipt) {
-              ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
-            message: 'Faild Complate the process!!', context: context));
-            }
+          ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
+              message: 'Faild Complate the process!!', context: context));
+        }
       },
       child: Scaffold(
         appBar: AppBar(
@@ -148,19 +147,7 @@ class _CreateOrEditUserReceiptPageState
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: ScreenUtil().setHeight(20),
-                        ),
-                        Container(
-                          child: TextFormField(
-                            controller: _salaryAmountController,
-                            keyboardType: TextInputType.number,
-                            validator: (val) => Validation.nonEmptyField(val!),
-                            decoration: ThemeHelper().textInputDecoration(
-                                'salary amount', 'salary amount'),
-                          ),
-                          decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                        ),
+                        // TODO Add salary amount info for user job as the salary amout in the company active salary scale
                         SizedBox(
                           height: ScreenUtil().setHeight(15),
                         ),
@@ -381,7 +368,6 @@ class _CreateOrEditUserReceiptPageState
           EditReceipt(
             receiptId: widget.receiptId!,
             salary: Salary(
-                amount: int.parse(_salaryAmountController.text),
                 bonus: int.parse(_bounsAmountController.text),
                 allowance: int.parse(_allowanceAmountController.text),
                 workEndDate: endSalaryDate,
@@ -405,7 +391,6 @@ class _CreateOrEditUserReceiptPageState
           CreateReceipt(
             userId: userAssignemt.id ?? 17,
             salary: Salary(
-                amount: int.parse(_salaryAmountController.text),
                 bonus: int.parse(_bounsAmountController.text),
                 allowance: int.parse(_allowanceAmountController.text),
                 workEndDate: endSalaryDate,

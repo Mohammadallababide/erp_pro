@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/utils/core_util_function.dart';
+import 'app_snack_bar.dart';
 
 class PickImageWidget extends StatefulWidget {
   final AuthsBloc authsBloc;
@@ -29,6 +30,11 @@ class _PickImageWidgetState extends State<PickImageWidget> {
       bloc: widget.authsBloc,
       listener: (context, state) {
         if (state is SucessUploadImage) {
+          ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
+            message: 'Success upload image.',
+            context: context,
+            isSuccessMessage: true,
+          ));
           setState(() {
             isLoading = false;
           });
@@ -37,7 +43,8 @@ class _PickImageWidgetState extends State<PickImageWidget> {
             isLoading = true;
           });
         } else if (state is ErrorUploadImage) {
-          // show error notify
+          ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
+              message: 'Faild! upload image.', context: context));
           setState(() {
             isLoading = false;
           });

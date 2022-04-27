@@ -11,6 +11,9 @@ import 'package:flutter/material.dart';
 import '../ui/assign_commpany_job/page/assign_job_center_page.dart';
 import '../ui/company_jobs/pages/company_jobs_center_page.dart';
 import '../ui/company_jobs/pages/job_details_page.dart';
+import '../ui/invoices-center.dart/pages/create_invoice_page.dart';
+import '../ui/invoices-center.dart/pages/invoices_center_page.dart';
+import '../ui/roll_mangent-center/pages/rolls_mangment_center_page.dart';
 import '../ui/salary_scales_center/pages/create_new_salary_scale_page.dart';
 import '../ui/users List/pages/users_list_page.dart';
 import '../ui/users_finacial_mange/pages/create_or_edit_receipt_page.dart';
@@ -76,6 +79,19 @@ class GenerateScreen {
       case NameScreen.salaryScalesCenter:
         {
           return MaterialPageRoute(builder: (context) => SalaryScalesCenter());
+        }
+      case NameScreen.roolsMangmentCenter:
+        {
+          return MaterialPageRoute(
+              builder: (context) => RollsMangmentCenterPage());
+        }
+      case NameScreen.invoicesCenterPage:
+        {
+          return MaterialPageRoute(builder: (context) => InvoicesCenterPage());
+        }
+      case NameScreen.CreateInvoicePage:
+        {
+          return MaterialPageRoute(builder: (context) => CreateInvoicePage());
         }
 
       // case NameScreen.createsalaryScalePage:
@@ -146,7 +162,9 @@ class NameScreen {
   static const String jobDetails = '/jobDetials';
   static const String assignJobCenterPage = '/assignJobCenterPage';
   static const String salaryScalesCenter = '/salaryScalesCenter';
-
+  static const String roolsMangmentCenter = '/roolsMangmentCenter';
+  static const String invoicesCenterPage = '/invoicesCenterPage';
+  static const String CreateInvoicePage = '/CreateInvoicePage';
   // static const String createsalaryScalePage = '/createsalaryScalePage';
   // static const String receiptDetails = '/receiptDetails';
 }

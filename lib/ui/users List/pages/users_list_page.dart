@@ -62,7 +62,7 @@ class _UsersListPageState extends State<UsersListPage> {
                 ? users.isEmpty
                     ? Center(
                         child: Text(
-                          'not approvment requests yet!',
+                          'no regested users yet!',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: ScreenUtil().setSp(15),

@@ -28,7 +28,7 @@ class _AppState extends State<App> {
     ]);
     return ScreenUtilInit(
       designSize: const Size(360, 690),
-        builder: () => MaterialApp(
+      builder: () => MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'ERP Demo',
         theme: ThemeData(
@@ -37,7 +37,7 @@ class _AppState extends State<App> {
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey)
               .copyWith(secondary: _accentColor),
         ),
-        initialRoute: NameScreen.splachScreen,
+        initialRoute: NameScreen.homePage,
         onGenerateRoute: GenerateScreen.onGenerate,
       ),
     );

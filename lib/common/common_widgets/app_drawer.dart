@@ -46,6 +46,23 @@ class AppDrawer extends StatelessWidget {
             thickness: 2,
             color: Colors.white,
           ),
+          // _createDrawerItem(
+          //   icon: Icons.settings_accessibility_rounded,
+          //   text: 'company rolls center',
+          //   onTap: () => Navigator.pushReplacementNamed(
+          //       context, NameScreen.roolsMangmentCenter),
+          // ),
+              _createDrawerItem(
+            icon: Icons.receipt_long,
+            text: 'invoces center',
+            onTap: () => Navigator.pushReplacementNamed(
+                context, NameScreen.   invoicesCenterPage),
+          ),
+       
+          const Divider(
+            thickness: 2,
+            color: Colors.white,
+          ),
 
           _createDrawerItem(
             icon: Icons.stacked_bar_chart,

@@ -24,7 +24,7 @@ class Salary {
     this.receiptId,
     this.workStartDate,
     this.workEndDate,
-    required this.amount,
+    this.amount,
     required this.bonus,
     required this.allowance,
   });

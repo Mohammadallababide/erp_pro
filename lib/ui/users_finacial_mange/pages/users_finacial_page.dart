@@ -13,7 +13,6 @@ import '../../../models/receipt.dart';
 import '../bloc/usersfinaicalmange_bloc.dart';
 import '../widgets/UsersFinacialPage/cus_filter_button.dart';
 import 'create_or_edit_receipt_page.dart';
-import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
 
 class UsersFinacialPage extends StatefulWidget {
@@ -297,7 +296,7 @@ class _UsersFinacialPageState extends State<UsersFinacialPage> {
   int calculateTotalSalarValue(Receipt receipt) {
     int totalDedection = 0;
     for (int i = 0; i < receipt.deductions.length; i++) {
-      totalDedection = totalDedection +receipt.deductions[i].amount;
+      totalDedection = totalDedection + receipt.deductions[i].amount;
     }
     return (receipt.salary.amount +
             receipt.salary.bonus +

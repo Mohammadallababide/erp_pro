@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 import '../../models/deduction.dart';
 import '../../models/imageModel.dart';
+import '../../models/invoice.dart';
 import '../../models/job.dart';
 import '../../models/receipt.dart';
 import '../../models/salary-scale-job.dart';
@@ -28,7 +29,7 @@ class ServerApi {
     return {
       'Authorization': 'Bearer ${getLocalToken()}',
       // 'Authorization':
-      //     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyaWFAcmlhLmNvbSIsImlhdCI6MTY0ODU4NzMyNywiZXhwIjoxNjQ5NDUxMzI3fQ.GV1fil0onzCtxFReQLdcUlMlPniAPp4ln4ke47ElHhU',
+      //     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyaWFAcmlhLmNvbSIsImlhdCI6MTY0OTczNDM1NiwiZXhwIjoxNjUwNTk4MzU2fQ.o00y7b8KSTh1s60cygedPdzMzSaR4GVht0k-Qaxtgj0',
       'content-type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
     };
@@ -48,21 +49,37 @@ class ServerApi {
       request.files.add(
         await http.MultipartFile.fromPath('avatar', filepath),
       );
+      request.headers['authorization'] = 'Bearer ${getLocalToken()}';
       var res = await request.send();
-      print('RESPONSE HEADERS ...');
-      print(res.headers);
-      print('RESPONSE CONTENTLENGTH ...');
-      print(res.contentLength);
-      print('RESPONSE STREAM ...');
-      print(res.stream);
-      print('RESPONSE IS REDIRECT  ...');
-      print(res.isRedirect);
-      print('RESPONSE PERSISTENT CONTECTION ...');
-      print(res.persistentConnection);
-      print('RESPONSE REQUEST ...');
-      print(res.request);
-      print('RESPONSE STATUS CODE ...');
-      print(res.statusCode);
+      //  var image = http.MultipartFile.fromBytes(
+      //       'avatar',
+      //       (await rootBundle.load(
+      //         'assets/uploadFiles/people1.jpg',
+      //       ))
+      //           .buffer
+      //           .asInt8List(),
+      //       filename: 'people1.jpg');
+      //   request.files.add(image);
+      //   var res = await request.send();
+      //   print(res);
+      //   var responseDate = await res.stream.toBytes();
+      //   var result = String.fromCharCodes(responseDate);
+      //   print('output is : ');
+      //   print(responseDate);
+      // print('RESPONSE HEADERS ...');
+      // print(res.headers);
+      // print('RESPONSE CONTENTLENGTH ...');
+      // print(res.contentLength);
+      // print('RESPONSE STREAM ...');
+      // print(res.stream);
+      // print('RESPONSE IS REDIRECT  ...');
+      // print(res.isRedirect);
+      // print('RESPONSE PERSISTENT CONTECTION ...');
+      // print(res.persistentConnection);
+      // print('RESPONSE REQUEST ...');
+      // print(res.request);
+      // print('RESPONSE STATUS CODE ...');
+      // print(res.statusCode);
       if (res.statusCode == 200 || res.statusCode == 201) {
         var response = await http.Response.fromStream(res);
         final result = jsonDecode(response.body) as Map<String, dynamic>;
@@ -496,6 +513,86 @@ class ServerApi {
     return false;
   }
 
+  // Invoices Api ...
+
+  Future<List<Invoice>> getInvoices([int page = 1, int limit = 1]) async {
+    late List<Invoice> invoices = [];
+    try {
+      final uri = Uri.parse(_baseUrl + '/invoices/cruds');
+      final response = await _httpClient.get(uri, headers: getHeaders());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonData = json.decode(response.body);
+        invoices =
+            (jsonData['data'] as List).map((e) => Invoice.fromJson(e)).toList();
+        print(invoices);
+        return invoices;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.get(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final jsonData = json.decode(response.body);
+          invoices = (jsonData['data'] as List)
+              .map((e) => Invoice.fromJson(e))
+              .toList();
+          return invoices;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return invoices;
+  }
+
+  Future<void> createIvoice(
+      {required int grossAmount,
+      required int netAmount,
+      required String taxNumber,
+      required String dueDate,
+      required String issueDate,
+      required String filepath}) async {
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(_baseUrl + '/invoices/cruds'),
+      );
+
+      request.fields.addAll({
+        "grossAmount": grossAmount.toString(),
+        "netAmount": netAmount.toString(),
+        "taxNumber": taxNumber,
+        "dueDate": dueDate,
+        "issueDate": issueDate
+      });
+      request.headers['authorization'] = 'Bearer ${getLocalToken()}';
+      request.files.add(
+        await http.MultipartFile.fromPath('invoice', filepath),
+      );
+      var res = await request.send();
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        var response = await http.Response.fromStream(res);
+        final result = jsonDecode(response.body) as Map<String, dynamic>;
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return null;
+  }
+
   // job Apis ...
 
   Future<User?> assignJob({
@@ -749,7 +846,6 @@ class ServerApi {
         "salary": {
           "workStartDate": salary.workStartDate!,
           "workEndDate": salary.workEndDate!,
-          "amount": salary.amount,
           "bonus": salary.bonus,
           "allowance": salary.allowance,
         },
