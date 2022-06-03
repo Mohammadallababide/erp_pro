@@ -27,7 +27,7 @@ class UsersfinaicalmangeBloc
     on<EditReceipt>((event, emit) async {
       await _editReceipt(
           emit: emit,
-          receiptId: event.receiptId,
+          receipt: event.receipt,
           salary: event.salary,
           deductions: event.deductions);
     });
@@ -43,8 +43,8 @@ class UsersfinaicalmangeBloc
   }) async {
     try {
       emit(DeletingReceipt());
-      Receipt? receipt = await ServerApi.apiClient.deleteReceipt(id);
-      emit(SuccessDeletingReceipt(receipt!));
+      await ServerApi.apiClient.deleteReceipt(id);
+      emit(SuccessDeletingReceipt());
     } catch (e) {
       emit(ErrorDeletingReceipt((e.toString())));
     }
@@ -70,19 +70,19 @@ class UsersfinaicalmangeBloc
   }
 
   Future<void> _editReceipt({
-    required int receiptId,
+    required Receipt receipt,
     required Salary salary,
     required List<Deduction> deductions,
     required Emitter<UsersfinaicalmangeState> emit,
   }) async {
     try {
       emit(EditingReceipt());
-      final Receipt? receipt = await ServerApi.apiClient.editReceipt(
-        receiptId,
+      final Receipt? result = await ServerApi.apiClient.editReceipt(
+        receipt,
         salary,
         deductions,
       );
-      emit(SuccessEditingReceipt(receipt!));
+      emit(SuccessEditingReceipt(result!));
     } catch (e) {
       emit(ErrorEditingReceipt((e.toString())));
     }

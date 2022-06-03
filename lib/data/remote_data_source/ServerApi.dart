@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:erb_mobo/data/local_data_source/shared_pref.dart';
+import 'package:erb_mobo/models/appFile.dart';
+import 'package:erb_mobo/models/department.dart';
 import 'package:erb_mobo/models/salary.dart';
 import 'package:erb_mobo/models/user.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +24,8 @@ class ServerApi {
   static String? accessToken;
   static final ServerApi apiClient = ServerApi._();
   static final http.Client _httpClient = http.Client();
-  static const _baseUrl = "https://ite-ria.herokuapp.com/api/v1";
+  // static const _baseUrl = "https://ite-ria.herokuapp.com/api/v1";
+  static const _baseUrl = 'http://192.168.205.1:3000/api/v1';
 
   Map<String, String> getHeaders() {
     print('Bearer ${getLocalToken().toString()}');
@@ -98,6 +101,40 @@ class ServerApi {
     }
   }
 
+  Future<AppFile?> getAppFile(int id) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/app-files/$id');
+      final response = await _httpClient.get(
+        uri,
+        headers: getHeaders(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        AppFile file = AppFile.fromJson(json['data']);
+        return file;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.get(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          AppFile file = AppFile.fromJson(json['data']);
+          return file;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return null;
+  }
+
   Future<void> refreshToken() async {
     try {
       final uri = Uri.parse(_baseUrl + '/auth/refresh?token=$accessToken');
@@ -109,6 +146,170 @@ class ServerApi {
         final json = jsonDecode(response.body);
         accessToken = json['data']['refreshToken'];
         SharedPref.setToken(accessToken!);
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<List<Department>?> getDepartments() async {
+    late List<Department> result = [];
+    try {
+      final uri = Uri.parse(_baseUrl + '/departments');
+      final response = await _httpClient.get(
+        uri,
+        headers: getHeaders(),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonData = json.decode(response.body);
+        result = (jsonData['data'] as List)
+            .map((e) => Department.fromJson(e))
+            .toList();
+        return result;
+      } else if (response.statusCode == 401) {
+        await refreshToken();
+        final jsonData = json.decode(response.body);
+        result = (jsonData['data'] as List)
+            .map((e) => Department.fromJson(e))
+            .toList();
+        return result;
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return result;
+  }
+
+  Future<void> createDepartment({
+    required String title,
+    required int maxNumberOfEmployees,
+  }) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/departments');
+      Map<String, dynamic> body;
+      body = {
+        "title": title,
+        "maxNumberOfEmployees": maxNumberOfEmployees,
+      };
+
+      final bodReq = jsonEncode(body);
+      await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<Department?> editDepartment({
+    required String title,
+    required int maxNumberOfEmployees,
+    required int id,
+  }) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/departments/$id');
+      Map<String, dynamic> body;
+      body = {
+        "title": title,
+        "maxNumberOfEmployees": maxNumberOfEmployees,
+      };
+
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.put(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Department department = Department.fromJson(json['data']);
+        return department;
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<void> addUsersToDepartment({
+    required List<int> usersId,
+    required int id,
+  }) async {
+    try {
+      final uri =
+          Uri.parse(_baseUrl + '/departments/$id/add-user-to-departments');
+      Map<String, dynamic> body = {
+        "ids": usersId,
+        "overwrite": true,
+      };
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.put(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Department department = Department.fromJson(json['data']);
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<void> markUserAsMangerOfDepartment({
+    required int userId,
+    required int id,
+  }) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/departments/$id/mark-user-as-manager');
+      Map<String, dynamic> body = {"userId": userId};
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.put(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Department department = Department.fromJson(json['data']);
       }
     } on SocketException {
       //this in case internet problems
@@ -151,6 +352,7 @@ class ServerApi {
       {required String email, required String password}) async {
     try {
       final uri = Uri.parse(_baseUrl + '/auth/login');
+      print(uri);
       Map<String, String> body = <String, String>{};
       body = {'email': email, 'password': password};
       final bodReq = jsonEncode(body);
@@ -171,14 +373,9 @@ class ServerApi {
         }
         return user;
       }
-    } on SocketException {
-      //this in case internet problems
-      return Future.error("check your internet connection");
-    } on http.ClientException {
-      //this in case internet problems
-      return Future.error("check your internet connection");
     } catch (e) {
       print(e.toString());
+      // print(e);
       return Future.error(e.toString());
     }
   }
@@ -302,10 +499,25 @@ class ServerApi {
     return result;
   }
 
-  Future<User?> approveSignupUser(int userId) async {
+  Future<User?> approveSignupUser({
+    required int userId,
+    required int departmentId,
+  }) async {
     try {
-      final uri = Uri.parse(_baseUrl + '/auth-for-admin/approve-user/$userId');
-      final response = await _httpClient.post(uri, headers: getHeaders());
+      final uri = Uri.parse(_baseUrl + '/auth-for-admin/approve-user');
+      Map<String, dynamic> body;
+      body = {
+        "id": userId,
+        "departmentId": departmentId,
+      };
+
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         final json = jsonDecode(response.body);
         final User user = User.fromJson(json['data']);
@@ -593,6 +805,276 @@ class ServerApi {
     return null;
   }
 
+  Future<bool?> deleteInvoice(
+    int id,
+  ) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/invoices/cruds/$id');
+      final response = await _httpClient.delete(
+        uri,
+        headers: getHeaders(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          return true;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<Invoice?> assignInvoiceToUser({
+    required int id,
+    required int userId,
+    required String assignmentNote,
+  }) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/invoices/flow/$id/assign-to-user');
+      Map<String, dynamic> body = <String, dynamic>{
+        "userId": userId,
+        "assignmentNote": assignmentNote
+      };
+
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Invoice inv = Invoice.fromJson(json['data']);
+        return inv;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Invoice inv = Invoice.fromJson(json['data']);
+          return inv;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return null;
+  }
+
+  Future<Invoice?> unAssignInvoiceToUser({
+    required int id,
+    required int userId,
+    required String assignmentNote,
+  }) async {
+    try {
+      final uri =
+          Uri.parse(_baseUrl + '/invoices/flow/$id/un-assign-from-user');
+      Map<String, dynamic> body = <String, dynamic>{
+        "userId": userId,
+        "assignmentNote": assignmentNote
+      };
+
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Invoice inv = Invoice.fromJson(json['data']);
+        return inv;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Invoice inv = Invoice.fromJson(json['data']);
+          return inv;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return null;
+  }
+
+  Future<Invoice?> reviewInvoice(
+    int id,
+  ) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/invoices/flow/$id/review');
+      final response = await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Invoice inv = Invoice.fromJson(json['data']);
+        return inv;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Invoice inv = Invoice.fromJson(json['data']);
+          return inv;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return null;
+  }
+
+  Future<Invoice?> approveInvoice(
+    int id,
+  ) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/invoices/flow/$id/approve');
+
+      final response = await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Invoice inv = Invoice.fromJson(json['data']);
+        return inv;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Invoice inv = Invoice.fromJson(json['data']);
+          return inv;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return null;
+  }
+
+  Future<Invoice?> rejectInvoice(
+    int id,
+  ) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/invoices/flow/$id/reject');
+
+      final response = await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Invoice inv = Invoice.fromJson(json['data']);
+        return inv;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Invoice inv = Invoice.fromJson(json['data']);
+          return inv;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return null;
+  }
+
+  Future<Invoice?> markAsPaidInvoice(
+    int id,
+  ) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/invoices/flow/$id/mark-as-paid');
+
+      final response = await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Invoice inv = Invoice.fromJson(json['data']);
+        return inv;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Invoice inv = Invoice.fromJson(json['data']);
+          return inv;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return null;
+  }
+
   // job Apis ...
 
   Future<User?> assignJob({
@@ -673,14 +1155,19 @@ class ServerApi {
     return jobs;
   }
 
-  Future<Job?> createJob(
-    String name,
-    String description,
-  ) async {
+  Future<Job?> createJob({
+    required String name,
+    required String description,
+    required int departmentId,
+  }) async {
     try {
       final uri = Uri.parse(_baseUrl + '/jobs');
       Map<String, dynamic> body = <String, dynamic>{};
-      body = {"name": name, "description": description};
+      body = {
+        "name": name,
+        "description": description,
+        "departmentId": departmentId,
+      };
       final bodReq = jsonEncode(body);
       final response = await _httpClient.post(
         uri,
@@ -884,12 +1371,12 @@ class ServerApi {
   }
 
   Future<Receipt?> editReceipt(
-    int receiptId,
+    Receipt receipt,
     Salary salary,
     List<Deduction> deductions,
   ) async {
     try {
-      final uri = Uri.parse(_baseUrl + '/financial/receipts/$receiptId');
+      final uri = Uri.parse(_baseUrl + '/financial/receipts/${receipt.id}');
 
       List<Map<String, dynamic>> deductionsList = deductions
           .map((d) => {
@@ -900,6 +1387,7 @@ class ServerApi {
           .toList();
       Map<String, dynamic> body;
       body = {
+        "userId": receipt.userId!,
         "salary": {
           "workStartDate": salary.workStartDate!,
           "workEndDate": salary.workEndDate!,
@@ -942,7 +1430,7 @@ class ServerApi {
     return null;
   }
 
-  Future<Receipt?> deleteReceipt(
+  Future<void> deleteReceipt(
     int receiptId,
   ) async {
     try {
@@ -952,17 +1440,13 @@ class ServerApi {
         headers: getHeaders(),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final json = jsonDecode(response.body);
-        final Receipt receipt = Receipt.fromJson(json['data']);
-        return receipt;
+        print('sucess deleting recipt ...');
       }
       if (response.statusCode == 401) {
         await refreshToken();
         final response = await _httpClient.post(uri, headers: getHeaders());
         if (response.statusCode == 200 || response.statusCode == 201) {
-          final json = jsonDecode(response.body);
-          final Receipt receipt = Receipt.fromJson(json['data']);
-          return receipt;
+          print('sucess deleting recipt ...');
         }
       }
     } on SocketException {

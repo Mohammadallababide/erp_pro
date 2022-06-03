@@ -3,12 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../common/generate_screen.dart';
 import '../../../common/theme_helper.dart';
-import '../../assign_commpany_job/page/assign_job_center_page.dart';
+import '../bloc/users_bloc.dart';
 
 class UserCard extends StatelessWidget {
   final User user;
-  const UserCard({Key? key, required this.user}) : super(key: key);
+  final UsersBloc usersBloc;
+  const UserCard({Key? key, required this.user, required this.usersBloc})
+      : super(key: key);
+
+  void listenToRefreshDataAction() {
+    usersBloc.add(GetUsers());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,16 +134,13 @@ class UserCard extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AssignJobCenterPage(
-                user: user,
-                jobId: user.jobId,
-                jobLevel: user.level,
-              ),
-            ),
-          );
+          Navigator.pushNamed(context, NameScreen.assignJobCenterPage,
+              arguments: {
+                'user': user,
+                'jobId': user.jobId,
+                'jobLevel': user.level,
+                'refreshDataCallBack': listenToRefreshDataAction,
+              });
         },
         child: Container(
           height: ScreenUtil().setHeight(35),

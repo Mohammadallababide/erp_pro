@@ -37,7 +37,7 @@ class _AppState extends State<App> {
           colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey)
               .copyWith(secondary: _accentColor),
         ),
-        initialRoute: NameScreen.homePage,
+        initialRoute: NameScreen.splachScreen,
         onGenerateRoute: GenerateScreen.onGenerate,
       ),
     );

@@ -4,4 +4,9 @@ class ConstatValues {
     'mid_level',
     'senior',
   ];
+  static const List<String> deductionTypeList = [
+    'loan',
+    'tax',
+    'attendance',
+  ];
 }

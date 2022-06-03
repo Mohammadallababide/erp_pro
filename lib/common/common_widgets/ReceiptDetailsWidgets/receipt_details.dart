@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../ui/users_finacial_mange/bloc/usersfinaicalmange_bloc.dart';
 import '../../../ui/users_finacial_mange/pages/create_or_edit_receipt_page.dart';
-import '../app_snack_bar.dart';
+import '../../../core/utils/app_snack_bar.dart';
 import '../commonDialog/confirm_process_Dialog.dart';
 import 'ReceiptInfo/deductions_info_list.dart';
 import 'ReceiptInfo/salary_info_details.dart';
@@ -30,7 +30,7 @@ class ReceiptDetails extends StatefulWidget {
 
 class _ReceiptDetailsState extends State<ReceiptDetails> {
   final UsersfinaicalmangeBloc receiptBloc = UsersfinaicalmangeBloc();
-
+  late bool isUpdateInfo = false;
   late Receipt receiptDetail;
   @override
   void initState() {
@@ -42,6 +42,7 @@ class _ReceiptDetailsState extends State<ReceiptDetails> {
     setState(() {
       receiptDetail = newValue;
       widget.editInReceiptsListCallBack!(newValue);
+      isUpdateInfo = true;
     });
   }
 
@@ -54,7 +55,7 @@ class _ReceiptDetailsState extends State<ReceiptDetails> {
           setState(() {
             widget.deleteReceiptCallBack!(widget.receipt.id);
           });
-          Navigator.pop(context);
+          Navigator.pop(context,true);
         } else if (state is ErrorDeletingReceipt) {
           ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
               message: 'Faild Delete Receipt !', context: context));
@@ -68,6 +69,12 @@ class _ReceiptDetailsState extends State<ReceiptDetails> {
             title: const Text(
               'Receipt Details',
               style: TextStyle(color: Colors.white),
+            ),
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context,isUpdateInfo);
+              },
+              icon: Icon(Icons.arrow_back_ios),
             ),
             actions: widget.isMyReceipt
                 ? [

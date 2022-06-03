@@ -38,6 +38,8 @@ class Invoice {
   final User? paidBy;
   @JsonKey(required: false)
   final User? rejectedBy;
+  @JsonKey(required: false)
+  final User? assignee;
 
   Invoice({
     required this.grossAmount,
@@ -57,6 +59,7 @@ class Invoice {
     this.reviewedBy,
     this.paidById,
     this.paidBy,
+    this.assignee,
   });
 
   factory Invoice.fromJson(json) => _$InvoiceFromJson(json);

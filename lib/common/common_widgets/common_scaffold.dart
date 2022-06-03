@@ -6,15 +6,18 @@ import 'header_widget.dart';
 class CommonScaffold extends StatelessWidget {
   final double headerHeight;
   final Widget childWidget;
+  final Color? backgroundColor;
   const CommonScaffold({
     Key? key,
     required this.headerHeight,
     required this.childWidget,
+    this.backgroundColor,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:
+          this.backgroundColor == null ? Colors.white : this.backgroundColor,
       body: SingleChildScrollView(
         child: Column(
           children: [

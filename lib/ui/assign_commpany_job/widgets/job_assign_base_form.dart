@@ -100,29 +100,16 @@ class _JobAssignBaseFormState extends State<JobAssignBaseForm> {
                 ],
               ),
               SizedBox(
-                height: ScreenUtil().setHeight(10),
+                height: ScreenUtil().setHeight(5),
               ),
-              Container(
-                width: MediaQuery.of(context).size.width -
-                    ScreenUtil().setWidth(30),
-                height: ScreenUtil().setHeight(38),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(context).primaryColor,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
-                child: Text(
-                  getValue,
-                  maxLines: null,
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w600,
-                    fontSize: ScreenUtil().setSp(15),
-                    height: ScreenUtil().setHeight(1.5),
-                  ),
+              Text(
+                getValue,
+                maxLines: null,
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w600,
+                  fontSize: ScreenUtil().setSp(15),
+                  height: ScreenUtil().setHeight(1.5),
                 ),
               ),
             ],

@@ -30,6 +30,7 @@ class _AuthPageState extends State<AuthPage> {
         width: double.infinity,
         height: double.infinity,
         child: CommonScaffold(
+          
           headerHeight: _headerHeight,
           childWidget: Column(
             children: [

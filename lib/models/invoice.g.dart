@@ -29,6 +29,8 @@ Invoice _$InvoiceFromJson(Map<String, dynamic> json) => Invoice(
           json['reviewedBy'] == null ? null : User.fromJson(json['reviewedBy']),
       paidById: json['paidById'] as int?,
       paidBy: json['paidBy'] == null ? null : User.fromJson(json['paidBy']),
+      assignee:
+          json['assignee'] == null ? null : User.fromJson(json['assignee']),
     );
 
 Map<String, dynamic> _$InvoiceToJson(Invoice instance) => <String, dynamic>{
@@ -49,4 +51,5 @@ Map<String, dynamic> _$InvoiceToJson(Invoice instance) => <String, dynamic>{
       'paidById': instance.paidById,
       'paidBy': instance.paidBy,
       'rejectedBy': instance.rejectedBy,
+      'assignee': instance.assignee,
     };

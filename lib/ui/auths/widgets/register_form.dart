@@ -1,4 +1,4 @@
-import 'package:erb_mobo/common/common_widgets/app_snack_bar.dart';
+import 'package:erb_mobo/core/utils/app_snack_bar.dart';
 import 'package:erb_mobo/common/generate_screen.dart';
 import 'package:erb_mobo/common/theme_helper.dart';
 import 'package:erb_mobo/core/validations/validtion.dart';
@@ -24,6 +24,7 @@ class _RegisterFormState extends State<RegisterForm> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late TextEditingController _phoneNumController;
+  late TextEditingController _confirmPasswordController;
   final AuthsBloc authsBloc = AuthsBloc();
 
   @override
@@ -34,6 +35,7 @@ class _RegisterFormState extends State<RegisterForm> {
     _phoneNumController = TextEditingController();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
   }
 
   @override
@@ -49,6 +51,12 @@ class _RegisterFormState extends State<RegisterForm> {
             context,
             NameScreen.afterRegisterPage,
           );
+          _firstNameController.text = '';
+          _lastNameController.text = '';
+          _emailController.text = '';
+          _passwordController.text = '';
+          _phoneNumController.text = '';
+          _confirmPasswordController.text = '';
         }
       },
       child: Form(
@@ -128,6 +136,7 @@ class _RegisterFormState extends State<RegisterForm> {
             Container(
               child: TextFormField(
                 obscureText: true,
+                controller: _confirmPasswordController,
                 decoration: ThemeHelper().textInputDecoration(
                     "ConfirmPassword*", "Confirm a password"),
                 validator: (val) => Validation.confirmPasswordValidation(
@@ -157,7 +166,8 @@ class _RegisterFormState extends State<RegisterForm> {
                   );
                 }
                 return Container(
-                  decoration: ThemeHelper().buttonBoxDecoration(context: context),
+                  decoration:
+                      ThemeHelper().buttonBoxDecoration(context: context),
                   child: ElevatedButton(
                     style: ThemeHelper().buttonStyle(),
                     child: Center(

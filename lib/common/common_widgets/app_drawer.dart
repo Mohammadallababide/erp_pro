@@ -25,7 +25,7 @@ class AppDrawer extends StatelessWidget {
           //   color: Colors.white,
           // ),
           _createDrawerItem(
-            icon: Icons.attach_money,
+            icon: Icons.receipt_outlined,
             text: 'users financial mange',
             onTap: () => Navigator.pushReplacementNamed(
               context,
@@ -37,11 +37,22 @@ class AppDrawer extends StatelessWidget {
             color: Colors.white,
           ),
           _createDrawerItem(
+            icon: Icons.account_tree_outlined ,
+            text: 'departments center',
+            onTap: () => Navigator.pushReplacementNamed(
+                context, NameScreen.departmentCenterPage),
+          ),
+          const Divider(
+            thickness: 2,
+            color: Colors.white,
+          ),
+          _createDrawerItem(
             icon: Icons.business_center,
             text: 'jobs center',
             onTap: () => Navigator.pushReplacementNamed(
                 context, NameScreen.jobsCenterPage),
           ),
+
           const Divider(
             thickness: 2,
             color: Colors.white,
@@ -52,13 +63,13 @@ class AppDrawer extends StatelessWidget {
           //   onTap: () => Navigator.pushReplacementNamed(
           //       context, NameScreen.roolsMangmentCenter),
           // ),
-              _createDrawerItem(
-            icon: Icons.receipt_long,
+          _createDrawerItem(
+            icon: Icons.description_rounded,
             text: 'invoces center',
             onTap: () => Navigator.pushReplacementNamed(
-                context, NameScreen.   invoicesCenterPage),
+                context, NameScreen.invoicesCenterPage),
           ),
-       
+
           const Divider(
             thickness: 2,
             color: Colors.white,
@@ -75,7 +86,7 @@ class AppDrawer extends StatelessWidget {
             color: Colors.white,
           ),
           _createDrawerItem(
-            icon: Icons.verified_user_sharp,
+            icon: Icons.badge,
             text: 'approvment requests',
             onTap: () => Navigator.pushReplacementNamed(
               context,
@@ -87,7 +98,7 @@ class AppDrawer extends StatelessWidget {
             color: Colors.white,
           ),
           _createDrawerItem(
-            icon: Icons.supervised_user_circle_sharp,
+            icon: Icons.how_to_reg_rounded ,
             text: 'approvment users',
             onTap: () => Navigator.pushReplacementNamed(
                 context, NameScreen.usersListPage),

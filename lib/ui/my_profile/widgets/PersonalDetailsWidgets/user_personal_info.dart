@@ -1,4 +1,4 @@
-import 'package:erb_mobo/common/common_widgets/app_snack_bar.dart';
+import 'package:erb_mobo/core/utils/app_snack_bar.dart';
 import 'package:erb_mobo/common/common_widgets/pick_image_widget.dart';
 import 'package:erb_mobo/ui/auths/bloc/auths_bloc.dart';
 import 'package:erb_mobo/ui/my_profile/bloc/myprofilebloc_bloc.dart';

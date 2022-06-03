@@ -18,6 +18,7 @@ class JobBloc extends Bloc<JobEvent, JobState> {
         emit: emit,
         name: event.name,
         description: event.description,
+        departmentId: event.departmentId,
       );
     });
     on<EditJob>((event, emit) async {
@@ -65,12 +66,16 @@ class JobBloc extends Bloc<JobEvent, JobState> {
   Future<void> _createJob({
     required String name,
     required String description,
+    required int departmentId,
     required Emitter<JobState> emit,
   }) async {
     emit(CreattingJob());
     try {
-      final Job? result =
-          await ServerApi.apiClient.createJob(name, description);
+      final Job? result = await ServerApi.apiClient.createJob(
+        name: name,
+        description: description,
+        departmentId: departmentId,
+      );
       emit(SuccessCreattingJob(result!));
     } catch (e) {
       emit(ErrorCreattingJob((e.toString())));

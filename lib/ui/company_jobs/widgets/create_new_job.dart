@@ -3,16 +3,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../common/common_widgets/app_snack_bar.dart';
+import '../../../core/utils/app_snack_bar.dart';
 import '../../../common/theme_helper.dart';
 import '../../../core/validations/validtion.dart';
 import '../bloc/job_bloc.dart';
+import 'department_selection_section.dart';
 
 class CreateNewJob extends StatefulWidget {
   final Function jobListCallBack;
+  final Widget? childWidget;
   const CreateNewJob({
     Key? key,
     required this.jobListCallBack,
+    this.childWidget,
   }) : super(key: key);
 
   @override
@@ -22,13 +25,23 @@ class CreateNewJob extends StatefulWidget {
 class _CreateNewJobState extends State<CreateNewJob> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late TextEditingController _jobNameController;
+  late TextEditingController selectedDepartmentIdController;
+
   late TextEditingController _jobDescriptionController;
   final JobBloc jobBloc = JobBloc();
+
   @override
   void initState() {
     super.initState();
     _jobNameController = TextEditingController();
     _jobDescriptionController = TextEditingController();
+    selectedDepartmentIdController = TextEditingController();
+  }
+
+  listeanOnChangedSelectedDepartmentAction(int newValue) {
+    setState(() {
+      selectedDepartmentIdController.text = newValue.toString();
+    });
   }
 
   @override
@@ -49,22 +62,25 @@ class _CreateNewJobState extends State<CreateNewJob> {
         bloc: jobBloc,
         builder: (context, state) {
           if (state is CreattingJob) {
-     return   Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: CircularProgressIndicator(
-            color: Colors.blue,
-            strokeWidth: ScreenUtil().setWidth(3),
-          ),
-        );
+            return Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: CircularProgressIndicator(
+                color: Colors.blue,
+                strokeWidth: ScreenUtil().setWidth(3),
+              ),
+            );
           }
-          return IconButton(
-            onPressed: () => createNewJobDialog(context),
-            icon: Icon(
-              Icons.add_circle,
-              size: ScreenUtil().setSp(28),
-            ),
+          return InkWell(
+            onTap: () => createNewJobDialog(context),
+            child: widget.childWidget ??
+                IconButton(
+                  onPressed: () => createNewJobDialog(context),
+                  icon: Icon(
+                    Icons.add_circle,
+                    size: ScreenUtil().setSp(28),
+                  ),
+                ),
           );
-     
         },
       ),
     );
@@ -73,10 +89,13 @@ class _CreateNewJobState extends State<CreateNewJob> {
   void submitForm() {
     Navigator.pop(context);
     formKey.currentState!.save();
-    if (formKey.currentState!.validate()) {
+    if (formKey.currentState!.validate() &&
+        selectedDepartmentIdController.text.isNotEmpty) {
       jobBloc.add(CreateJob(
-          name: _jobNameController.text,
-          description: _jobDescriptionController.text));
+        name: _jobNameController.text,
+        description: _jobDescriptionController.text,
+        departmentId: int.parse(selectedDepartmentIdController.text),
+      ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
           message: 'info not completed yet!!', context: context));
@@ -110,20 +129,10 @@ class _CreateNewJobState extends State<CreateNewJob> {
                               fontWeight: FontWeight.bold,
                               fontSize: ScreenUtil().setSp(20)),
                         ),
-                        Container(
-                          height:
-                              ScreenUtil().setSp(ScreenUtil().radius(15) * 2),
-                          width:
-                              ScreenUtil().setSp(ScreenUtil().radius(15) * 2),
-                          decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).primaryColor.withOpacity(0.2),
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              fit: BoxFit.contain,
-                              image: AssetImage('assets/images/job.png'),
-                            ),
-                          ),
+                        Icon(
+                          Icons.business_center,
+                          color: Colors.blueAccent,
+                          size: ScreenUtil().setSp(30),
                         ),
                       ],
                     ),
@@ -161,7 +170,14 @@ class _CreateNewJobState extends State<CreateNewJob> {
                             ],
                           ),
                           SizedBox(
-                            height: ScreenUtil().setHeight(15),
+                            height: ScreenUtil().setHeight(10),
+                          ),
+                          DeprtmentSelectionSection(
+                            departmentSelectedCallBack:
+                                listeanOnChangedSelectedDepartmentAction,
+                          ),
+                          SizedBox(
+                            height: ScreenUtil().setHeight(20),
                           ),
                           Container(
                             decoration: ThemeHelper()

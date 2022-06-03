@@ -54,9 +54,7 @@ class ErrorEditingReceipt extends UsersfinaicalmangeState {
 class DeletingReceipt extends UsersfinaicalmangeState {}
 
 class SuccessDeletingReceipt extends UsersfinaicalmangeState {
-  final Receipt receipt;
 
-  SuccessDeletingReceipt(this.receipt);
 }
 
 class ErrorDeletingReceipt extends UsersfinaicalmangeState {

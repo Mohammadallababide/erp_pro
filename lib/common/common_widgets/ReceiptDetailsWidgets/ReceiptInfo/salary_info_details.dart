@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/utils/core_util_function.dart';
 import '../../../../models/receipt.dart';
+import '../../custom_dividor_line.dart';
 
 class SalaryInfoDetails extends StatelessWidget {
   final Receipt receiptDetails;
@@ -49,7 +50,7 @@ class SalaryInfoDetails extends StatelessWidget {
           receiptDetails.salary.amount.toString(), 'Salary amount :', context),
       buildSalaryDetails(
           receiptDetails.salary.bonus.toString(), 'bonus on salary :', context),
-      buildSalaryDetails(receiptDetails.salary.allowance.toString(),
+      buildSalaryDetails(receiptDetails.salary.allowance ?? 0.toString(),
           'allowance amount :', context),
     ]);
   }
@@ -107,7 +108,7 @@ class SalaryInfoDetails extends StatelessWidget {
             ],
           ),
         ),
-        buildCusDividorLine(context),
+        CustomDividorLine(),
       ],
     );
   }
@@ -161,23 +162,8 @@ class SalaryInfoDetails extends StatelessWidget {
             )
           ],
         ),
-        buildCusDividorLine(context),
+        CustomDividorLine(),
       ],
-    );
-  }
-
-  Widget buildCusDividorLine(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width - ScreenUtil().setWidth(30),
-      height: ScreenUtil().setHeight(20),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).primaryColor,
-            width: 1.5,
-          ),
-        ),
-      ),
     );
   }
 
@@ -203,8 +189,8 @@ class SalaryInfoDetails extends StatelessWidget {
           context: context,
           title: 'Salary after calculate bonus and allowance :',
           value: receiptDetails.salary.amount +
-              receiptDetails.salary.bonus +
-              receiptDetails.salary.allowance,
+              (receiptDetails.salary.bonus ?? 0) +
+              (receiptDetails.salary.allowance ?? 0),
         ),
         const Align(
           alignment: Alignment.centerRight,
@@ -220,7 +206,7 @@ class SalaryInfoDetails extends StatelessWidget {
           title: 'Total deductions :',
           value: calculateTotalDeducionsValue(receiptDetails),
         ),
-        buildCusDividorLine(context),
+        CustomDividorLine(),
         SizedBox(
           height: ScreenUtil().setHeight(15),
         ),
@@ -235,8 +221,8 @@ class SalaryInfoDetails extends StatelessWidget {
 
   int calculateTotalSalarValue(Receipt receipt) {
     return (receipt.salary.amount +
-            receipt.salary.bonus +
-            receipt.salary.allowance) -
+            (receipt.salary.bonus ?? 0) +
+            (receipt.salary.allowance ?? 0)) -
         calculateTotalDeducionsValue(receipt);
   }
 
@@ -283,7 +269,7 @@ class SalaryInfoDetails extends StatelessWidget {
   }
 
   Widget buildSalaryDetails(
-          String getValue, String title, BuildContext context) =>
+          dynamic getValue, String title, BuildContext context) =>
       Padding(
         padding: EdgeInsets.only(
           bottom: ScreenUtil().setHeight(25),
@@ -306,7 +292,7 @@ class SalaryInfoDetails extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    getValue,
+                    getValue.toString(),
                     style: TextStyle(
                       fontSize: ScreenUtil().setSp(15),
                       height: ScreenUtil().setHeight(1.5),
@@ -320,7 +306,7 @@ class SalaryInfoDetails extends StatelessWidget {
                 )
               ],
             ),
-            buildCusDividorLine(context),
+            CustomDividorLine(),
           ],
         ),
       );

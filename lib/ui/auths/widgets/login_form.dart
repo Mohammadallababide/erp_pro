@@ -1,4 +1,4 @@
-import 'package:erb_mobo/common/common_widgets/app_snack_bar.dart';
+import 'package:erb_mobo/core/utils/app_snack_bar.dart';
 import 'package:erb_mobo/common/generate_screen.dart';
 import 'package:erb_mobo/common/theme_helper.dart';
 import 'package:erb_mobo/core/validations/validtion.dart';
@@ -20,7 +20,7 @@ class _LoginFormState extends State<LoginForm> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   final AuthsBloc authsBloc = AuthsBloc();
-  late bool visableActionValue = false;
+  late bool isVisableActionValue = true;
 
   @override
   void initState() {
@@ -64,7 +64,7 @@ class _LoginFormState extends State<LoginForm> {
             Container(
               child: TextFormField(
                 controller: _passwordController,
-                obscureText: visableActionValue,
+                obscureText: isVisableActionValue,
                 validator: (val) => Validation.passwordValidation(val!),
                 decoration: passwordInputDecoration(),
               ),
@@ -111,7 +111,8 @@ class _LoginFormState extends State<LoginForm> {
                   );
                 }
                 return Container(
-                  decoration: ThemeHelper().buttonBoxDecoration(context: context),
+                  decoration:
+                      ThemeHelper().buttonBoxDecoration(context: context),
                   child: ElevatedButton(
                       style: ThemeHelper().buttonStyle(),
                       child: Center(
@@ -141,10 +142,10 @@ class _LoginFormState extends State<LoginForm> {
     return InputDecoration(
       suffixIcon: IconButton(
         onPressed: () => setState(() {
-          visableActionValue = !visableActionValue;
+          isVisableActionValue = !isVisableActionValue;
         }),
         icon: Icon(
-          !visableActionValue ? Icons.visibility : Icons.visibility_off,
+          !isVisableActionValue ? Icons.visibility_off : Icons.visibility,
           color: Colors.grey,
         ),
       ),

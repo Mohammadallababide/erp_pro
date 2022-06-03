@@ -16,10 +16,11 @@ class GetJobs extends JobEvent {
 class CreateJob extends JobEvent {
   final String name;
   final String description;
-
-  CreateJob({
+  final int departmentId;
+  CreateJob( {
     required this.name,
     required this.description,
+    required this.departmentId,
   });
 }
 

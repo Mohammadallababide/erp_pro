@@ -1,10 +1,12 @@
-import 'package:erb_mobo/common/common_widgets/app_snack_bar.dart';
+import 'package:erb_mobo/core/utils/app_snack_bar.dart';
 import 'package:erb_mobo/models/user.dart';
 import 'package:erb_mobo/ui/approvment_request_list/widgets/request_approvment_card.dart';
 import 'package:erb_mobo/ui/auths/bloc/auths_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../core/utils/app_flash_bar.dart';
 
 class ApprovmentRequestsList extends StatefulWidget {
   const ApprovmentRequestsList({Key? key}) : super(key: key);
@@ -23,6 +25,7 @@ class _ApprovmentRequestsListState extends State<ApprovmentRequestsList> {
     setState(() {
       usersRequests.removeWhere((element) => element.id == userId);
     });
+
     return usersRequests;
   }
 
@@ -43,8 +46,12 @@ class _ApprovmentRequestsListState extends State<ApprovmentRequestsList> {
             usersRequests = state.users.reversed.toList();
           });
         } else if (state is ErrorGettingSignupUsersRequests) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              getAppSnackBar(message: 'Faild Process!!', context: context));
+          getFlashBar(
+            isErrorgMeg: true,
+            context: context,
+            title: 'Mission Faild',
+            message: 'can not fetch users registertion requests',
+          );
           setState(() {
             isFinishGettingUsersSignupRequests = true;
             usersRequests = [];

@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/common_widgets/app_drawer.dart';
-import '../../../common/common_widgets/app_snack_bar.dart';
+import '../../../core/utils/app_snack_bar.dart';
 import '../../../common/common_widgets/commomn_app_bar.dart';
 import '../../../models/salary-scale.dart';
 import 'create_new_salary_scale_page.dart';
@@ -27,9 +27,9 @@ class _SalaryScalesCenterState extends State<SalaryScalesCenter> {
     salaryScalesBloc.add(GetCompanySalaryScales());
   }
 
-  listenDelettingSalaryScale(int id) {
+  listenDelettingSalaryScale(int index) {
     setState(() {
-      salaryScaleList.removeWhere((element) => element.id == id);
+      salaryScaleList.removeAt(index);
     });
   }
 
@@ -83,7 +83,7 @@ class _SalaryScalesCenterState extends State<SalaryScalesCenter> {
                   Icons.add_circle,
                   size: ScreenUtil().setSp(28),
                 ),
-              )
+              ),
             ],
           ),
           drawer: const AppDrawer(),

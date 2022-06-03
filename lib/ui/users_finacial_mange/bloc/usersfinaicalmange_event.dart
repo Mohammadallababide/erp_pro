@@ -22,12 +22,12 @@ class CreateReceipt extends UsersfinaicalmangeEvent {
 }
 
 class EditReceipt extends UsersfinaicalmangeEvent {
-  final int receiptId;
+  final Receipt receipt;
   final Salary salary;
   final List<Deduction> deductions;
 
   EditReceipt({
-    required this.receiptId,
+    required this.receipt,
     required this.salary,
     required this.deductions,
   });

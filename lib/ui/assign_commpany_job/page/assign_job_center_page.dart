@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../common/common_widgets/app_snack_bar.dart';
+import '../../../core/utils/app_snack_bar.dart';
 import '../../../common/common_widgets/commomn_app_bar.dart';
 import '../../../common/theme_helper.dart';
 import '../../../models/assignJob.dart';
@@ -16,9 +16,14 @@ class AssignJobCenterPage extends StatefulWidget {
   final User user;
   final int? jobId;
   final String? jobLevel;
-  const AssignJobCenterPage(
-      {Key? key, required this.user, this.jobId, this.jobLevel})
-      : super(key: key);
+  final Function? refreshDataCallBack;
+  const AssignJobCenterPage({
+    Key? key,
+    required this.user,
+    this.jobId,
+    this.jobLevel,
+    this.refreshDataCallBack,
+  }) : super(key: key);
 
   @override
   State<AssignJobCenterPage> createState() => _AssignJobCenterPageState();
@@ -27,6 +32,7 @@ class AssignJobCenterPage extends StatefulWidget {
 class _AssignJobCenterPageState extends State<AssignJobCenterPage> {
   late JobAssign? jobAssign;
   final JobBloc jobBloc = JobBloc();
+
   listenToAssignJobInfoChange(JobAssign newValue) {
     setState(() {
       jobAssign = newValue;
@@ -140,6 +146,11 @@ class _AssignJobCenterPageState extends State<AssignJobCenterPage> {
                   );
                 } else if (state is SuccessAssignJobToUser) {
                   Navigator.pop(context);
+                  if (widget.refreshDataCallBack != null) {
+                    setState(() {
+                      widget.refreshDataCallBack!();
+                    });
+                  }
                 }
               },
               child: BlocBuilder(

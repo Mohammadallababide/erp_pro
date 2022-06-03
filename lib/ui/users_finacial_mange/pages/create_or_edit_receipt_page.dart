@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../common/common_widgets/app_snack_bar.dart';
+import '../../../core/utils/app_snack_bar.dart';
 import '../../../common/theme_helper.dart';
 import '../../../core/validations/validtion.dart';
 import '../../../models/deduction.dart';
@@ -72,8 +72,9 @@ class _CreateOrEditUserReceiptPageState
     _allowanceAmountController = TextEditingController();
     if (widget.receiptId != null) {
       _bounsAmountController.text = widget.receipt!.salary.bonus.toString();
-      _allowanceAmountController.text =
-          widget.receipt!.salary.allowance.toString();
+      _allowanceAmountController.text = widget.receipt!.salary.allowance != null
+          ? widget.receipt!.salary.allowance.toString()
+          : 0.toString();
       userAssignemt = widget.receipt!.user!;
       startSalaryDate = widget.receipt!.salary.workStartDate ?? '';
       endSalaryDate = widget.receipt!.salary.workEndDate ?? '';
@@ -89,11 +90,11 @@ class _CreateOrEditUserReceiptPageState
         if (state is SuccessCreatingReceipt) {
           // todo call function callback for add new item in the users receipts list
           widget.createReceiptListCallBack!(state.receipt);
-          Navigator.pop(context);
+          Navigator.pop(context, true);
         } else if (state is SuccessEditingReceipt) {
           // todo call function callback for edit item in the users receipts list
           widget.editReceiptInfoCallBack!(state.receipt);
-          Navigator.pop(context);
+          Navigator.pop(context, true);
         } else if (state is ErrorCreatingReceipt ||
             state is ErrorEditingReceipt) {
           ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
@@ -366,7 +367,7 @@ class _CreateOrEditUserReceiptPageState
           startSalaryDate.isNotEmpty) {
         receiptBloc.add(
           EditReceipt(
-            receiptId: widget.receiptId!,
+            receipt: widget.receipt!,
             salary: Salary(
                 bonus: int.parse(_bounsAmountController.text),
                 allowance: int.parse(_allowanceAmountController.text),

@@ -34,6 +34,8 @@ class User {
   late final int? jobId;
   @JsonKey(required: false)
   final String? level;
+  @JsonKey(required: false)
+  final int? departmentId;
 
 // final Role role;
   User({
@@ -51,6 +53,7 @@ class User {
     this.associatedRoles,
     this.receipts,
     this.roles,
+    this.departmentId,
   });
 
   factory User.fromJson(json) => _$UserFromJson(json);

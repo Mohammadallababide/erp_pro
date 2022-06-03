@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/utils/core_util_function.dart';
-import 'app_snack_bar.dart';
+import '../../core/utils/app_snack_bar.dart';
 
 class PickImageWidget extends StatefulWidget {
   final AuthsBloc authsBloc;

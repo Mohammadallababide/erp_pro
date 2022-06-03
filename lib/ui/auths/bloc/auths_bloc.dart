@@ -29,11 +29,11 @@ class AuthsBloc extends Bloc<AuthsEvent, AuthsState> {
     });
 
     on<ApproveSignupUser>((event, emit) async {
-      await _approveSignupUser(event.id, emit);
+      await _approveSignupUser(
+          id: event.id, emit: emit, departmentId: event.departmentId);
     });
 
-
-  on<RejectSignupUser>((event, emit) async {
+    on<RejectSignupUser>((event, emit) async {
       await _rejectSignupUser(event.id, emit);
     });
 
@@ -52,20 +52,21 @@ class AuthsBloc extends Bloc<AuthsEvent, AuthsState> {
     }
   }
 
-  Future<void> _approveSignupUser(int id, Emitter<AuthsState> emit) async {
+  Future<void> _approveSignupUser(
+      {required int id,
+      required int departmentId,
+      required Emitter<AuthsState> emit}) async {
     emit(ProcessingApproveSignupUser());
     try {
-      final result = await ServerApi.apiClient.approveSignupUser(id);
+      final result = await ServerApi.apiClient
+          .approveSignupUser(userId: id, departmentId: departmentId);
       emit(SuccessApproveSignupUser(result!));
     } catch (e) {
       emit(ErrorApproveSignupUser((e.toString())));
     }
   }
 
-  
-
-
-    Future<void> _rejectSignupUser(int id, Emitter<AuthsState> emit) async {
+  Future<void> _rejectSignupUser(int id, Emitter<AuthsState> emit) async {
     emit(ProcessingApproveSignupUser());
     try {
       final result = await ServerApi.apiClient.rejectSignupUser(id);

@@ -10,15 +10,15 @@ import 'package:flutter/material.dart';
 
 import '../ui/assign_commpany_job/page/assign_job_center_page.dart';
 import '../ui/company_jobs/pages/company_jobs_center_page.dart';
-import '../ui/company_jobs/pages/job_details_page.dart';
-import '../ui/invoices-center.dart/pages/create_invoice_page.dart';
-import '../ui/invoices-center.dart/pages/invoices_center_page.dart';
+import '../ui/department_center/pages/department_details_page.dart';
+import '../ui/department_center/pages/departments_center_page.dart';
+import '../ui/invoices-center/pages/create_invoice_page.dart';
+import '../ui/invoices-center/pages/invoices_center_page.dart';
 import '../ui/roll_mangent-center/pages/rolls_mangment_center_page.dart';
-import '../ui/salary_scales_center/pages/create_new_salary_scale_page.dart';
+import '../ui/salary_scales_center/pages/scale_salary_details_page.dart';
 import '../ui/users List/pages/users_list_page.dart';
 import '../ui/users_finacial_mange/pages/create_or_edit_receipt_page.dart';
 import '../ui/users_finacial_mange/pages/users_finacial_page.dart';
-import 'common_widgets/ReceiptDetailsWidgets/receipt_details.dart';
 
 ///
 /// [GenerateScreen.onGenerate] function is responsible for returning the specific [Route] with the right data.
@@ -26,7 +26,7 @@ import 'common_widgets/ReceiptDetailsWidgets/receipt_details.dart';
 class GenerateScreen {
   static Route<dynamic> onGenerate(RouteSettings value) {
     String? name = value.name;
-    // final arg = value.arguments as Map;
+    final Map<dynamic, dynamic>? arg = value.arguments as Map?;
     switch (name) {
       case NameScreen.splachScreen:
         {
@@ -93,6 +93,28 @@ class GenerateScreen {
         {
           return MaterialPageRoute(builder: (context) => CreateInvoicePage());
         }
+      case NameScreen.SalartScaleDetailsPage:
+        {
+          return MaterialPageRoute(
+              builder: (context) => ScaleSalaryDetailsPage(
+                    salaryScale: arg!['salaryScale'],
+                  ));
+        }
+
+      case NameScreen.departmentCenterPage:
+        {
+          return MaterialPageRoute(
+            builder: (context) => DepartmentCenterPage(),
+          );
+        }
+      case NameScreen.departmentDetailsPage:
+        {
+          return MaterialPageRoute(
+            builder: (context) => DepartmentDetailsPage(
+              department: arg!['department'],
+            ),
+          );
+        }
 
       // case NameScreen.createsalaryScalePage:
       //   {
@@ -100,10 +122,16 @@ class GenerateScreen {
       //         builder: (context) => CreateNewSalaryScalePage());
       //   }
 
-      // case NameScreen.assignJobCenterPage:
-      //   {
-      //     return MaterialPageRoute(builder: (context) => AssignJobCenterPage());
-      //   }
+      case NameScreen.assignJobCenterPage:
+        {
+          return MaterialPageRoute(
+              builder: (context) => AssignJobCenterPage(
+                    user: arg!['user'],
+                    jobId: arg['jobId'],
+                    jobLevel: arg['jobLevel'],
+                    refreshDataCallBack: arg['refreshDataCallBack'],
+                  ));
+        }
 
       // case NameScreen.jobDetails:
       //   {
@@ -167,4 +195,17 @@ class NameScreen {
   static const String CreateInvoicePage = '/CreateInvoicePage';
   // static const String createsalaryScalePage = '/createsalaryScalePage';
   // static const String receiptDetails = '/receiptDetails';
+  static const String SalartScaleDetailsPage = '/SalartScaleDetailsPage';
+  static const String departmentCenterPage = '/DepartmentCenterPage';
+  static const String departmentDetailsPage = '/DepartmentDetailsPage';
 }
+//  Navigator.push(
+//             context,
+//             MaterialPageRoute(
+//               builder: (context) => AssignJobCenterPage(
+//                 user: user,
+//                 jobId: user.jobId,
+//                 jobLevel: user.level,
+//               ),
+//             ),
+//           );

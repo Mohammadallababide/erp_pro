@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../common/common_widgets/app_snack_bar.dart';
+import '../../../../core/utils/app_snack_bar.dart';
 import '../../../../common/theme_helper.dart';
 import '../../../../core/validations/validtion.dart';
 import '../../../../models/deduction.dart';
+
+import 'deduction_type_dropDownButton.dart';
 
 class DeductionsSection extends StatefulWidget {
   final List<Deduction> deductions;
@@ -22,11 +24,18 @@ class DeductionsSection extends StatefulWidget {
 class _DeductionsSectionState extends State<DeductionsSection> {
   late TextEditingController _deductionAmountController =
       TextEditingController();
-  late TextEditingController _deductionTypeController = TextEditingController();
+  late String _deductionTypeController;
   late TextEditingController _deductionReasonController =
       TextEditingController();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  void listToDuductionTypeValue(String newValue) {
+    setState(() {
+      _deductionTypeController = newValue;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -172,7 +181,7 @@ class _DeductionsSectionState extends State<DeductionsSection> {
   }) {
     if (deduction != null) {
       _deductionAmountController.text = deduction.amount.toString();
-      _deductionTypeController.text = deduction.type;
+      _deductionTypeController = deduction.type;
       _deductionReasonController.text = deduction.reason;
     }
 
@@ -208,19 +217,6 @@ class _DeductionsSectionState extends State<DeductionsSection> {
                         ),
                         Container(
                           child: TextFormField(
-                            controller: _deductionTypeController,
-                            keyboardType: TextInputType.name,
-                            validator: (val) => Validation.nonEmptyField(val!),
-                            decoration: ThemeHelper().textInputDecoration(
-                                'deduction type', 'deduction type'),
-                          ),
-                          decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                        ),
-                        SizedBox(
-                          height: ScreenUtil().setHeight(15),
-                        ),
-                        Container(
-                          child: TextFormField(
                             controller: _deductionReasonController,
                             keyboardType: TextInputType.multiline,
                             minLines: 1,
@@ -230,6 +226,13 @@ class _DeductionsSectionState extends State<DeductionsSection> {
                                 'deduction reason', 'deduction reason'),
                           ),
                           decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                        ),
+                        SizedBox(
+                          height: ScreenUtil().setHeight(15),
+                        ),
+                        DeductionTypeDropDownButton(
+                          deductionTypeCallBack: listToDuductionTypeValue,
+                          oldValue: deduction != null ? deduction.type : null,
                         ),
                       ],
                     ),
@@ -266,14 +269,14 @@ class _DeductionsSectionState extends State<DeductionsSection> {
       } else {
         editItemInDeductionsList(
           amount: int.parse(_deductionAmountController.text),
-          type: _deductionTypeController.text,
+          type: _deductionTypeController,
           reason: _deductionReasonController.text,
           index: index,
         );
         Navigator.pop(context);
       }
       _deductionAmountController = TextEditingController();
-      _deductionTypeController = TextEditingController();
+      _deductionTypeController = '';
       _deductionReasonController = TextEditingController();
       Navigator.pop(context);
     } else {
@@ -397,7 +400,7 @@ class _DeductionsSectionState extends State<DeductionsSection> {
       widget.deductions.add(Deduction(
         amount: int.parse(_deductionAmountController.value.text),
         reason: _deductionReasonController.value.text,
-        type: _deductionTypeController.value.text,
+        type: _deductionTypeController,
       ));
       widget.deductionsListCallBack(widget.deductions);
     });
@@ -411,8 +414,8 @@ class _DeductionsSectionState extends State<DeductionsSection> {
     setState(() {
       widget.deductions[index] = Deduction(
         amount: amount,
-        reason: type,
-        type: reason,
+        reason: reason,
+        type: type,
       );
       widget.deductionsListCallBack(widget.deductions);
     });

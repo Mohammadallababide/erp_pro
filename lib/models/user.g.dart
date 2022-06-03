@@ -26,6 +26,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
           .toList(),
       roles:
           (json['roles'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      departmentId: json['departmentId'] as int?,
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -43,4 +44,5 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'receipts': instance.receipts,
       'jobId': instance.jobId,
       'level': instance.level,
+      'departmentId': instance.departmentId,
     };
