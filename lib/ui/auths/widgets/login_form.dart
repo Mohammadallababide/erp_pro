@@ -40,7 +40,7 @@ class _LoginFormState extends State<LoginForm> {
         } else if (state is SuccessSingIn) {
           Navigator.pushReplacementNamed(
             context,
-            NameScreen.homePage,
+            NameScreen.dashboardPage,
           );
         }
       },

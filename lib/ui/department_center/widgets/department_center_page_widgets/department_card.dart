@@ -21,29 +21,34 @@ class DepartmentCard extends StatelessWidget {
             arguments: {'department': department});
       },
       child: Container(
-        height: ScreenUtil().setHeight(150),
         width: double.infinity,
-        child: Card(
-          elevation: 3,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              ScreenUtil().radius(15),
-            ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: ScreenUtil().setWidth(7),
+            vertical: ScreenUtil().setHeight(10),
           ),
-          color: Colors.white,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: ScreenUtil().setWidth(7),
-              vertical: ScreenUtil().setHeight(10),
+          child: Card(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                ScreenUtil().radius(15),
+              ),
             ),
-            child: Column(
-              children: [
-                buildDepartmentCardHeaderSection(context),
-                SizedBox(
-                  height: ScreenUtil().setHeight(12),
-                ),
-                buildDepartmentCardBodyInfoSection(context),
-              ],
+            color: Colors.white,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: ScreenUtil().setWidth(7),
+                vertical: ScreenUtil().setHeight(10),
+              ),
+              child: Column(
+                children: [
+                  buildDepartmentCardHeaderSection(context),
+                  SizedBox(
+                    height: ScreenUtil().setHeight(12),
+                  ),
+                  buildDepartmentCardBodyInfoSection(context),
+                ],
+              ),
             ),
           ),
         ),

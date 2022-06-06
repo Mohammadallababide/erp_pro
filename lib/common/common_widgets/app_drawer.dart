@@ -24,6 +24,18 @@ class AppDrawer extends StatelessWidget {
           //   thickness: 2,
           //   color: Colors.white,
           // ),
+             _createDrawerItem(
+            icon: Icons.dashboard_rounded,
+            text: 'dashboard',
+            onTap: () => Navigator.pushReplacementNamed(
+              context,
+              NameScreen.dashboardPage,
+            ),
+          ),
+          const Divider(
+            thickness: 2,
+            color: Colors.white,
+          ),
           _createDrawerItem(
             icon: Icons.receipt_outlined,
             text: 'users financial mange',

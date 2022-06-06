@@ -2,7 +2,6 @@ import 'package:erb_mobo/ui/approvment_request_list/pages/approvment_requests.da
 import 'package:erb_mobo/ui/auths/pages/affter_register_page.dart';
 import 'package:erb_mobo/ui/auths/pages/auth_page.dart';
 import 'package:erb_mobo/ui/auths/pages/forget_password_page.dart';
-import 'package:erb_mobo/ui/home/pages/home_page.dart';
 import 'package:erb_mobo/ui/my_profile/pages/my_profile.dart';
 import 'package:erb_mobo/ui/salary_scales_center/pages/salary_scales_center.dart';
 import 'package:erb_mobo/ui/splash/pages/splash_page.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import '../ui/assign_commpany_job/page/assign_job_center_page.dart';
 import '../ui/company_jobs/pages/company_jobs_center_page.dart';
+import '../ui/dashbord/pages/dashboard_page.dart';
 import '../ui/department_center/pages/department_details_page.dart';
 import '../ui/department_center/pages/departments_center_page.dart';
 import '../ui/invoices-center/pages/create_invoice_page.dart';
@@ -44,9 +44,9 @@ class GenerateScreen {
         {
           return MaterialPageRoute(builder: (context) => ForgetPasswordPage());
         }
-      case NameScreen.homePage:
+      case NameScreen.dashboardPage:
         {
-          return MaterialPageRoute(builder: (context) => const HomePage());
+          return MaterialPageRoute(builder: (context) => const DashboardPage());
         }
       case NameScreen.aprovmentRequestsPage:
         {
@@ -180,7 +180,7 @@ class NameScreen {
   static const String registerPage = '/registerPage';
   static const String afterRegisterPage = '/afterRegisterPage';
   static const String forgetPasswordPage = '/forgetPasswordPage';
-  static const String homePage = 'homePage';
+  static const String dashboardPage = '/dashboardPage';
   static const String aprovmentRequestsPage = '/aprovmentRequestsPage';
   static const String myProfilePage = '/myProfilePage';
   static const String usersListPage = '/usersListPage';

@@ -61,7 +61,7 @@ class _SplashState extends State<Splash> {
                           context,
                           !isTokenExist
                               ? NameScreen.loginPage
-                              : NameScreen.homePage);
+                              : NameScreen.dashboardPage);
                     },
                     totalRepeatCount: 3,
                     pause: const Duration(milliseconds: 1000),
