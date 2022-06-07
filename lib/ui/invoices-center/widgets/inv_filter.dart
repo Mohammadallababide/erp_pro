@@ -5,64 +5,17 @@ import '../../../common/theme_helper.dart';
 import '../../../core/utils/core_util_function.dart';
 import '../../../models/invoice.dart';
 import '../bloc/invoice_bloc.dart';
-import 'enum/inv_filter_type_enum.dart';
 import 'invoice_Action_Button_widgets/invoice_action_button.dart';
 
-class InvFilter extends StatefulWidget {
+class InvFilter extends StatelessWidget {
   final List<Invoice> invoiceList;
   final InvoiceBloc invBloc;
 
-  final InvFilterTypeEnum filterType;
-  const InvFilter(
-      {Key? key,
-      required this.invoiceList,
-      required this.filterType,
-      required this.invBloc})
+  InvFilter({Key? key, required this.invoiceList, required this.invBloc})
       : super(key: key);
 
-  @override
-  State<InvFilter> createState() => _InvFilterState();
-}
-
-class _InvFilterState extends State<InvFilter> {
-  late List<Invoice> invoiceReviewPanddingList = [];
-  late List<Invoice> invoiceApprovePanddingList = [];
-  late List<Invoice> invoicePayementPanddingList = [];
-  late List<Invoice> invoiceReviewList = [];
-  late InvFilterTypeEnum filterTypeChangable = widget.filterType;
-  @override
-  void initState() {
-    super.initState();
-    intiFilteredInvs();
-  }
-
   void listToActionOnInvoice() {
-    widget.invBloc.add(GetInvoices());
-  }
-
-  void intiFilteredInvs() {
-    if (filterTypeChangable == InvFilterTypeEnum.review_pending) {
-      widget.invoiceList.forEach((element) {
-        if (element.status ==
-            InvFilterTypeEnum.review_pending.toString().split('.')[1]) {
-          invoiceReviewPanddingList.add(element);
-        }
-      });
-    } else if (filterTypeChangable == InvFilterTypeEnum.payment_pending) {
-      widget.invoiceList.forEach((element) {
-        if (element.status ==
-            InvFilterTypeEnum.payment_pending.toString().split('.')[1]) {
-          invoicePayementPanddingList.add(element);
-        }
-      });
-    } else if (filterTypeChangable == InvFilterTypeEnum.approval_pending) {
-      widget.invoiceList.forEach((element) {
-        if (element.status ==
-            InvFilterTypeEnum.approval_pending.toString().split('.')[1]) {
-          invoiceApprovePanddingList.add(element);
-        }
-      });
-    }
+    invBloc.add(GetInvoices());
   }
 
   @override
@@ -85,41 +38,16 @@ class _InvFilterState extends State<InvFilter> {
 
   List<DataRow> getDataTableRowList(BuildContext context) {
     List<DataRow> res = [];
-    filterTypeChangable == InvFilterTypeEnum.review_pending
-        ? invoiceReviewPanddingList.forEach((element) {
-            res.add(
-              invoiceTableRow(
-                inv: element,
-                context: context,
-              ),
-            );
-          })
-        : filterTypeChangable == InvFilterTypeEnum.approval_pending
-            ? invoiceApprovePanddingList.forEach((element) {
-                res.add(
-                  invoiceTableRow(
-                    inv: element,
-                    context: context,
-                  ),
-                );
-              })
-            : filterTypeChangable == InvFilterTypeEnum.payment_pending
-                ? invoicePayementPanddingList.forEach((element) {
-                    res.add(
-                      invoiceTableRow(
-                        inv: element,
-                        context: context,
-                      ),
-                    );
-                  })
-                : widget.invoiceList.forEach((element) {
-                    res.add(
-                      invoiceTableRow(
-                        inv: element,
-                        context: context,
-                      ),
-                    );
-                  });
+
+    invoiceList.forEach((element) {
+      res.add(
+        invoiceTableRow(
+          inv: element,
+          context: context,
+        ),
+      );
+    });
+
     return res;
   }
 

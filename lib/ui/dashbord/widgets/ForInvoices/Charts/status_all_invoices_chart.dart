@@ -3,8 +3,25 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'dart:ui' as ui;
 
-class StatusAllInvoicesChart extends StatelessWidget {
-  const StatusAllInvoicesChart({Key? key}) : super(key: key);
+import '../../../../../common/controllers/invoices_controller.dart';
+import '../../../../../models/invoice.dart';
+
+class StatusAllInvoicesChart extends StatefulWidget {
+  final List<Invoice> invoices;
+
+  StatusAllInvoicesChart({Key? key, required this.invoices}) : super(key: key);
+
+  @override
+  State<StatusAllInvoicesChart> createState() => _StatusAllInvoicesChartState();
+}
+
+class _StatusAllInvoicesChartState extends State<StatusAllInvoicesChart> {
+  late InvoicesController invoicesController;
+  @override
+  void initState() {
+    super.initState();
+    invoicesController = InvoicesController(widget.invoices);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +30,7 @@ class StatusAllInvoicesChart extends StatelessWidget {
       children: [
         Flexible(
           flex: 0,
-           fit : FlexFit.loose,
+          fit: FlexFit.loose,
           child: Padding(
             padding: EdgeInsets.symmetric(
               vertical: ScreenUtil().setHeight(5),
@@ -29,7 +46,7 @@ class StatusAllInvoicesChart extends StatelessWidget {
           ),
         ),
         Flexible(
-          flex:6,
+          flex: 6,
           child: Stack(
             fit: StackFit.expand,
             children: [
@@ -47,14 +64,8 @@ class StatusAllInvoicesChart extends StatelessWidget {
                       PieSeries<ChartDataForCircularChart, String>(
                         // Enables the tooltip for individual series
                         enableTooltip: true,
-                        dataSource: [
-                          // Bind data source
-                          ChartDataForCircularChart('upload', 35),
-                          ChartDataForCircularChart('reviewed', 28),
-                          ChartDataForCircularChart('paid', 34),
-                          ChartDataForCircularChart('rejected', 32),
-                          ChartDataForCircularChart('compleated', 40)
-                        ],
+                        dataSource: getChartsData(),
+
                         xValueMapper: (ChartDataForCircularChart data, _) =>
                             data.x,
                         yValueMapper: (ChartDataForCircularChart data, _) =>
@@ -65,31 +76,47 @@ class StatusAllInvoicesChart extends StatelessWidget {
                   ),
                 ),
               ),
-              BackdropFilter(
-                filter: ui.ImageFilter.blur(
-                  sigmaX: 10.0,
-                  sigmaY: 10.0,
-                ),
-                child: Container(
-                  color: Colors.transparent,
-                ),
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'Upload more invoices to see data!',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: ScreenUtil().setSp(20),
-                  ),
-                ),
-              ),
+              widget.invoices.isEmpty
+                  ? Stack(
+                      children: [
+                        BackdropFilter(
+                          filter: ui.ImageFilter.blur(
+                            sigmaX: 10.0,
+                            sigmaY: 10.0,
+                          ),
+                          child: Container(
+                            color: Colors.transparent,
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Upload more invoices to see data!',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: ScreenUtil().setSp(20),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(),
             ],
           ),
         ),
       ],
     );
+  }
+
+  List<ChartDataForCircularChart> getChartsData() {
+    List<ChartDataForCircularChart> result = [];
+    invoicesController.getAllInvoicesStatsMap().map((e) {
+      e.forEach((key, value) {
+        result.add(ChartDataForCircularChart(key, value));
+      });
+    }).toList();
+    return result;
   }
 }
 

@@ -1,13 +1,13 @@
-import 'dart:async';
-
 import 'package:erb_mobo/ui/dashbord/widgets/slides_dots.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../models/invoice.dart';
 import './Charts/spline_chart_For_invoices_paid.dart';
 import 'Charts/status_all_invoices_chart.dart';
 
 class DashBoardChartsSlider extends StatefulWidget {
-  const DashBoardChartsSlider({Key? key}) : super(key: key);
+  final List<Invoice> invoices;
+  const DashBoardChartsSlider({Key? key, required this.invoices}) : super(key: key);
 
   @override
   State<DashBoardChartsSlider> createState() => _DashBoardChartsSliderState();
@@ -59,7 +59,7 @@ class _DashBoardChartsSliderState extends State<DashBoardChartsSlider> {
             // controller: _pageController,
             onPageChanged: _onPageChanged,
             children: [
-              StatusAllInvoicesChart(),
+              StatusAllInvoicesChart(invoices: widget.invoices,),
               SplineChartForInvoicesPaid(),
             ],
           ),

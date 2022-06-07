@@ -25,7 +25,8 @@ class ServerApi {
   static final ServerApi apiClient = ServerApi._();
   static final http.Client _httpClient = http.Client();
   // static const _baseUrl = "https://ite-ria.herokuapp.com/api/v1";
-  static const _baseUrl = 'http://192.168.137.1:3000/api/v1';
+  // static const _baseUrl = 'http://192.168.137.1:3000/api/v1';
+  static const _baseUrl = 'http://192.168.1.3:3000/api/v1';
 
   Map<String, String> getHeaders() {
     print('Bearer ${getLocalToken().toString()}');
@@ -144,8 +145,14 @@ class ServerApi {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         final json = jsonDecode(response.body);
-        accessToken = json['data']['refreshToken'];
-        SharedPref.setToken(accessToken!);
+        SharedPref.setToken(json['data']['refreshToken']);
+        SharedPref.setUserId(json['data']['id']);
+        SharedPref.setUserEmail(json['data']['email']);
+        SharedPref.setUserFirstName(json['data']['firstName']);
+        SharedPref.setUserLastName(json['data']['lastName']);
+        SharedPref.setUserJobId(json['data']['jobId']);
+        SharedPref.setUserLevel(json['data']['level']);
+        SharedPref.setUserDepartmentId(json['data']['departmentId']);
       }
     } on SocketException {
       //this in case internet problems
@@ -368,8 +375,14 @@ class ServerApi {
         final json = jsonDecode(response.body);
         final User user = User.fromJson(json['data']);
         if (json['data']['accessToken'] != null) {
-          accessToken = json['data']['accessToken'];
-          SharedPref.setToken(accessToken!);
+          SharedPref.setToken(json['data']['accessToken']);
+          SharedPref.setUserId(json['data']['id']);
+          SharedPref.setUserEmail(json['data']['email']);
+          SharedPref.setUserFirstName(json['data']['firstName']);
+          SharedPref.setUserLastName(json['data']['lastName']);
+          // SharedPref.setUserJobId(json['data']['jobId']);
+          // SharedPref.setUserLevel(json['data']['level']);
+          // SharedPref.setUserDepartmentId(json['data']['departmentId']);
         }
         return user;
       }

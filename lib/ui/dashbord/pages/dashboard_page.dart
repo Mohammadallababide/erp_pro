@@ -1,8 +1,11 @@
 import 'package:erb_mobo/common/common_widgets/commomn_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../common/common_widgets/app_drawer.dart';
+import '../../../common/controllers/invoices_controller.dart';
+import '../../../models/invoice.dart';
+import '../../invoices-center/bloc/invoice_bloc.dart';
 import '../widgets/ForInvoices/dashboard_card.dart';
 import '../widgets/ForInvoices/dashboard_charts_slider.dart';
 
@@ -14,6 +17,17 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  final InvoiceBloc invoiceBloc = InvoiceBloc();
+  late bool isLoading = true;
+  late InvoicesController invoicesController;
+  late List<Invoice> invoices = [];
+
+  @override
+  void initState() {
+    super.initState();
+    invoiceBloc.add(GetInvoices());
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -24,55 +38,111 @@ class _DashboardPageState extends State<DashboardPage> {
       child: Scaffold(
         appBar: commonAppBar(context: context, title: 'Dashboard'),
         drawer: const AppDrawer(),
-        body: CustomScrollView(
-          primary: false,
-          slivers: <Widget>[
-            SliverPadding(
-              padding: const EdgeInsets.all(5),
-              sliver: SliverGrid.count(
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 5,
-                childAspectRatio: 1.1,
-                crossAxisCount: 2,
-                children: <Widget>[
-                  DashBoardCard(
-                    title: 'Invoice Overdue',
-                    icon: Icons.receipt,
-                    value: '3',
-                    color: Color.fromARGB(255, 211, 107, 130),
-                    otherTitle: 'total worth \n(AED)',
-                    otherValue: '19.1653116',
-                  ),
-                  DashBoardCard(
-                    title: 'Invoices to be paid',
-                    icon: Icons.monetization_on_rounded,
-                    value: '2',
-                    color: Color.fromARGB(255, 168, 217, 242),
-                    otherTitle: 'total worth \n(AED)',
-                    otherValue: '13.1561',
-                  ),
-                  DashBoardCard(
-                    title: 'Invoices assigned to me',
-                    icon: Icons.supervisor_account_rounded,
-                    value: '3',
-                    color: Color.fromARGB(255, 242, 233, 168),
-                    otherTitle: 'total worth \n(AED)',
-                    otherValue: '0',
-                  ),
-                  DashBoardCard(
-                    title: 'Total invoices exported',
-                    icon: Icons.copy,
-                    value: '0',
-                    color: Color.fromARGB(255, 206, 221, 228),
-                  ),
-                ],
-              ),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.all(5),
-              sliver: SliverToBoxAdapter(child: DashBoardChartsSlider()),
-            ),
-          ],
+        body: BlocListener(
+          bloc: invoiceBloc,
+          listener: (context, state) {
+            if (state is SuccessGettingInvoices) {
+              setState(
+                () => {
+                  isLoading = false,
+                  invoices = state.invoiceList,
+                  invoicesController = InvoicesController(invoices)
+                },
+              );
+            } else if (state is ErrorGettingInvoices) {
+              setState(
+                () => {
+                  isLoading = false,
+                },
+              );
+            }
+          },
+          child: BlocBuilder(
+            bloc: invoiceBloc,
+            builder: (context, state) {
+              if (state is SuccessGettingInvoices) {
+                return CustomScrollView(
+                  primary: false,
+                  slivers: <Widget>[
+                    SliverPadding(
+                      padding: const EdgeInsets.all(5),
+                      sliver: SliverGrid.count(
+                        mainAxisSpacing: 5,
+                        crossAxisSpacing: 5,
+                        childAspectRatio: 1.1,
+                        crossAxisCount: 2,
+                        children: <Widget>[
+                          DashBoardCard(
+                            title: 'Invoice Overdue',
+                            icon: Icons.receipt,
+                            value: invoicesController
+                                .getOverdueInvoices()
+                                .length
+                                .toString(),
+                            color: Color.fromARGB(255, 211, 107, 130),
+                            otherTitle: 'total worth \n(AED)',
+                            otherValue: invoicesController
+                                    .getTotalWorth(
+                                        invoicesController.getOverdueInvoices())
+                                    .toString() +
+                                ' \$',
+                          ),
+                          DashBoardCard(
+                            title: 'Invoices to be paid',
+                            icon: Icons.monetization_on_rounded,
+                            value: invoicesController
+                                .getToBePaidInvoices()
+                                .length
+                                .toString(),
+                            color: Color.fromARGB(255, 168, 217, 242),
+                            otherTitle: 'total worth \n(AED)',
+                            otherValue: invoicesController
+                                    .getTotalWorth(invoicesController
+                                        .getToBePaidInvoices())
+                                    .toString() +
+                                ' \$',
+                          ),
+                          DashBoardCard(
+                            title: 'Invoices assigned to me',
+                            icon: Icons.supervisor_account_rounded,
+                            value: invoicesController
+                                .getAssignedToMeInvoices()
+                                .length
+                                .toString(),
+                            color: Color.fromARGB(255, 242, 233, 168),
+                            otherTitle: 'total worth \n(AED)',
+                            otherValue: invoicesController
+                                    .getTotalWorth(invoicesController
+                                        .getAssignedToMeInvoices())
+                                    .toString() +
+                                ' \$',
+                          ),
+                          DashBoardCard(
+                            title: 'Total invoices exported',
+                            icon: Icons.copy,
+                            value: '0',
+                            color: Color.fromARGB(255, 206, 221, 228),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SliverPadding(
+                      padding: EdgeInsets.all(5),
+                      sliver: SliverToBoxAdapter(
+                          child: DashBoardChartsSlider(
+                        invoices: invoices,
+                      )),
+                    ),
+                  ],
+                );
+              } else if (state is ErrorGettingInvoices) {
+                return Center(
+                  child: Text('there some thing wrong'),
+                );
+              }
+              return Container();
+            },
+          ),
         ),
       ),
     );

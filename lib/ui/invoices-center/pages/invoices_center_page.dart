@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../common/common_widgets/app_drawer.dart';
+import '../../../common/controllers/invoices_controller.dart';
 import '../bloc/invoice_bloc.dart';
 import '../widgets/enum/inv_filter_type_enum.dart';
 import 'create_invoice_page.dart';
@@ -102,30 +103,28 @@ class _InvoicesCenterPageState extends State<InvoicesCenterPage> {
             bloc: invoiceBloc,
             builder: (context, state) {
               if (state is SuccessGettingInvoices) {
+                InvoicesController invoicesController =
+                    InvoicesController(state.invoiceList);
                 return TabBarView(
                   children: [
                     // for all filter
                     InvFilter(
                       invoiceList: state.invoiceList,
-                      filterType: InvFilterTypeEnum.all,
                       invBloc: invoiceBloc,
                     ),
                     // for review filter
                     InvFilter(
-                      invoiceList: state.invoiceList,
-                      filterType: InvFilterTypeEnum.review_pending,
+                      invoiceList: invoicesController.getToBeReviwedInvoices(),
                       invBloc: invoiceBloc,
                     ),
                     // for approve filter
                     InvFilter(
-                      invoiceList: state.invoiceList,
-                      filterType: InvFilterTypeEnum.approval_pending,
+                      invoiceList: invoicesController.getToBeApprovedInvoices(),
                       invBloc: invoiceBloc,
                     ),
                     // for payment filter
                     InvFilter(
-                      invoiceList: state.invoiceList,
-                      filterType: InvFilterTypeEnum.payment_pending,
+                      invoiceList: invoicesController.getToBePaidInvoices(),
                       invBloc: invoiceBloc,
                     ),
                   ],
