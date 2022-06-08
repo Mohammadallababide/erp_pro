@@ -17,8 +17,8 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
   Future<void> _getUser(Emitter<UsersState> emit) async {
     emit(GettingUsers());
     try {
-      final List<User> result = await ServerApi.apiClient.getUsersApprovment();
-      emit(SuccessGetUsers(result));
+      final List<User>? result = await ServerApi.apiClient.getUsersApprovment();
+      emit(SuccessGetUsers(result!));
     } catch (e) {
       emit(ErrorGetUsers((e.toString())));
     }

@@ -24,7 +24,6 @@ class ErrorGettedDepatment extends DepartmentState {
 class CreattingNewDepartment extends DepartmentState {}
 
 class SuccessCreattedDepartment extends DepartmentState {
-
   SuccessCreattedDepartment();
 }
 
@@ -75,4 +74,20 @@ class ErrorDelettedDepartment extends DepartmentState {
   final String error;
 
   ErrorDelettedDepartment(this.error);
+}
+
+class GettingDepartmentById extends DepartmentState {
+  GettingDepartmentById();
+}
+
+class SuccessGettedDepartmentById extends DepartmentState {
+  final Department department;
+
+  SuccessGettedDepartmentById(this.department);
+}
+
+class ErrorGettedDepatmentById extends DepartmentState {
+  final String error;
+
+  ErrorGettedDepatmentById(this.error);
 }

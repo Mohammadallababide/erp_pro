@@ -30,7 +30,7 @@ class SalaryScalesBloc extends Bloc<SalaryScalesEvent, SalaryScalesState> {
     emit(GettingSalaryScales());
     try {
       final result = await ServerApi.apiClient.getSalaryScales();
-      emit(SuccessGettingSalaryScales(result));
+      emit(SuccessGettingSalaryScales(result!));
     } catch (e) {
       emit(ErrorGettingSalaryScales((e.toString())));
     }

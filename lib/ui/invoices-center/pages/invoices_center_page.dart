@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../../../common/animationAppWidget.dart';
 import '../../../common/common_widgets/app_drawer.dart';
+import '../../../common/common_widgets/custom_app_button.dart';
 import '../../../common/controllers/invoices_controller.dart';
 import '../bloc/invoice_bloc.dart';
 import '../widgets/enum/inv_filter_type_enum.dart';
@@ -19,6 +22,8 @@ class InvoicesCenterPage extends StatefulWidget {
 
 class _InvoicesCenterPageState extends State<InvoicesCenterPage> {
   InvoiceBloc invoiceBloc = InvoiceBloc();
+  late bool isLoading = true;
+  late bool isError = false;
   @override
   void initState() {
     super.initState();
@@ -32,120 +37,193 @@ class _InvoicesCenterPageState extends State<InvoicesCenterPage> {
         SystemNavigator.pop();
         return false;
       },
-      child: DefaultTabController(
-        length: 4,
-        child: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Company Invoices',
-              style: TextStyle(color: Colors.white),
-            ),
-            elevation: 0.0,
-            backgroundColor: Theme.of(context).primaryColor,
-            iconTheme: const IconThemeData(
-              color: Colors.white,
-            ),
-            bottom: PreferredSize(
-              preferredSize: Size(
-                0,
-                ScreenUtil().setHeight(60),
-              ),
-              child: const TabBar(
-                tabs: [
-                  Tab(
-                    icon: null,
-                    text: 'All',
-                    iconMargin: const EdgeInsets.all(0),
+      child: BlocListener(
+        bloc: invoiceBloc,
+        listener: (context, state) async {
+          if (state is SuccessGettingInvoices) {
+            await Future.delayed(
+              Duration(seconds: 3),
+            );
+            setState(
+              () => {
+                isLoading = false,
+                isError = false,
+              },
+            );
+          } else if (state is ErrorGettingInvoices) {
+            await Future.delayed(
+              Duration(seconds: 3),
+            );
+            setState(
+              () => {
+                isLoading = false,
+                isError = true,
+              },
+            );
+          }
+        },
+        child: isError
+            ? Scaffold(
+                drawer: AppDrawer(),
+                appBar: AppBar(
+                  iconTheme: const IconThemeData(
+                    color: Colors.white,
                   ),
-                  Tab(
-                    icon: null,
-                    text: 'Review',
-                    iconMargin: const EdgeInsets.all(0),
+                  centerTitle: true,
+                  title: const Text(
+                    'Company Invoices',
+                    style: TextStyle(color: Colors.white),
                   ),
-                  Tab(
-                    icon: null,
-                    text: 'Approval',
-                    iconMargin: const EdgeInsets.all(0),
-                  ),
-                  Tab(
-                    icon: null,
-                    text: 'Payment',
-                    iconMargin: const EdgeInsets.all(0),
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              IconButton(
-                onPressed: () async {
-                  final bool? shouldRefresh = await Navigator.push<bool>(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CreateInvoicePage(),
-                    ),
-                  );
-                  if (shouldRefresh != null) {
-                    if (shouldRefresh) {
-                      // refresh invoice center page ...
-                      invoiceBloc.add(GetInvoices());
-                    }
-                  }
-                },
-                icon: Icon(
-                  Icons.add_circle,
-                  size: ScreenUtil().setSp(28),
+                  elevation: 0.0,
+                  backgroundColor: Theme.of(context).primaryColor,
                 ),
-              )
-            ],
-          ),
-          body: BlocBuilder(
-            bloc: invoiceBloc,
-            builder: (context, state) {
-              if (state is SuccessGettingInvoices) {
-                InvoicesController invoicesController =
-                    InvoicesController(state.invoiceList);
-                return TabBarView(
+                body: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // for all filter
-                    InvFilter(
-                      invoiceList: state.invoiceList,
-                      invBloc: invoiceBloc,
+                    AnimationAppWidget(
+                      name: AnimationWidgetNames.networkError,
                     ),
-                    // for review filter
-                    InvFilter(
-                      invoiceList: invoicesController.getToBeReviwedInvoices(),
-                      invBloc: invoiceBloc,
+                    SizedBox(height: ScreenUtil().setHeight(20)),
+                    Text(
+                      'There Some Thing Wrong!',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.bebasNeue(
+                        fontStyle: FontStyle.normal,
+                        textStyle: TextStyle(
+                          fontSize: ScreenUtil().setSp(25),
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
-                    // for approve filter
-                    InvFilter(
-                      invoiceList: invoicesController.getToBeApprovedInvoices(),
-                      invBloc: invoiceBloc,
-                    ),
-                    // for payment filter
-                    InvFilter(
-                      invoiceList: invoicesController.getToBePaidInvoices(),
-                      invBloc: invoiceBloc,
+                    SizedBox(height: ScreenUtil().setHeight(20)),
+                    InkWell(
+                      onTap: () {
+                        setState(() => {
+                              isLoading = true,
+                              isError = false,
+                            });
+                        invoiceBloc.add(GetInvoices());
+                      },
+                      child: CustomAppButton(
+                        title: 'retry',
+                      ),
                     ),
                   ],
-                );
-              } else if (state is GettingInvoices) {
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: Theme.of(context).primaryColor,
-                    strokeWidth: ScreenUtil().setWidth(3),
+                ),
+              )
+            : DefaultTabController(
+                length: 4,
+                child: Scaffold(
+                  appBar: AppBar(
+                    centerTitle: true,
+                    title: const Text(
+                      'Company Invoices',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    elevation: 0.0,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    iconTheme: const IconThemeData(
+                      color: Colors.white,
+                    ),
+                    bottom: PreferredSize(
+                      preferredSize: Size(
+                        0,
+                        ScreenUtil().setHeight(60),
+                      ),
+                      child: const TabBar(
+                        tabs: [
+                          Tab(
+                            icon: null,
+                            text: 'All',
+                            iconMargin: const EdgeInsets.all(0),
+                          ),
+                          Tab(
+                            icon: null,
+                            text: 'Review',
+                            iconMargin: const EdgeInsets.all(0),
+                          ),
+                          Tab(
+                            icon: null,
+                            text: 'Approval',
+                            iconMargin: const EdgeInsets.all(0),
+                          ),
+                          Tab(
+                            icon: null,
+                            text: 'Payment',
+                            iconMargin: const EdgeInsets.all(0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    actions: [
+                      IconButton(
+                        onPressed: () async {
+                          final bool? shouldRefresh =
+                              await Navigator.push<bool>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateInvoicePage(),
+                            ),
+                          );
+                          if (shouldRefresh != null) {
+                            if (shouldRefresh) {
+                              // refresh invoice center page ...
+                              invoiceBloc.add(GetInvoices());
+                            }
+                          }
+                        },
+                        icon: Icon(
+                          Icons.add_circle,
+                          size: ScreenUtil().setSp(28),
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              } else if (state is ErrorGettingInvoices) {
-                return Center(
-                  child: Text('some thing is wrong'),
-                );
-              }
-              return Container();
-            },
-          ),
-          drawer: const AppDrawer(),
-        ),
+                  body: isLoading
+                      ? AnimationAppWidget(
+                          name: AnimationWidgetNames.ProgressIndicator,
+                        )
+                      : BlocBuilder(
+                          bloc: invoiceBloc,
+                          builder: (context, state) {
+                            if (state is SuccessGettingInvoices) {
+                              InvoicesController invoicesController =
+                                  InvoicesController(state.invoiceList);
+                              return TabBarView(
+                                children: [
+                                  // for all filter
+                                  InvFilter(
+                                    invoiceList: state.invoiceList,
+                                    invBloc: invoiceBloc,
+                                  ),
+                                  // for review filter
+                                  InvFilter(
+                                    invoiceList: invoicesController
+                                        .getToBeReviwedInvoices(),
+                                    invBloc: invoiceBloc,
+                                  ),
+                                  // for approve filter
+                                  InvFilter(
+                                    invoiceList: invoicesController
+                                        .getToBeApprovedInvoices(),
+                                    invBloc: invoiceBloc,
+                                  ),
+                                  // for payment filter
+                                  InvFilter(
+                                    invoiceList: invoicesController
+                                        .getToBePaidInvoices(),
+                                    invBloc: invoiceBloc,
+                                  ),
+                                ],
+                              );
+                            }
+                            return Container();
+                          },
+                        ),
+                  drawer: const AppDrawer(),
+                ),
+              ),
       ),
     );
   }

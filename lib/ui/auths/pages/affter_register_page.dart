@@ -1,12 +1,10 @@
 import 'dart:async';
-
-import 'package:flare_flutter/flare_actor.dart';
-import 'package:flare_flutter/flare_controller.dart';
 import 'package:flare_flutter/flare_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../common/animationAppWidget.dart';
 import '../../../common/theme_helper.dart';
 
 class AfterRegisterPage extends StatelessWidget {
@@ -38,15 +36,8 @@ class AfterRegisterPage extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            height: ScreenUtil().setHeight(350),
-            width: double.infinity - ScreenUtil().setWidth(20),
-            child: FlareActor(
-              "assets/flare/send_verification_request.flr",
-              animation: "verification",
-              sizeFromArtboard: true,
-              fit: BoxFit.cover,
-            ),
+          AnimationAppWidget(
+            name: AnimationWidgetNames.sendVerificationRequest,
           ),
           FutureBuilder(
             future: Future.delayed(Duration(seconds: 2)),
@@ -66,10 +57,10 @@ class AfterRegisterPage extends StatelessWidget {
                           // height: 1.5,
                         ),
                       ),
-                      SizedBox(height: ScreenUtil().setHeight(20)),
                       Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: ScreenUtil().setWidth(15),
+                          vertical: ScreenUtil().setHeight(15),
                         ),
                         child: Container(
                           decoration: ThemeHelper()
@@ -89,7 +80,7 @@ class AfterRegisterPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            onPressed: () => () {
+                            onPressed: ()  {
                               Navigator.pop(context);
                             },
                           ),

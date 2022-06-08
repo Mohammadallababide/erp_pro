@@ -122,6 +122,7 @@ class _AssignJobCenterPageState extends State<AssignJobCenterPage> {
                         ),
                         widget.jobId == null
                             ? JobAssignBaseForm(
+                                userDepartmentId: widget.user.departmentId ?? 4,
                                 assignJobInfoCallBack:
                                     listenToAssignJobInfoChange,
                               )
@@ -129,7 +130,9 @@ class _AssignJobCenterPageState extends State<AssignJobCenterPage> {
                                 assignJobInfoCallBack:
                                     listenToAssignJobInfoChange,
                                 jobId: widget.jobId!,
-                                level: widget.jobLevel!),
+                                level: widget.jobLevel!,
+                                departmentId: widget.user.departmentId ?? 4,
+                              ),
                       ],
                     ),
                   ),

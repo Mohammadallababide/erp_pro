@@ -24,8 +24,8 @@ class DepartmentCard extends StatelessWidget {
         width: double.infinity,
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: ScreenUtil().setWidth(7),
-            vertical: ScreenUtil().setHeight(10),
+            horizontal: ScreenUtil().setWidth(5),
+            vertical: ScreenUtil().setHeight(3),
           ),
           child: Card(
             elevation: 3,
@@ -37,8 +37,8 @@ class DepartmentCard extends StatelessWidget {
             color: Colors.white,
             child: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: ScreenUtil().setWidth(7),
-                vertical: ScreenUtil().setHeight(10),
+                horizontal: ScreenUtil().setWidth(10),
+                vertical: ScreenUtil().setHeight(14),
               ),
               child: Column(
                 children: [

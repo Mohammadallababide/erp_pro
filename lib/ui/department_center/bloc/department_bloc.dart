@@ -21,6 +21,14 @@ class DepartmentBloc extends Bloc<DepartmentEvent, DepartmentState> {
         emit: emit,
       );
     });
+
+    on<GetDepartmentById>((event, emit) async {
+      await _getDepartmentById(
+        emit: emit,
+        id: event.id,
+      );
+    });
+
     on<EditDepartment>((event, emit) async {
       await _editDepartment(
         emit: emit,
@@ -58,6 +66,19 @@ class DepartmentBloc extends Bloc<DepartmentEvent, DepartmentState> {
       emit(SuccessCreattedDepartment());
     } catch (e) {
       emit(ErrorCreattedDepartment((e.toString())));
+    }
+  }
+
+  Future<void> _getDepartmentById({
+    required Emitter<DepartmentState> emit,
+    required int id,
+  }) async {
+    emit(GettingDepartmentById());
+    try {
+      Department? result = await ServerApi.apiClient.getDepartmentById(id);
+      emit(SuccessGettedDepartmentById(result!));
+    } catch (e) {
+      emit(ErrorGettedDepatmentById((e.toString())));
     }
   }
 

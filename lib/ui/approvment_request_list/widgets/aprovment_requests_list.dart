@@ -5,8 +5,10 @@ import 'package:erb_mobo/ui/auths/bloc/auths_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import '../../../core/utils/app_flash_bar.dart';
+import '../../../common/animationAppWidget.dart';
+import '../../../common/common_widgets/custom_app_button.dart';
 
 class ApprovmentRequestsList extends StatefulWidget {
   const ApprovmentRequestsList({Key? key}) : super(key: key);
@@ -16,7 +18,8 @@ class ApprovmentRequestsList extends StatefulWidget {
 }
 
 class _ApprovmentRequestsListState extends State<ApprovmentRequestsList> {
-  late bool isFinishGettingUsersSignupRequests = false;
+  late bool isLoading = true;
+
   List<User> usersRequests = [];
 
   final AuthsBloc authsBloc = AuthsBloc();
@@ -39,58 +42,104 @@ class _ApprovmentRequestsListState extends State<ApprovmentRequestsList> {
   Widget build(BuildContext context) {
     return BlocListener(
       bloc: authsBloc,
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is SucessGettingSignupUsersRequests) {
+          await Future.delayed(
+            Duration(seconds: 3),
+          );
           setState(() {
-            isFinishGettingUsersSignupRequests = true;
+            isLoading = false;
             usersRequests = state.users.reversed.toList();
           });
         } else if (state is ErrorGettingSignupUsersRequests) {
-          getFlashBar(
-            isErrorgMeg: true,
-            context: context,
-            title: 'Mission Faild',
-            message: 'can not fetch users registertion requests',
+          await Future.delayed(
+            Duration(seconds: 3),
           );
           setState(() {
-            isFinishGettingUsersSignupRequests = true;
-            usersRequests = [];
+            isLoading = false;
           });
         }
       },
-      child: isFinishGettingUsersSignupRequests
-          ? usersRequests.isEmpty
-              ? Center(
-                  child: Text(
-                    'not approvment requests yet!',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: ScreenUtil().setSp(15),
-                    ),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: usersRequests.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return RequestApprovmentCard(
-                      user: usersRequests[index],
-                      usersRequestsCallBack: listenToApprovmentRequests,
-                    );
-                  })
-          : SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    color: Theme.of(context).primaryColor,
-                    strokeWidth: ScreenUtil().setWidth(3),
-                  ),
-                  SizedBox(
-                    height: ScreenUtil().setHeight(15),
-                  ),
-                ],
-              ),
+      child: !isLoading
+          ? BlocBuilder(
+              bloc: authsBloc,
+              builder: (context, state) {
+                if (state is SucessGettingSignupUsersRequests) {
+                  return usersRequests.isEmpty
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AnimationAppWidget(
+                              name: AnimationWidgetNames.empty1,
+                            ),
+                            SizedBox(height: ScreenUtil().setHeight(20)),
+                            Column(
+                              children: [
+                                Text(
+                                  'There is no registred requests yet!',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.bebasNeue(
+                                    fontStyle: FontStyle.normal,
+                                    textStyle: TextStyle(
+                                      fontSize: ScreenUtil().setSp(25),
+                                      color: Theme.of(context).primaryColor,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        )
+                      : ListView.builder(
+                          itemCount: usersRequests.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return RequestApprovmentCard(
+                              user: usersRequests[index],
+                              usersRequestsCallBack: listenToApprovmentRequests,
+                            );
+                          },
+                        );
+                } else if (state is ErrorGettingSignupUsersRequests) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AnimationAppWidget(
+                        name: AnimationWidgetNames.networkError,
+                      ),
+                      SizedBox(height: ScreenUtil().setHeight(20)),
+                      Text(
+                        'There Some Thing Wrong!',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.bebasNeue(
+                          fontStyle: FontStyle.normal,
+                          textStyle: TextStyle(
+                            fontSize: ScreenUtil().setSp(25),
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: ScreenUtil().setHeight(20)),
+                      InkWell(
+                        onTap: () {
+                          authsBloc.add(GetUsersSignupRequests());
+                          setState(() => {
+                                isLoading = true,
+                              });
+                        },
+                        child: CustomAppButton(
+                          title: 'retry',
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                return Container();
+              },
+            )
+          : AnimationAppWidget(
+              name: AnimationWidgetNames.ProgressIndicator,
             ),
     );
   }

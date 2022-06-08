@@ -79,9 +79,9 @@ class AuthsBloc extends Bloc<AuthsEvent, AuthsState> {
   Future<void> _getUserSignupRequests(Emitter<AuthsState> emit) async {
     emit(GettingSignupUsersRequests());
     try {
-      final List<User> result =
+      final List<User>? result =
           await ServerApi.apiClient.getUsersRequestsSignupApprovment();
-      emit(SucessGettingSignupUsersRequests(result));
+      emit(SucessGettingSignupUsersRequests(result!));
     } catch (e) {
       emit(ErrorGettingSignupUsersRequests((e.toString())));
     }

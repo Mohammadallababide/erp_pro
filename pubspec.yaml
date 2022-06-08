@@ -109,6 +109,9 @@ flutter:
     - assets/images/upload-icon.jpg
     - assets/flare/users_loader.flr
     - assets/flare/no_user_found.flr
+    - assets/flare/dashboard_animated.flr
+    - assets/flare/network_error.flr
+    - assets/flare/uploding.flr
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

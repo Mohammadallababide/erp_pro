@@ -94,8 +94,8 @@ class UsersfinaicalmangeBloc
   }) async {
     emit(GettingReceipts());
     try {
-      final List<Receipt> result = await ServerApi.apiClient.getReceipts(page);
-      emit(SuccessGettinReceipts(result));
+      final List<Receipt>? result = await ServerApi.apiClient.getReceipts(page);
+      emit(SuccessGettinReceipts(result!));
     } catch (e) {
       emit(ErrorGettingReceipts((e.toString())));
     }

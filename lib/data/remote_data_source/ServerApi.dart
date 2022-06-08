@@ -25,8 +25,8 @@ class ServerApi {
   static final ServerApi apiClient = ServerApi._();
   static final http.Client _httpClient = http.Client();
   // static const _baseUrl = "https://ite-ria.herokuapp.com/api/v1";
-  // static const _baseUrl = 'http://192.168.137.1:3000/api/v1';
-  static const _baseUrl = 'http://192.168.1.3:3000/api/v1';
+  static const _baseUrl = 'http://192.168.137.1:3000/api/v1';
+  // static const _baseUrl = 'http://192.168.1.3:3000/api/v1';
 
   Map<String, String> getHeaders() {
     print('Bearer ${getLocalToken().toString()}');
@@ -167,7 +167,7 @@ class ServerApi {
   }
 
   Future<List<Department>?> getDepartments() async {
-    late List<Department> result = [];
+    late List<Department> result;
     try {
       final uri = Uri.parse(_baseUrl + '/departments');
       final response = await _httpClient.get(
@@ -187,7 +187,6 @@ class ServerApi {
         result = (jsonData['data'] as List)
             .map((e) => Department.fromJson(e))
             .toList();
-        return result;
       }
     } on SocketException {
       //this in case internet problems
@@ -199,7 +198,36 @@ class ServerApi {
       print(e.toString());
       return Future.error(e.toString());
     }
-    return result;
+  }
+
+  Future<Department?> getDepartmentById(int id) async {
+    late Department? result;
+    try {
+      final uri = Uri.parse(_baseUrl + '/departments/$id');
+      final response = await _httpClient.get(
+        uri,
+        headers: getHeaders(),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonData = json.decode(response.body);
+        result = Department.fromJson(jsonData['data']);
+        return result;
+      } else if (response.statusCode == 401) {
+        await refreshToken();
+        final jsonData = json.decode(response.body);
+        result = jsonData['data'];
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
   }
 
   Future<void> createDepartment({
@@ -440,8 +468,8 @@ class ServerApi {
   // For Addmin
   // ----------
 
-  Future<List<User>> getUsersRequestsSignupApprovment() async {
-    late List<User> result = [];
+  Future<List<User>?> getUsersRequestsSignupApprovment() async {
+    late List<User> result;
     try {
       // await refreshToken();
       final uri = Uri.parse(
@@ -473,11 +501,10 @@ class ServerApi {
       print(e.toString());
       return Future.error(e.toString());
     }
-    return result;
   }
 
-  Future<List<User>> getUsersApprovment() async {
-    late List<User> result = [];
+  Future<List<User>?> getUsersApprovment() async {
+    late List<User> result;
     try {
       // await refreshToken();
       final uri = Uri.parse(
@@ -509,7 +536,6 @@ class ServerApi {
       print(e.toString());
       return Future.error(e.toString());
     }
-    return result;
   }
 
   Future<User?> approveSignupUser({
@@ -636,8 +662,8 @@ class ServerApi {
     }
   }
 
-  Future<List<SalaryScale>> getSalaryScales([int page = 1]) async {
-    late List<SalaryScale> salaryScales = [];
+  Future<List<SalaryScale>?> getSalaryScales([int page = 1]) async {
+    late List<SalaryScale> salaryScales;
     try {
       final uri = Uri.parse(_baseUrl + '/salary-scales');
       final response = await _httpClient.get(uri, headers: getHeaders());
@@ -669,7 +695,6 @@ class ServerApi {
       print(e.toString());
       return Future.error(e.toString());
     }
-    return salaryScales;
   }
 
   Future<bool?> deleteSalaryScale(
@@ -740,7 +765,7 @@ class ServerApi {
 
   // Invoices Api ...
 
-  Future<List<Invoice>> getInvoices([int page = 1, int limit = 1]) async {
+  Future<List<Invoice>?> getInvoices([int page = 1, int limit = 1]) async {
     late List<Invoice> invoices = [];
     try {
       final uri = Uri.parse(_baseUrl + '/invoices/cruds');
@@ -773,7 +798,6 @@ class ServerApi {
       print(e.toString());
       return Future.error(e.toString());
     }
-    return invoices;
   }
 
   Future<void> createIvoice(
@@ -1289,8 +1313,8 @@ class ServerApi {
 
   // receipt Apis ...
 
-  Future<List<Receipt>> getReceipts([int page = 1]) async {
-    late List<Receipt> result = [];
+  Future<List<Receipt>?> getReceipts([int page = 1]) async {
+    late List<Receipt> result;
     try {
       // await refreshToken();
       final uri =
@@ -1323,7 +1347,6 @@ class ServerApi {
       print(e.toString());
       return Future.error(e.toString());
     }
-    return result;
   }
 
   Future<Receipt?> createReceipt(

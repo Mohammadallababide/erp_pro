@@ -5,14 +5,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/utils/costant.dart';
+import '../../../models/department.dart';
 import '../../../models/job.dart';
-import '../../company_jobs/bloc/job_bloc.dart';
+import '../../department_center/bloc/department_bloc.dart';
 
 class JobAssignBaseForm extends StatefulWidget {
   final Function assignJobInfoCallBack;
+  final int userDepartmentId;
+
   JobAssignBaseForm({
     Key? key,
     required this.assignJobInfoCallBack,
+    required this.userDepartmentId,
   }) : super(key: key);
 
   @override
@@ -21,15 +25,14 @@ class JobAssignBaseForm extends StatefulWidget {
 
 class _JobAssignBaseFormState extends State<JobAssignBaseForm> {
   late JobAssign jobAssign = JobAssign();
-  final JobBloc jobBloc = JobBloc();
+  final DepartmentBloc departmentBloc = DepartmentBloc();
+  late Department department;
   late int jobSelectedIndex = 1000;
   late int levelSelectedIndex = 1000;
   @override
   void initState() {
     super.initState();
-    jobBloc.add(
-      GetJobs(),
-    );
+    departmentBloc.add(GetDepartmentById(widget.userDepartmentId));
   }
 
   @override
@@ -175,12 +178,13 @@ class _JobAssignBaseFormState extends State<JobAssignBaseForm> {
                         ),
                       )
                     : BlocBuilder(
-                        bloc: jobBloc,
+                        bloc: departmentBloc,
                         builder: (context, state) {
-                          if (state is SuccessGettingJobs) {
+                          if (state is SuccessGettedDepartmentById) {
+                            department = state.department;
                             return IconButton(
                               onPressed: () {
-                                showCompanyJobsList(state.jobs);
+                                showCompanyJobsList(department.jobs);
                               },
                               icon: Icon(
                                 Icons.keyboard_arrow_right,
@@ -188,13 +192,13 @@ class _JobAssignBaseFormState extends State<JobAssignBaseForm> {
                                 size: ScreenUtil().setSp(37),
                               ),
                             );
-                          } else if (state is GettingJobs) {
+                          } else if (state is GettingDepartmentById) {
                             return Icon(
                               Icons.access_time,
                               color: Colors.blueAccent,
                               size: ScreenUtil().setSp(22),
                             );
-                          } else if (state is ErrorGettingJobs) {
+                          } else if (state is ErrorGettedDepatmentById) {
                             return Icon(
                               Icons.access_time_filled_outlined,
                               color: Colors.deepOrange,
@@ -286,7 +290,8 @@ class _JobAssignBaseFormState extends State<JobAssignBaseForm> {
                   ),
                   Center(
                     child: Text(
-                      'Company Jobs List',
+                      'Company Jobs List \n For ${department.title}',
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.yanoneKaffeesatz(
                         fontStyle: FontStyle.normal,
                         textStyle: TextStyle(

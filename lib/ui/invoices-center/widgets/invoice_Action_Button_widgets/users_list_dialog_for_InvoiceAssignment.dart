@@ -126,15 +126,15 @@ class _UsersListDialogForInvoicesAssignmentState
                                     },
                                     submitProcessFun: () {
                                       if (widget.userAssignemt != null) {
+                                        // setState(() {
+                                        //   widget.userActionCallBack();
+                                        // });
                                         widget.invoiceBloc.add(
                                           UnAssignInvoiceToUser(
                                               id: widget.invId,
                                               userId: widget.userAssignemt!.id!,
                                               assignmentNote: 'message'),
                                         );
-                                        setState(() {
-                                          widget.userActionCallBack();
-                                        });
                                       } else {
                                         setState(() {
                                           widget.userActionCallBack(
@@ -152,12 +152,20 @@ class _UsersListDialogForInvoicesAssignmentState
                                         Navigator.pop(context);
                                       }
                                     },
-                                    prcessedText:
-                                        "Are You Sure Want To Delete this Receipt?",
-                                    icon: Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                    ),
+                                    prcessedText: 'Are You Sure You Want To ' +
+                                        (widget.userAssignemt != null
+                                            ? 'unAsign'
+                                            : 'Assign') +
+                                        'this Receipt?',
+                                    icon: (widget.userAssignemt == null)
+                                        ? Icon(
+                                            Icons.assignment_ind,
+                                            color: Colors.blueAccent,
+                                          )
+                                        : Icon(
+                                            Icons.remove_circle_outline_rounded,
+                                            color: Colors.red,
+                                          ),
                                   ),
                                   child: widget.userAssignemt == null
                                       ? UserTileCard(
@@ -178,9 +186,7 @@ class _UsersListDialogForInvoicesAssignmentState
                               },
                             );
                           }
-                          return Center(
-                              child: Text(
-                                  'some thing wrong ...'));
+                          return Center(child: Text('some thing wrong ...'));
                         },
                       ),
                     ),

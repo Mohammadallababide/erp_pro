@@ -77,8 +77,11 @@ class InvoicesController {
   List<Invoice> getAssignedToMeInvoices() {
     List<Invoice> result = [];
     this.invoiceList.forEach((element) {
-      if (element.assigneeId == SharedPref.getUser().id) {
-        result.add(element);
+      print(SharedPref.getUserId());
+      if (element.assignee != null) {
+        if (element.assignee!.id == SharedPref.getUserId()) {
+          result.add(element);
+        }
       }
     });
     return result;

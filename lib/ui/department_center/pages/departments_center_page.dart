@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../common/animationAppWidget.dart';
 import '../../../common/common_widgets/app_drawer.dart';
 import '../../../common/common_widgets/commomn_app_bar.dart';
+import '../../../common/common_widgets/custom_app_button.dart';
 import '../../../core/utils/app_snack_bar.dart';
 import '../../../models/department.dart';
 import '../widgets/department_center_page_widgets/create_department.dart';
@@ -56,8 +59,6 @@ class _DepartmentCenterPageState extends State<DepartmentCenterPage> {
             setState(() {
               isLoading = false;
             });
-            ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
-                message: 'Faild Getting Jobs !', context: context));
           }
         },
         child: Scaffold(
@@ -76,33 +77,96 @@ class _DepartmentCenterPageState extends State<DepartmentCenterPage> {
                   bloc: departmentBloc,
                   builder: (context, state) {
                     if (state is SuccessGettedDepartment) {
-                      return ListView.builder(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: ScreenUtil().setWidth(5),
-                          vertical: ScreenUtil().setHeight(10),
-                        ),
-                        itemCount: departmentsList.length,
-                        itemBuilder: (
-                          BuildContext context,
-                          int index,
-                        ) =>
-                            DepartmentCard(
-                          department: departmentsList[index],
-                          index: index,
-                        ),
-                      );
+                      return departmentsList.isEmpty
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                AnimationAppWidget(
+                                  name: AnimationWidgetNames.empty1,
+                                ),
+                                SizedBox(height: ScreenUtil().setHeight(20)),
+                                Column(
+                                  children: [
+                                    Text(
+                                      'There is no departments created yet!',
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.bebasNeue(
+                                        fontStyle: FontStyle.normal,
+                                        textStyle: TextStyle(
+                                          fontSize: ScreenUtil().setSp(25),
+                                          color: Theme.of(context).primaryColor,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        height: ScreenUtil().setHeight(20)),
+                                    CreateDepatment(
+                                      jobListCallBack:
+                                          listenOnCreattedNewDepartmentAction,
+                                      childWidget: CustomAppButton(
+                                        title: 'add new one',
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            )
+                          : ListView.builder(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: ScreenUtil().setWidth(5),
+                                vertical: ScreenUtil().setHeight(10),
+                              ),
+                              itemCount: departmentsList.length,
+                              itemBuilder: (
+                                BuildContext context,
+                                int index,
+                              ) =>
+                                  DepartmentCard(
+                                department: departmentsList[index],
+                                index: index,
+                              ),
+                            );
                     } else if (state is ErrorGettedDepatment) {
-                      return Center(
-                        child: Text('some thing is wrong'),
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimationAppWidget(
+                            name: AnimationWidgetNames.networkError,
+                          ),
+                          SizedBox(height: ScreenUtil().setHeight(20)),
+                          Text(
+                            'There Some Thing Wrong!',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.bebasNeue(
+                              fontStyle: FontStyle.normal,
+                              textStyle: TextStyle(
+                                fontSize: ScreenUtil().setSp(25),
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: ScreenUtil().setHeight(20)),
+                          InkWell(
+                            onTap: () {
+                              departmentBloc.add(GetDepartments());
+                              setState(() => {
+                                    isLoading = true,
+                                  });
+                            },
+                            child: CustomAppButton(
+                              title: 'retry',
+                            ),
+                          ),
+                        ],
                       );
                     }
                     return Container();
                   },
                 )
-              : Center(
-                  child: CircularProgressIndicator(
-                    color: Theme.of(context).primaryColor,
-                  ),
+              : AnimationAppWidget(
+                  name: AnimationWidgetNames.ProgressIndicator,
                 ),
         ),
       ),

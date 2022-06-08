@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../common/animationAppWidget.dart';
 import '../../../core/utils/app_snack_bar.dart';
 import '../../../common/common_widgets/commomn_app_bar.dart';
 import '../../../common/theme_helper.dart';
@@ -24,6 +25,7 @@ class CreateInvoicePage extends StatefulWidget {
 class _CreateInvoicePageState extends State<CreateInvoicePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   InvoiceBloc invoiceBloc = InvoiceBloc();
+  late bool isPickedFile = false;
   late TextEditingController grossAmountController = TextEditingController();
   late TextEditingController netAmountController = TextEditingController();
   late TextEditingController taxNumberController = TextEditingController();
@@ -53,24 +55,47 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> {
             child: Column(
               children: [
                 Flexible(
-                  flex: 4,
+                  flex: 3,
                   child: Column(
                     children: [
-                      InkWell(
-                        onTap: () {
-                          pickPdfIncoive();
-                        },
-                        child: Container(
-                          height: ScreenUtil().setSp(150),
-                          width: ScreenUtil().setSp(150),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Theme.of(context).primaryColor,
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                      'assets/images/upload-icon.jpg'))),
-                        ),
-                      ),
+                      isPickedFile
+                          ? Stack(
+                              children: [
+                                AnimationAppWidget(
+                                  name: AnimationWidgetNames.uploaddingFile,
+                                ),
+                                Positioned(
+                                  bottom: ScreenUtil().setHeight(0),
+                                  right: ScreenUtil().setWidth(15),
+                                    child: IconButton(
+                                      highlightColor:Colors.green,
+                                  icon: Icon(
+                                    Icons.edit,
+                                    color: Theme.of(context).primaryColor,
+                                    size:ScreenUtil().setSp(25),
+                                  ),
+                                  onPressed: (){
+                                     pickPdfIncoive();
+                                  },
+                                ),
+                                )
+                              ],
+                            )
+                          : InkWell(
+                              onTap: () {
+                                pickPdfIncoive();
+                              },
+                              child: Container(
+                                height: ScreenUtil().setSp(150),
+                                width: ScreenUtil().setSp(150),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Theme.of(context).primaryColor,
+                                    image: DecorationImage(
+                                        image: AssetImage(
+                                            'assets/images/upload-icon.jpg'))),
+                              ),
+                            ),
                       SizedBox(
                         height: ScreenUtil().setHeight(15),
                       ),
@@ -78,7 +103,7 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> {
                   ),
                 ),
                 Flexible(
-                  flex: 7,
+                  flex: 6,
                   child: buildInvoiceForm(),
                 ),
                 Flexible(
@@ -146,6 +171,9 @@ class _CreateInvoicePageState extends State<CreateInvoicePage> {
 
     if (result != null) {
       pdfFile = File(result.files.single.path!);
+      setState(() {
+        isPickedFile = true;
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
           message: 'Faild pick the pdf file !!', context: context));

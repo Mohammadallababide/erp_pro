@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../models/department.dart';
 
+import '../../../models/user.dart';
 import '../widgets/department_details_widget/department_tabs/department_jobs_info_tab.dart';
 import '../widgets/department_details_widget/department_tabs/department_overView_info_tab.dart';
 import '../widgets/department_details_widget/department_tabs/department_users_info_tab.dart';
@@ -66,7 +67,13 @@ class DepartmentDetailsPage extends StatelessWidget {
               ),
               DepartmentUsersInfoTab(
                 users: department.users,
-                superUsers: department.users,
+                superUsers: [
+                  User(
+                    email: 'ria@ria.com',
+                    firstName: 'ria',
+                    lastName: 'ria',
+                  ),
+                ],
               ),
             ],
           )),

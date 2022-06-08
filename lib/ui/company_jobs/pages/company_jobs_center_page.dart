@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../common/animationAppWidget.dart';
 import '../../../common/common_widgets/app_drawer.dart';
+import '../../../common/common_widgets/custom_app_button.dart';
 import '../../../common/theme_helper.dart';
 import '../../../core/utils/app_snack_bar.dart';
 import '../../../common/common_widgets/commomn_app_bar.dart';
@@ -74,7 +76,6 @@ class _CompanyJobsCenterPageState extends State<CompanyJobsCenterPage> {
               await Future.delayed(
                 Duration(seconds: 3),
               );
-
               setState(() {
                 isLoading = false;
                 jobs = state.jobs.toList();
@@ -82,40 +83,20 @@ class _CompanyJobsCenterPageState extends State<CompanyJobsCenterPage> {
             }
           },
           child: isLoading
-              ? Center(
-                  child: Container(
-                    height: ScreenUtil().setHeight(100),
-                    width: double.infinity,
-                    child: FlareActor(
-                      "assets/flare/Progress Indicator.flr",
-                      animation: "Loading",
-                      color: Colors.black,
-                      sizeFromArtboard: true,
-                      fit: BoxFit.contain,
-                      shouldClip: false,
-                    ),
-                  ),
+              ? AnimationAppWidget(
+                  name: AnimationWidgetNames.ProgressIndicator,
                 )
               : BlocBuilder(
                   bloc: jobBloc,
                   builder: (context, state) {
                     if (state is SuccessGettingJobs) {
                       state.jobs.reversed.toList();
-                      return jobs.length == 0
+                      return jobs.isEmpty
                           ? Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
-                                  height: ScreenUtil().setHeight(180),
-                                  width: double.infinity -
-                                      ScreenUtil().setWidth(20),
-                                  child: FlareActor(
-                                    "assets/flare/empty2.flr",
-                                    animation: "empty",
-                                    sizeFromArtboard: true,
-                                    shouldClip: false,
-                                    fit: BoxFit.contain,
-                                  ),
+                                AnimationAppWidget(
+                                  name: AnimationWidgetNames.empty1,
                                 ),
                                 SizedBox(height: ScreenUtil().setHeight(20)),
                                 Column(
@@ -130,39 +111,14 @@ class _CompanyJobsCenterPageState extends State<CompanyJobsCenterPage> {
                                           color: Theme.of(context).primaryColor,
                                           fontWeight: FontWeight.w600,
                                         ),
-                                        // height: 1.5,
                                       ),
                                     ),
                                     SizedBox(
                                         height: ScreenUtil().setHeight(20)),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: ScreenUtil().setWidth(15),
-                                      ),
-                                      child: CreateNewJob(
-                                        jobListCallBack: listenCreateNewJob,
-                                        childWidget: Container(
-                                          decoration: ThemeHelper()
-                                              .buttonBoxDecoration(
-                                                  context: context),
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: ScreenUtil().setHeight(9),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              'add new one'.toUpperCase(),
-                                              style: GoogleFonts.belleza(
-                                                fontStyle: FontStyle.normal,
-                                                textStyle: TextStyle(
-                                                  fontSize:
-                                                      ScreenUtil().setSp(26),
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
+                                    CreateNewJob(
+                                      jobListCallBack: listenCreateNewJob,
+                                      childWidget: CustomAppButton(
+                                        title: 'add new one',
                                       ),
                                     ),
                                   ],
@@ -180,8 +136,38 @@ class _CompanyJobsCenterPageState extends State<CompanyJobsCenterPage> {
                               itemCount: jobs.length,
                             );
                     } else if (state is ErrorGettingJobs) {
-                      return const Center(
-                        child: Text('some thing is wrong'),
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimationAppWidget(
+                            name: AnimationWidgetNames.networkError,
+                          ),
+                          SizedBox(height: ScreenUtil().setHeight(20)),
+                          Text(
+                            'There Some Thing Wrong!',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.bebasNeue(
+                              fontStyle: FontStyle.normal,
+                              textStyle: TextStyle(
+                                fontSize: ScreenUtil().setSp(25),
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: ScreenUtil().setHeight(20)),
+                          InkWell(
+                            onTap: () {
+                              setState(() => {
+                                    isLoading = true,
+                                  });
+                              jobBloc.add(GetJobs());
+                            },
+                            child: CustomAppButton(
+                              title: 'retry',
+                            ),
+                          ),
+                        ],
                       );
                     }
                     return Container();

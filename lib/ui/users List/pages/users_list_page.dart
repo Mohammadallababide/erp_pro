@@ -5,7 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../core/utils/app_snack_bar.dart';
+import '../../../common/animationAppWidget.dart';
+import '../../../common/common_widgets/custom_app_button.dart';
 import '../../../common/common_widgets/commomn_app_bar.dart';
 import '../../../models/user.dart';
 import '../bloc/users_bloc.dart';
@@ -20,7 +21,7 @@ class UsersListPage extends StatefulWidget {
 }
 
 class _UsersListPageState extends State<UsersListPage> {
-  late bool isFinishGettingUsers = false;
+  late bool isLoading = true;
   late List<User> users = [];
   UsersBloc usersBloc = UsersBloc();
   @override
@@ -46,69 +47,103 @@ class _UsersListPageState extends State<UsersListPage> {
           child: BlocListener(
               bloc: usersBloc,
               listener: (context, state) async {
-                if (state is GettingUsers) {
-                  setState(() {
-                    isFinishGettingUsers = false;
-                  });
-                }
                 if (state is SuccessGetUsers) {
                   await Future.delayed(
                     Duration(seconds: 3),
                   );
                   setState(() {
-                    isFinishGettingUsers = true;
+                    isLoading = false;
                     users = state.users.reversed.toList();
                   });
                 } else if (state is ErrorGetUsers) {
-                  ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
-                      message: 'Faild Process!!', context: context));
                   await Future.delayed(
                     Duration(seconds: 3),
                   );
                   setState(() {
-                    isFinishGettingUsers = true;
-                    users = [];
+                    isLoading = false;
                   });
                 }
               },
-              child: isFinishGettingUsers
-                  ? users.isEmpty
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: ScreenUtil().setHeight(150),
-                              width: double.infinity,
-                              child: FlareActor(
-                                "assets/flare/no_user_found.flr",
-                                animation: "not_found",
-                                fit: BoxFit.contain,
+              child: !isLoading
+                  ? BlocBuilder(
+                      bloc: usersBloc,
+                      builder: (context, state) {
+                        if (state is SuccessGetUsers) {
+                          return users.isEmpty
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    AnimationAppWidget(
+                                      name: AnimationWidgetNames.empty1,
+                                    ),
+                                    SizedBox(
+                                        height: ScreenUtil().setHeight(20)),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          'Not Approvel users yet!',
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.bebasNeue(
+                                            fontStyle: FontStyle.normal,
+                                            textStyle: TextStyle(
+                                              fontSize: ScreenUtil().setSp(25),
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : ListView.builder(
+                                  itemCount: users.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return UserCard(
+                                      user: users[index],
+                                      usersBloc: usersBloc,
+                                    );
+                                  });
+                        } else if (state is ErrorGetUsers) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AnimationAppWidget(
+                                name: AnimationWidgetNames.networkError,
                               ),
-                            ),
-                            SizedBox(height: ScreenUtil().setHeight(5)),
-                            Text(
-                              'Not Approvel users yet!',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.bebasNeue(
-                                fontStyle: FontStyle.normal,
-                                textStyle: TextStyle(
-                                  fontSize: ScreenUtil().setSp(25),
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w600,
+                              SizedBox(height: ScreenUtil().setHeight(20)),
+                              Text(
+                                'There Some Thing Wrong!',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.bebasNeue(
+                                  fontStyle: FontStyle.normal,
+                                  textStyle: TextStyle(
+                                    fontSize: ScreenUtil().setSp(25),
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                                // height: 1.5,
                               ),
-                            ),
-                          ],
-                        )
-                      : ListView.builder(
-                          itemCount: users.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return UserCard(
-                              user: users[index],
-                              usersBloc: usersBloc,
-                            );
-                          })
+                              SizedBox(height: ScreenUtil().setHeight(20)),
+                              InkWell(
+                                onTap: () {
+                                  usersBloc.add(GetUsers());
+                                  setState(() => {
+                                        isLoading = true,
+                                      });
+                                },
+                                child: CustomAppButton(
+                                  title: 'retry',
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+
+                        return Container();
+                      })
                   : Center(
                       child: Container(
                         height: ScreenUtil().setHeight(130),

@@ -15,6 +15,12 @@ class CreateNewDepartment extends DepartmentEvent {
 
 class GetDepartments extends DepartmentEvent {}
 
+class GetDepartmentById extends DepartmentEvent {
+  final int id;
+
+  GetDepartmentById(this.id);
+}
+
 class EditDepartment extends DepartmentEvent {
   final String title;
   final int maxNumberOfEmployees;

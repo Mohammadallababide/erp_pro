@@ -190,8 +190,8 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
   }) async {
     emit(GettingInvoices());
     try {
-      final List<Invoice> result = await ServerApi.apiClient.getInvoices();
-      emit(SuccessGettingInvoices(result));
+      final List<Invoice>? result = await ServerApi.apiClient.getInvoices();
+      emit(SuccessGettingInvoices(result!));
     } catch (e) {
       emit(ErrorGettingInvoices((e.toString())));
     }

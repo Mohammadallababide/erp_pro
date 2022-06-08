@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../common/animationAppWidget.dart';
 import '../../../common/theme_helper.dart';
 import '../../../core/utils/core_util_function.dart';
 import '../../../models/invoice.dart';
@@ -20,20 +21,42 @@ class InvFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(children: <Widget>[
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Theme(
-          data: Theme.of(context),
-          child: DataTable(
-            dividerThickness: 1.5,
-            showBottomBorder: true,
-            columns: invoiceTableColumn(),
-            rows: getDataTableRowList(context),
-          ),
-        ),
-      ),
-    ]);
+    return invoiceList.isEmpty
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimationAppWidget(
+                name: AnimationWidgetNames.empty1,
+              ),
+              SizedBox(height: ScreenUtil().setHeight(20)),
+              Text(
+                'There is no data yet !',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.bebasNeue(
+                  fontStyle: FontStyle.normal,
+                  textStyle: TextStyle(
+                    fontSize: ScreenUtil().setSp(25),
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              )
+            ],
+          )
+        : ListView(children: <Widget>[
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Theme(
+                data: Theme.of(context),
+                child: DataTable(
+                  dividerThickness: 1.5,
+                  showBottomBorder: true,
+                  columns: invoiceTableColumn(),
+                  rows: getDataTableRowList(context),
+                ),
+              ),
+            ),
+          ]);
   }
 
   List<DataRow> getDataTableRowList(BuildContext context) {
