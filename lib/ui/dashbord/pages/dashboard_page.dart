@@ -1,3 +1,4 @@
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:erb_mobo/common/common_widgets/commomn_app_bar.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,38 @@ class _DashboardPageState extends State<DashboardPage> {
       child: Scaffold(
         appBar: commonAppBar(context: context, title: 'Dashboard'),
         drawer: const AppDrawer(),
+        bottomNavigationBar: ConvexAppBar(
+          backgroundColor: Theme.of(context).primaryColor,
+          activeColor: Colors.white,
+          top: -25,
+          curveSize: 80,
+          style: TabStyle.reactCircle,
+          // activeColor: Colors.white,
+          items: [
+            TabItem(
+              icon: Icons.receipt_outlined,
+              // title: 'reciepts',
+            ),
+            TabItem(
+              icon: Icons.description_rounded,
+              // title: 'invoices',
+            ),
+            TabItem(
+              icon: Icons.dashboard_rounded,
+              // title: 'dashboard',
+            ),
+            TabItem(
+              icon: Icons.notifications,
+              // title: 'notificati',
+            ),
+            TabItem(
+              icon: Icons.account_circle_rounded ,
+              // title: 'my profile',
+            ),
+          ],
+          initialActiveIndex: 1,
+          onTap: (int i) => print('click index=$i'),
+        ),
         body: BlocListener(
           bloc: invoiceBloc,
           listener: (context, state) async {
@@ -85,7 +118,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             sliver: SliverGrid.count(
                               mainAxisSpacing: 5,
                               crossAxisSpacing: 5,
-                              childAspectRatio: 1.1,
+                              childAspectRatio: 0.95,
                               crossAxisCount: 2,
                               children: <Widget>[
                                 DashBoardCard(

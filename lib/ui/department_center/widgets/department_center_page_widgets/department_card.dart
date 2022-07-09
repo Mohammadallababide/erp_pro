@@ -135,10 +135,33 @@ class DepartmentCard extends StatelessWidget {
     );
   }
 
-  Row buildDepartmentCardHeaderSection(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget buildDepartmentCardHeaderSection(BuildContext context) {
+    return Column(
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(
+              Icons.access_time_filled,
+              color: Theme.of(context).primaryColor,
+              size: ScreenUtil().setSp(14),
+            ),
+            SizedBox(
+              width: ScreenUtil().setWidth(6),
+            ),
+            Text(
+              "${CorerUtilFunction.getFormalDate(
+                '2022-05-18',
+              )}",
+              textDirection: ui.TextDirection.rtl,
+              style: TextStyle(
+                fontSize: ScreenUtil().setSp(12),
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ],
+        ),
         Row(
           children: [
             CircleAvatar(
@@ -168,29 +191,6 @@ class DepartmentCard extends StatelessWidget {
                 fontSize: ScreenUtil().setSp(17),
                 fontWeight: FontWeight.bold,
               ),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Text(
-              "${CorerUtilFunction.getFormalDate(
-                '2022-05-18',
-              )}",
-              textDirection: ui.TextDirection.ltr,
-              style: TextStyle(
-                fontSize: ScreenUtil().setSp(12),
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
-            SizedBox(
-              width: ScreenUtil().setWidth(8),
-            ),
-            Icon(
-              Icons.access_time_filled,
-              color: Theme.of(context).primaryColor,
-              size: ScreenUtil().setSp(14),
             ),
           ],
         ),

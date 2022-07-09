@@ -98,6 +98,18 @@ class AppDrawer extends StatelessWidget {
             color: Colors.white,
           ),
           _createDrawerItem(
+            icon: Icons.beach_access_rounded,
+            text: 'leaves center',
+            onTap: () => Navigator.pushReplacementNamed(
+              context,
+              NameScreen.aprovmentRequestsPage,
+            ),
+          ),
+          const Divider(
+            thickness: 2,
+            color: Colors.white,
+          ),
+          _createDrawerItem(
             icon: Icons.badge,
             text: 'approvment requests',
             onTap: () => Navigator.pushReplacementNamed(

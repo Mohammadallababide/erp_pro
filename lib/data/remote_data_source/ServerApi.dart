@@ -11,6 +11,8 @@ import '../../models/deduction.dart';
 import '../../models/imageModel.dart';
 import '../../models/invoice.dart';
 import '../../models/job.dart';
+import '../../models/leave.dart';
+import '../../models/leaveCategory.dart';
 import '../../models/receipt.dart';
 import '../../models/salary-scale-job.dart';
 import '../../models/salary-scale.dart';
@@ -25,8 +27,8 @@ class ServerApi {
   static final ServerApi apiClient = ServerApi._();
   static final http.Client _httpClient = http.Client();
   // static const _baseUrl = "https://ite-ria.herokuapp.com/api/v1";
-  static const _baseUrl = 'http://192.168.137.1:3000/api/v1';
-  // static const _baseUrl = 'http://192.168.1.3:3000/api/v1';
+  // static const _baseUrl = 'http://192.168.137.1:3000/api/v1';
+  static const _baseUrl = 'http://192.168.1.5:3000/api/v1';
 
   Map<String, String> getHeaders() {
     print('Bearer ${getLocalToken().toString()}');
@@ -1112,8 +1114,270 @@ class ServerApi {
     return null;
   }
 
-  // job Apis ...
+  // Leave Apis ...
+  Future<List<Leave>?> getLeaves() async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/leaves');
+      final response = await _httpClient.get(uri, headers: getHeaders());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonData = json.decode(response.body);
+        List<Leave> leaves =
+            (jsonData['data'] as List).map((e) => Leave.fromJson(e)).toList();
+        return leaves;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.get(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final jsonData = json.decode(response.body);
+          List<Leave> leaves =
+              (jsonData['data'] as List).map((e) => Leave.fromJson(e)).toList();
+          return leaves;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
 
+  Future<Leave?> createLeaveRequest({
+    required int leaveCategoryId,
+    required String description,
+    required String fromDate,
+    required String toDate,
+  }) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/leaves');
+      Map<String, dynamic> body = <String, dynamic>{};
+      body = {
+        "leaveCategoryId": leaveCategoryId,
+        "description": description,
+        "fromDate": fromDate,
+        "toDate": toDate,
+      };
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Leave leave = Leave.fromJson(json['data']);
+        return leave;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Leave leave = Leave.fromJson(json['data']);
+          return leave;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return null;
+  }
+
+  Future<Leave?> approveLeaveRequest(int id) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/leaves/$id/approve');
+      Map<String, dynamic> body = <String, dynamic>{};
+
+      final response = await _httpClient.patch(
+        uri,
+        headers: getHeaders(),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Leave leave = Leave.fromJson(json['data']);
+        return leave;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Leave leave = Leave.fromJson(json['data']);
+          return leave;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<Leave?> rejectLeaveRequest(int id) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/leaves/$id/reject');
+
+      final response = await _httpClient.patch(
+        uri,
+        headers: getHeaders(),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final Leave leave = Leave.fromJson(json['data']);
+        return leave;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final Leave leave = Leave.fromJson(json['data']);
+          return leave;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  // Leave Category Apis ...
+  Future<List<LeaveCategory>?> getLeavesCategories() async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/leaves-categories');
+      final response = await _httpClient.get(uri, headers: getHeaders());
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonData = json.decode(response.body);
+        List<LeaveCategory> leavesCategories = (jsonData['data'] as List)
+            .map((e) => LeaveCategory.fromJson(e))
+            .toList();
+        return leavesCategories;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.get(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final jsonData = json.decode(response.body);
+          List<LeaveCategory> leavesCategories = (jsonData['data'] as List)
+              .map((e) => LeaveCategory.fromJson(e))
+              .toList();
+          return leavesCategories;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<LeaveCategory?> createLeaveCategory({
+    required int deductionAmount,
+    required String name,
+  }) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/leaves-categories');
+      Map<String, dynamic> body = <String, dynamic>{};
+      body = {
+        "name": name,
+        "deductionAmount": deductionAmount,
+      };
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.post(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final LeaveCategory leaveCategory =
+            LeaveCategory.fromJson(json['data']);
+        return leaveCategory;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final LeaveCategory leaveCategory =
+              LeaveCategory.fromJson(json['data']);
+          return leaveCategory;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+    return null;
+  }
+
+  Future<bool?> deleteLeaveCategorie(
+    int id,
+  ) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/leaves-categories/$id');
+      final response = await _httpClient.delete(
+        uri,
+        headers: getHeaders(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          return true;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+  // job Apis ...
   Future<User?> assignJob({
     required int userId,
     required int jobId,
