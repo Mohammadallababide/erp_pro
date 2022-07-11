@@ -102,7 +102,7 @@ class AppDrawer extends StatelessWidget {
             text: 'leaves center',
             onTap: () => Navigator.pushReplacementNamed(
               context,
-              NameScreen.aprovmentRequestsPage,
+              NameScreen.leavesCenterPage,
             ),
           ),
           const Divider(

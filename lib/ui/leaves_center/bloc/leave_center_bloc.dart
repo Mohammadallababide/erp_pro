@@ -140,8 +140,13 @@ class LeaveCenterBloc extends Bloc<LeaveCenterEvent, LeaveCenterState> {
   }) async {
     emit(DelettingLeaveCategory());
     try {
-      await ServerApi.apiClient.deleteLeaveCategorie(id);
+    bool? isSuccess   = await ServerApi.apiClient.deleteLeaveCategorie(id);
+      if(isSuccess!){
+      
       emit(SuccessDelettedLeaveCategory());
+      }else{
+         emit(ErrorDelettedLeaveCategory(('faild delete')));
+      }
     } catch (e) {
       emit(ErrorDelettedLeaveCategory((e.toString())));
     }

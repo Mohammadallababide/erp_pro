@@ -2,6 +2,7 @@ import 'package:erb_mobo/ui/approvment_request_list/pages/approvment_requests.da
 import 'package:erb_mobo/ui/auths/pages/affter_register_page.dart';
 import 'package:erb_mobo/ui/auths/pages/auth_page.dart';
 import 'package:erb_mobo/ui/auths/pages/forget_password_page.dart';
+import 'package:erb_mobo/ui/leaves_center/pages/leaves_center_page.dart';
 import 'package:erb_mobo/ui/my_profile/pages/my_profile.dart';
 import 'package:erb_mobo/ui/salary_scales_center/pages/salary_scales_center.dart';
 import 'package:erb_mobo/ui/splash/pages/splash_page.dart';
@@ -14,6 +15,8 @@ import '../ui/department_center/pages/department_details_page.dart';
 import '../ui/department_center/pages/departments_center_page.dart';
 import '../ui/invoices-center/pages/create_invoice_page.dart';
 import '../ui/invoices-center/pages/invoices_center_page.dart';
+import '../ui/leaves_center/pages/categories_leaves_center_page.dart';
+import '../ui/leaves_center/pages/create_Leave_request_page.dart';
 import '../ui/roll_mangent-center/pages/rolls_mangment_center_page.dart';
 import '../ui/salary_scales_center/pages/scale_salary_details_page.dart';
 import '../ui/users List/pages/users_list_page.dart';
@@ -116,6 +119,17 @@ class GenerateScreen {
           );
         }
 
+      case NameScreen.leavesCenterPage:
+        {
+          return MaterialPageRoute(builder: (context) => LeavesCenter());
+        }
+
+      case NameScreen.leavesCategoriesPage:
+        {
+          return MaterialPageRoute(
+              builder: (context) => CategoriesLeavesCenterPage());
+        }
+
       // case NameScreen.createsalaryScalePage:
       //   {
       //     return MaterialPageRoute(
@@ -133,6 +147,13 @@ class GenerateScreen {
                   ));
         }
 
+      case NameScreen.createLeaveRequestPage:
+        {
+          return MaterialPageRoute(
+            builder: (context) => CreateLeaveRequestPage(),
+          );
+        }
+   
       // case NameScreen.jobDetails:
       //   {
       //     return MaterialPageRoute(
@@ -198,6 +219,9 @@ class NameScreen {
   static const String SalartScaleDetailsPage = '/SalartScaleDetailsPage';
   static const String departmentCenterPage = '/DepartmentCenterPage';
   static const String departmentDetailsPage = '/DepartmentDetailsPage';
+  static const String leavesCenterPage = '/leavesCenterPage';
+  static const String leavesCategoriesPage = '/leavesCategoriesPage';
+  static const String createLeaveRequestPage = '/createLeaveRequestPage';
 }
 //  Navigator.push(
 //             context,
