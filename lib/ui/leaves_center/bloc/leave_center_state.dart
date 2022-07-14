@@ -103,7 +103,7 @@ class ErrorApprovedLeaveRequest extends LeaveCenterState {
   ErrorApprovedLeaveRequest(this.error);
 }
 
-class ReqjecttingLeaveRequest extends LeaveCenterState {
+class RejecttingLeaveRequest extends LeaveCenterState {
 
 }
 

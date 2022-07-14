@@ -7,6 +7,10 @@ class CorerUtilFunction {
     return DateFormat('yyyy-MM-dd').format(DateTime.parse(date));
   }
 
+  static String getFormalDateForHours(String date) {
+    return DateFormat('hh:mm').format(DateTime.parse(date));
+  }
+
   static Widget getShimmer(Widget shimmerChild) {
     return Shimmer.fromColors(
       baseColor: Colors.grey.withOpacity(0.5),

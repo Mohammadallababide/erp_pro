@@ -94,9 +94,9 @@ class LeaveCenterBloc extends Bloc<LeaveCenterEvent, LeaveCenterState> {
     required int id,
     required Emitter<LeaveCenterState> emit,
   }) async {
-    emit(ReqjecttingLeaveRequest());
+    emit(RejecttingLeaveRequest());
     try {
-      Leave? result = await ServerApi.apiClient.approveLeaveRequest(id);
+      Leave? result = await ServerApi.apiClient.rejectLeaveRequest(id);
       emit(SuccessRejectedLeaveRequest(result!));
     } catch (e) {
       emit(ErrorRejectedLeaveRequest((e.toString())));
@@ -140,12 +140,11 @@ class LeaveCenterBloc extends Bloc<LeaveCenterEvent, LeaveCenterState> {
   }) async {
     emit(DelettingLeaveCategory());
     try {
-    bool? isSuccess   = await ServerApi.apiClient.deleteLeaveCategorie(id);
-      if(isSuccess!){
-      
-      emit(SuccessDelettedLeaveCategory());
-      }else{
-         emit(ErrorDelettedLeaveCategory(('faild delete')));
+      bool? isSuccess = await ServerApi.apiClient.deleteLeaveCategorie(id);
+      if (isSuccess!) {
+        emit(SuccessDelettedLeaveCategory());
+      } else {
+        emit(ErrorDelettedLeaveCategory(('faild delete')));
       }
     } catch (e) {
       emit(ErrorDelettedLeaveCategory((e.toString())));

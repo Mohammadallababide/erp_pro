@@ -17,6 +17,7 @@ import '../ui/invoices-center/pages/create_invoice_page.dart';
 import '../ui/invoices-center/pages/invoices_center_page.dart';
 import '../ui/leaves_center/pages/categories_leaves_center_page.dart';
 import '../ui/leaves_center/pages/create_Leave_request_page.dart';
+import '../ui/leaves_center/pages/leave_details_page.dart';
 import '../ui/roll_mangent-center/pages/rolls_mangment_center_page.dart';
 import '../ui/salary_scales_center/pages/scale_salary_details_page.dart';
 import '../ui/users List/pages/users_list_page.dart';
@@ -153,7 +154,17 @@ class GenerateScreen {
             builder: (context) => CreateLeaveRequestPage(),
           );
         }
-   
+
+      case NameScreen.leaveDetailsPage:
+        {
+          return MaterialPageRoute(
+            builder: (context) => LeaveDetailsPage(
+              leave: arg!['leave'],
+              actionCallBack: arg['actionCallBack'],
+            ),
+          );
+        }
+
       // case NameScreen.jobDetails:
       //   {
       //     return MaterialPageRoute(
@@ -222,6 +233,7 @@ class NameScreen {
   static const String leavesCenterPage = '/leavesCenterPage';
   static const String leavesCategoriesPage = '/leavesCategoriesPage';
   static const String createLeaveRequestPage = '/createLeaveRequestPage';
+  static const String leaveDetailsPage = '/leaveDetailsPage';
 }
 //  Navigator.push(
 //             context,

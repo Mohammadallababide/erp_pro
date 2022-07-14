@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../common/common_widgets/commonDialog/confirm_process_Dialog.dart';
 import '../../../../models/user.dart';
 import '../../../users List/bloc/users_bloc.dart';
-import '../../../users_finacial_mange/widgets/UsersListForAsignmentSalary/user_card_tile.dart';
+import '../../../../common/common_widgets/user_card_tile.dart';
 import '../../bloc/invoice_bloc.dart';
 
 class UsersListDialogForInvoicesAssignment extends StatefulWidget {

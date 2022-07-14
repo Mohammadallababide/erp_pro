@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../common/common_widgets/custom_dividor_line.dart';
 import '../../../../../models/user.dart';
-import '../../../../users_finacial_mange/widgets/UsersListForAsignmentSalary/user_card_tile.dart';
+import '../../../../../common/common_widgets/user_card_tile.dart';
 
 class DepartmentUsersInfoTab extends StatefulWidget {
   final List<User> users;
