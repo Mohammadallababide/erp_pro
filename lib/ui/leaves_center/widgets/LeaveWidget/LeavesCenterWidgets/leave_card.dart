@@ -1,4 +1,5 @@
 import 'package:erb_mobo/ui/leaves_center/enum/leave_status.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui' as ui;
@@ -21,6 +22,20 @@ class LeaveCard extends StatefulWidget {
 }
 
 class _LeaveCardState extends State<LeaveCard> {
+  late Leave changeableItem;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    changeableItem = widget.item;
+  }
+
+  void lisentToChangeStateOfLeave(String newStatus) {
+    setState(() {
+      changeableItem.status = newStatus;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -55,9 +70,14 @@ class _LeaveCardState extends State<LeaveCard> {
   Widget buildShortcutLeaveInfoContent() {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, NameScreen.leaveDetailsPage, arguments: {
-          'leave': widget.item,
-        });
+        Navigator.pushNamed(
+          context,
+          NameScreen.leaveDetailsPage,
+          arguments: {
+            'leave': changeableItem,
+            'actionCallBack': lisentToChangeStateOfLeave,
+          },
+        );
       },
       child: Row(
         children: [
@@ -73,10 +93,10 @@ class _LeaveCardState extends State<LeaveCard> {
           Expanded(
             flex: 1,
             child: Icon(
-              widget.item.status ==
+              changeableItem.status ==
                       LeaveStatus.pending_approval.toString().split('.')[1]
                   ? Icons.hourglass_top
-                  : widget.item.status ==
+                  : changeableItem.status ==
                           LeaveStatus.approved.toString().split('.')[1]
                       ? Icons.check_circle
                       : Icons.cancel,
@@ -134,7 +154,7 @@ class _LeaveCardState extends State<LeaveCard> {
       ),
       ListTile(
         title: Text(
-          widget.item.status!,
+          changeableItem.status!,
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: ScreenUtil().setSp(14)),
         ),
@@ -143,10 +163,10 @@ class _LeaveCardState extends State<LeaveCard> {
           color: Theme.of(context).primaryColor,
         ),
         trailing: Icon(
-          widget.item.status ==
+          changeableItem.status ==
                   LeaveStatus.pending_approval.toString().split('.')[1]
               ? Icons.hourglass_top
-              : widget.item.status ==
+              : changeableItem.status ==
                       LeaveStatus.approved.toString().split('.')[1]
                   ? Icons.check_circle
                   : Icons.cancel,
@@ -207,9 +227,9 @@ class _LeaveCardState extends State<LeaveCard> {
       ),
       ListTile(
         title: Text(
-          widget.item.requester!.firstName +
+          changeableItem.requester!.firstName +
               ' ' +
-              widget.item.requester!.lastName,
+              changeableItem.requester!.lastName,
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: ScreenUtil().setSp(14)),
         ),
@@ -234,12 +254,12 @@ class _LeaveCardState extends State<LeaveCard> {
       ),
       ListTile(
         title: Text(
-          widget.item.categoryName!,
+          changeableItem.categoryName!,
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: ScreenUtil().setSp(14)),
         ),
-        subtitle:
-            Text('deduction amount :' + widget.item.deductionAmount.toString()),
+        subtitle: Text(
+            'deduction amount :' + changeableItem.deductionAmount.toString()),
         leading: Icon(
           Icons.category_outlined,
           color: Theme.of(context).primaryColor,
@@ -261,8 +281,8 @@ class _LeaveCardState extends State<LeaveCard> {
       ListTile(
         title: Text(
           isStartDate
-              ? CorerUtilFunction.getFormalDate(widget.item.fromDate)
-              : CorerUtilFunction.getFormalDate(widget.item.toDate),
+              ? CorerUtilFunction.getFormalDate(changeableItem.fromDate)
+              : CorerUtilFunction.getFormalDate(changeableItem.toDate),
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: ScreenUtil().setSp(14)),
         ),
@@ -270,9 +290,9 @@ class _LeaveCardState extends State<LeaveCard> {
           'at Time : ' +
               (isStartDate
                   ? CorerUtilFunction.getFormalDateForHours(
-                      widget.item.fromDate)
+                      changeableItem.fromDate)
                   : CorerUtilFunction.getFormalDateForHours(
-                      widget.item.toDate)),
+                      changeableItem.toDate)),
         ),
         leading: Icon(
           Icons.date_range,
@@ -294,7 +314,7 @@ class _LeaveCardState extends State<LeaveCard> {
       ),
       ListTile(
         title: Text(
-          widget.item.description,
+          changeableItem.description,
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: ScreenUtil().setSp(14)),
         ),

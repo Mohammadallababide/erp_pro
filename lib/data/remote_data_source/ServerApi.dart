@@ -28,7 +28,7 @@ class ServerApi {
   static final http.Client _httpClient = http.Client();
   // static const _baseUrl = "https://ite-ria.herokuapp.com/api/v1";
   // static const _baseUrl = 'http://192.168.137.1:3000/api/v1';
-  static const _baseUrl = 'http://192.168.245.146:3000/api/v1';
+  static const _baseUrl = 'http://192.168.15.146:3000/api/v1';
 
   Map<String, String> getHeaders() {
     print('Bearer ${getLocalToken().toString()}');
@@ -1115,6 +1115,58 @@ class ServerApi {
   }
 
   // Leave Apis ...
+
+  Future<User?> changeLeaveCategoryForUser({
+    required int userId,
+    required List<LeaveCategory> leavesCategories,
+  }) async {
+    try {
+      final uri =
+          Uri.parse(_baseUrl + '/auth-for-admin/user-leaves-categories');
+      Map<String, dynamic> body = <String, dynamic>{};
+      List<Map<String, dynamic>> userLeavesCategories = leavesCategories
+          .map((l) => {
+                "leaveCategoryId": l.id,
+                "numberOfDaysAllowed": l.numberOfDaysAllowed!,
+              })
+          .toList();
+      body = {
+        "userId": userId,
+        "userLeavesCategories": userLeavesCategories,
+      };
+      final bodReq = jsonEncode(body);
+      final response = await _httpClient.put(
+        uri,
+        headers: getHeaders(),
+        body: bodReq,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final User user = User.fromJson(json['data']);
+        return user;
+      }
+      if (response.statusCode == 401) {
+        await refreshToken();
+        final response = await _httpClient.post(uri, headers: getHeaders());
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final json = jsonDecode(response.body);
+          final User user = User.fromJson(json['data']);
+          return user;
+        }
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
   Future<List<Leave>?> getLeaves() async {
     try {
       final uri = Uri.parse(_baseUrl + '/leaves');

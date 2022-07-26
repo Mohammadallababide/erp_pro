@@ -130,7 +130,7 @@ class _LeaveCategoryCardState extends State<LeaveCategoryCard> {
             ),
             SizedBox(width: ScreenUtil().setWidth(10)),
             Text(
-              widget.leaveCategory.name,
+              widget.leaveCategory.name!,
               style: TextStyle(
                 color: Colors.black,
                 fontSize: ScreenUtil().setSp(15),

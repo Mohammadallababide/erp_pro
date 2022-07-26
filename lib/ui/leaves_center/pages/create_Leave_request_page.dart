@@ -12,7 +12,9 @@ import '../../../core/utils/app_snack_bar.dart';
 import '../widgets/LeaveWidget/CreateLeaveRequestWidgets/leave_category_selector.dart';
 
 class CreateLeaveRequestPage extends StatefulWidget {
-  const CreateLeaveRequestPage({Key? key}) : super(key: key);
+  final Function actionCallBack;
+  const CreateLeaveRequestPage({Key? key, required this.actionCallBack})
+      : super(key: key);
 
   @override
   State<CreateLeaveRequestPage> createState() => _CreateLeaveRequestPageState();
@@ -100,11 +102,9 @@ class _CreateLeaveRequestPageState extends State<CreateLeaveRequestPage> {
             message: 'Faild Creatted the Leave Request ',
           );
         } else if (state is SuccessCreattedLeaveRequest) {
-          getFlashBar(
-            context: context,
-            title: 'Mission Success',
-            message: 'the Leave Request is Creatted with success',
-          );
+          setState(() {
+            widget.actionCallBack();
+          });
           Navigator.pop(context);
         }
       },
@@ -175,6 +175,7 @@ class _CreateLeaveRequestPageState extends State<CreateLeaveRequestPage> {
             minLines: 1,
             maxLines: 5,
             maxLength: 120,
+            controller: descriptionController,
             keyboardType: TextInputType.multiline,
             decoration: InputDecoration(
               labelText: 'descrption',

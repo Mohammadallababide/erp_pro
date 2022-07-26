@@ -13,7 +13,7 @@ class Leave {
   final User? manger;
   final int? requesterId;
   final User? requester;
-  final String? status;
+  late final String? status;
   final String? categoryName;
   final int? deductionAmount;
 

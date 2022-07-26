@@ -20,7 +20,7 @@ class _LeaveCategoryListTileState extends State<LeaveCategoryListTile> {
   Widget build(BuildContext context) {
     return ListTile(
         title: Text(
-          widget.item.name,
+          widget.item.name!,
           style: TextStyle(
               fontWeight: FontWeight.bold, fontSize: ScreenUtil().setSp(14)),
         ),

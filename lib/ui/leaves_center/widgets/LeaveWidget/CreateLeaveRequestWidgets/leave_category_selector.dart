@@ -22,6 +22,7 @@ class LeaveCategorySelector extends StatefulWidget {
 
 class _LeaveCategorySelectorState extends State<LeaveCategorySelector> {
   LeaveCenterBloc leaveCenterBloc = LeaveCenterBloc();
+  late String? selectedLeaveCategoryName = null;
   @override
   Widget build(BuildContext context) {
     return selectLeaveCategorySection();
@@ -46,7 +47,7 @@ class _LeaveCategorySelectorState extends State<LeaveCategorySelector> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Not Selected Yet!',
+              selectedLeaveCategoryName ?? 'Not Selected Yet!',
               style: TextStyle(
                 fontSize: ScreenUtil().setSp(15),
                 fontWeight: FontWeight.w400,
@@ -137,6 +138,8 @@ class _LeaveCategorySelectorState extends State<LeaveCategorySelector> {
                                     setState(() {
                                       widget.selectCategoryActionCallBack(
                                           state.leaveCategories[index].id);
+                                      selectedLeaveCategoryName =
+                                          state.leaveCategories[index].name;
                                     });
                                   },
                                   child: LeaveCategoryListTile(

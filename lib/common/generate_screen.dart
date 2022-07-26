@@ -151,7 +151,9 @@ class GenerateScreen {
       case NameScreen.createLeaveRequestPage:
         {
           return MaterialPageRoute(
-            builder: (context) => CreateLeaveRequestPage(),
+            builder: (context) => CreateLeaveRequestPage(
+              actionCallBack: arg!['actionCallBack'],
+            ),
           );
         }
 

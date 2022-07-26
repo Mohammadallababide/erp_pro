@@ -101,9 +101,24 @@ class _UsersListPageState extends State<UsersListPage> {
                                   itemCount: users.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return UserCard(
-                                      user: users[index],
-                                      usersBloc: usersBloc,
+                                    return Column(
+                                      children: [
+                                        UserCard(
+                                          user: users[index],
+                                          usersBloc: usersBloc,
+                                        ),
+                                        Divider(
+                                          thickness: 2, // thickness of the line
+                                          indent:
+                                              ScreenUtil().setSp(30),
+                                          endIndent:
+                                              ScreenUtil().setSp(30), 
+                                          color: Colors
+                                              .grey, 
+                                          height:
+                                              ScreenUtil().setHeight(25),
+                                        )
+                                      ],
                                     );
                                   });
                         } else if (state is ErrorGetUsers) {

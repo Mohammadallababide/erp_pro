@@ -36,7 +36,8 @@ class _LeaveDetailsPageState extends State<LeaveDetailsPage> {
         showAllData: true,
       ),
       floatingActionButton: widget.leave.status ==
-              LeaveStatus.pending_approval.toString().split('.')[1]
+                  LeaveStatus.pending_approval.toString().split('.')[1] ||
+              !isLeaveStatusChanged
           ? buildFloattingctionsButton()
           : Container(),
     );
@@ -53,6 +54,7 @@ class _LeaveDetailsPageState extends State<LeaveDetailsPage> {
           );
           setState(() {
             isLeaveStatusChanged = true;
+            widget.actionCallBack(state.result);
           });
         } else if (state is ErrorApprovedLeaveRequest) {
           getFlashBar(
@@ -69,6 +71,7 @@ class _LeaveDetailsPageState extends State<LeaveDetailsPage> {
           );
           setState(() {
             isLeaveStatusChanged = true;
+            widget.actionCallBack(state.result);
           });
         } else if (state is ErrorRejectedLeaveRequest) {
           getFlashBar(

@@ -7,16 +7,18 @@ class LeaveCategory {
   final int id;
 
   @JsonKey(required: false)
-  final String name;
+  final String? name;
   @JsonKey(required: false)
-  final int deductionAmount;
+  final int? deductionAmount;
+  @JsonKey(required: false)
+  final int? numberOfDaysAllowed;
 
   LeaveCategory({
     required this.id,
-   
-    required this.name,
-    required this.deductionAmount,
+    this.numberOfDaysAllowed,
+    this.name,
+    this.deductionAmount,
   });
-   factory LeaveCategory.fromJson(json) => _$LeaveCategoryFromJson(json);
+  factory LeaveCategory.fromJson(json) => _$LeaveCategoryFromJson(json);
   toJson() => _$LeaveCategoryToJson(this);
 }
