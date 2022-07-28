@@ -1,6 +1,5 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:erb_mobo/common/common_widgets/commomn_app_bar.dart';
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,9 +7,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../common/animationAppWidget.dart';
 import '../../../common/common_widgets/app_drawer.dart';
+import '../../../common/common_widgets/common_bottom_navigation_bar.dart';
 import '../../../common/common_widgets/custom_app_button.dart';
 import '../../../common/controllers/invoices_controller.dart';
-import '../../../common/theme_helper.dart';
 import '../../../models/invoice.dart';
 import '../../invoices-center/bloc/invoice_bloc.dart';
 import '../widgets/ForInvoices/dashboard_card.dart';
@@ -45,38 +44,7 @@ class _DashboardPageState extends State<DashboardPage> {
       child: Scaffold(
         appBar: commonAppBar(context: context, title: 'Dashboard'),
         drawer: const AppDrawer(),
-        bottomNavigationBar: ConvexAppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          activeColor: Colors.white,
-          top: -25,
-          curveSize: 80,
-          style: TabStyle.reactCircle,
-          // activeColor: Colors.white,
-          items: [
-            TabItem(
-              icon: Icons.receipt_outlined,
-              // title: 'reciepts',
-            ),
-            TabItem(
-              icon: Icons.description_rounded,
-              // title: 'invoices',
-            ),
-            TabItem(
-              icon: Icons.dashboard_rounded,
-              // title: 'dashboard',
-            ),
-            TabItem(
-              icon: Icons.notifications,
-              // title: 'notificati',
-            ),
-            TabItem(
-              icon: Icons.account_circle_rounded ,
-              // title: 'my profile',
-            ),
-          ],
-          initialActiveIndex: 1,
-          onTap: (int i) => print('click index=$i'),
-        ),
+        bottomNavigationBar: CommonBottomNavigationBar(),
         body: BlocListener(
           bloc: invoiceBloc,
           listener: (context, state) async {
@@ -227,3 +195,5 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 }
+
+

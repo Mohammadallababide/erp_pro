@@ -28,7 +28,8 @@ class DashBoardCard extends StatelessWidget {
       width: ScreenUtil().setWidth(200),
       height: ScreenUtil().setHeight(50),
       child: Card(
-        elevation: 3,
+        color: Colors.white.withOpacity(0.35),
+        elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
             ScreenUtil().radius(15),

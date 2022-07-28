@@ -1,5 +1,7 @@
 import 'package:erb_mobo/models/associatedRole.dart';
 import 'package:erb_mobo/models/receipt.dart';
+import 'package:erb_mobo/models/salary-scale-job.dart';
+import 'package:erb_mobo/models/userLeavesCategories.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
@@ -36,9 +38,17 @@ class User {
   final String? level;
   @JsonKey(required: false)
   final int? departmentId;
+  @JsonKey(required: false)
+  final SalaryScaleJob? salaryScaleJob;
+  @JsonKey(required: false)
+  final int? salary;
+  final List<UserLeaveCategorie>? userLeavesCategories;
 
 // final Role role;
   User({
+    this.userLeavesCategories,
+    this.salaryScaleJob,
+    this.salary,
     this.jobId,
     this.level,
     this.id,

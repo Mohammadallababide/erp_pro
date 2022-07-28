@@ -3,146 +3,145 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../data/local_data_source/shared_pref.dart';
+import '../../core/utils/costant.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      elevation: 0.0,
-      backgroundColor: Theme.of(context).primaryColor,
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          _createHeader(context),
-          // _createDrawerItem(
-          //   icon: Icons.notifications,
-          //   text: 'notifications',
-          // ),
-          // const Divider(
-          //   thickness: 2,
-          //   color: Colors.white,
-          // ),
-             _createDrawerItem(
-            icon: Icons.dashboard_rounded,
-            text: 'dashboard',
-            onTap: () => Navigator.pushReplacementNamed(
-              context,
-              NameScreen.dashboardPage,
-            ),
-          ),
-          const Divider(
-            thickness: 2,
-            color: Colors.white,
-          ),
-          _createDrawerItem(
-            icon: Icons.receipt_outlined,
-            text: 'users financial mange',
-            onTap: () => Navigator.pushReplacementNamed(
-              context,
-              NameScreen.usersFinacialPage,
-            ),
-          ),
-          const Divider(
-            thickness: 2,
-            color: Colors.white,
-          ),
-          _createDrawerItem(
-            icon: Icons.account_tree_outlined ,
-            text: 'departments center',
-            onTap: () => Navigator.pushReplacementNamed(
-                context, NameScreen.departmentCenterPage),
-          ),
-          const Divider(
-            thickness: 2,
-            color: Colors.white,
-          ),
-          _createDrawerItem(
-            icon: Icons.business_center,
-            text: 'jobs center',
-            onTap: () => Navigator.pushReplacementNamed(
-                context, NameScreen.jobsCenterPage),
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: ConstatValues.baseGradientColor,
+      ),
+      child: Drawer(
+        elevation: 0.0,
+        backgroundColor: Colors.transparent,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            _createHeader(context),
 
-          const Divider(
-            thickness: 2,
-            color: Colors.white,
-          ),
-          // _createDrawerItem(
-          //   icon: Icons.settings_accessibility_rounded,
-          //   text: 'company rolls center',
-          //   onTap: () => Navigator.pushReplacementNamed(
-          //       context, NameScreen.roolsMangmentCenter),
-          // ),
-          _createDrawerItem(
-            icon: Icons.description_rounded,
-            text: 'invoces center',
-            onTap: () => Navigator.pushReplacementNamed(
-                context, NameScreen.invoicesCenterPage),
-          ),
-
-          const Divider(
-            thickness: 2,
-            color: Colors.white,
-          ),
-
-          _createDrawerItem(
-            icon: Icons.stacked_bar_chart,
-            text: 'company salary scales',
-            onTap: () => Navigator.pushReplacementNamed(
-                context, NameScreen.salaryScalesCenter),
-          ),
-          const Divider(
-            thickness: 2,
-            color: Colors.white,
-          ),
-          _createDrawerItem(
-            icon: Icons.beach_access_rounded,
-            text: 'leaves center',
-            onTap: () => Navigator.pushReplacementNamed(
-              context,
-              NameScreen.leavesCenterPage,
+            _createDrawerItem(
+              icon: Icons.dashboard_rounded,
+              text: 'dashboard',
+              onTap: () => Navigator.pushReplacementNamed(
+                context,
+                NameScreen.dashboardPage,
+              ),
             ),
-          ),
-          const Divider(
-            thickness: 2,
-            color: Colors.white,
-          ),
-          _createDrawerItem(
-            icon: Icons.badge,
-            text: 'approvment requests',
-            onTap: () => Navigator.pushReplacementNamed(
-              context,
-              NameScreen.aprovmentRequestsPage,
+            const Divider(
+              thickness: 2,
+              color: Colors.white,
             ),
-          ),
-          const Divider(
-            thickness: 2,
-            color: Colors.white,
-          ),
-          _createDrawerItem(
-            icon: Icons.how_to_reg_rounded ,
-            text: 'approvment users',
-            onTap: () => Navigator.pushReplacementNamed(
-                context, NameScreen.usersListPage),
-          ),
-          const Divider(
-            thickness: 2,
-            color: Colors.white,
-          ),
-          _createDrawerItem(
-              icon: Icons.logout_outlined,
-              text: 'logout',
-              onTap: () {
-                SharedPref.logOut();
-                Navigator.pushReplacementNamed(context, NameScreen.loginPage);
-              }),
-          const Divider(
-            thickness: 2,
-            color: Colors.white,
-          ),
-        ],
+            _createDrawerItem(
+              icon: Icons.receipt_outlined,
+              text: 'users financial mange',
+              onTap: () => Navigator.pushReplacementNamed(
+                context,
+                NameScreen.usersFinacialPage,
+              ),
+            ),
+            const Divider(
+              thickness: 2,
+              color: Colors.white,
+            ),
+            _createDrawerItem(
+              icon: Icons.account_tree_outlined,
+              text: 'departments center',
+              onTap: () => Navigator.pushReplacementNamed(
+                  context, NameScreen.departmentCenterPage),
+            ),
+            const Divider(
+              thickness: 2,
+              color: Colors.white,
+            ),
+            _createDrawerItem(
+              icon: Icons.business_center,
+              text: 'jobs center',
+              onTap: () => Navigator.pushReplacementNamed(
+                  context, NameScreen.jobsCenterPage),
+            ),
+
+            const Divider(
+              thickness: 2,
+              color: Colors.white,
+            ),
+            // _createDrawerItem(
+            //   icon: Icons.settings_accessibility_rounded,
+            //   text: 'company rolls center',
+            //   onTap: () => Navigator.pushReplacementNamed(
+            //       context, NameScreen.roolsMangmentCenter),
+            // ),
+            _createDrawerItem(
+              icon: Icons.description_rounded,
+              text: 'invoces center',
+              onTap: () => Navigator.pushReplacementNamed(
+                  context, NameScreen.invoicesCenterPage),
+            ),
+
+            const Divider(
+              thickness: 2,
+              color: Colors.white,
+            ),
+
+            _createDrawerItem(
+              icon: Icons.stacked_bar_chart,
+              text: 'company salary scales',
+              onTap: () => Navigator.pushReplacementNamed(
+                  context, NameScreen.salaryScalesCenter),
+            ),
+            const Divider(
+              thickness: 2,
+              color: Colors.white,
+            ),
+            _createDrawerItem(
+              icon: Icons.beach_access_rounded,
+              text: 'leaves center',
+              onTap: () => Navigator.pushReplacementNamed(
+                context,
+                NameScreen.leavesCenterPage,
+              ),
+            ),
+            const Divider(
+              thickness: 2,
+              color: Colors.white,
+            ),
+            _createDrawerItem(
+              icon: Icons.badge,
+              text: 'approvment requests',
+              onTap: () => Navigator.pushReplacementNamed(
+                context,
+                NameScreen.aprovmentRequestsPage,
+              ),
+            ),
+            const Divider(
+              thickness: 2,
+              color: Colors.white,
+            ),
+            _createDrawerItem(
+              icon: Icons.how_to_reg_rounded,
+              text: 'approvment users',
+              onTap: () => Navigator.pushReplacementNamed(
+                  context, NameScreen.usersListPage),
+            ),
+            const Divider(
+              thickness: 2,
+              color: Colors.white,
+            ),
+            _createDrawerItem(
+                icon: Icons.logout_outlined,
+                text: 'logout',
+                onTap: () {
+                  SharedPref.logOut();
+                  Navigator.pushReplacementNamed(context, NameScreen.loginPage);
+                }),
+            const Divider(
+              thickness: 2,
+              color: Colors.white,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -191,13 +190,10 @@ class AppDrawer extends StatelessWidget {
               fontSize: ScreenUtil().setSp(14),
             )),
         currentAccountPicture: CircleAvatar(
+          radius: ScreenUtil().radius(60),
+          backgroundImage: NetworkImage(
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlgVUiuTQbmj_jO_W1nmX8bzbXS2DDxMStn8FdSPyK7SSAKVnHXZjTx9764JdwzGSWd84&usqp=CAU'),
           backgroundColor: Colors.white,
-          child: Text(
-            "R",
-            style: TextStyle(
-              fontSize: ScreenUtil().setSp(40),
-            ),
-          ),
         ),
       ),
     );

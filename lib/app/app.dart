@@ -12,7 +12,9 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  final Color _primaryColor = HexColor('#252F3E');
+  final Color _primaryColor =Colors.indigo;
+  // Color.fromARGB(255, 27, 2, 2);
+  //  HexColor('#252F3E');
   final Color _accentColor = HexColor('#F6F7F9');
   @override
   initState() {

@@ -9,7 +9,6 @@ part of 'leaveCategory.dart';
 LeaveCategory _$LeaveCategoryFromJson(Map<String, dynamic> json) =>
     LeaveCategory(
       id: json['id'] as int,
-      numberOfDaysAllowed: json['numberOfDaysAllowed'] as int?,
       name: json['name'] as String?,
       deductionAmount: json['deductionAmount'] as int?,
     );
@@ -19,5 +18,4 @@ Map<String, dynamic> _$LeaveCategoryToJson(LeaveCategory instance) =>
       'id': instance.id,
       'name': instance.name,
       'deductionAmount': instance.deductionAmount,
-      'numberOfDaysAllowed': instance.numberOfDaysAllowed,
     };

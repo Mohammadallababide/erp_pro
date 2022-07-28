@@ -10,12 +10,9 @@ class LeaveCategory {
   final String? name;
   @JsonKey(required: false)
   final int? deductionAmount;
-  @JsonKey(required: false)
-  final int? numberOfDaysAllowed;
 
   LeaveCategory({
     required this.id,
-    this.numberOfDaysAllowed,
     this.name,
     this.deductionAmount,
   });

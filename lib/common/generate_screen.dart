@@ -20,6 +20,7 @@ import '../ui/leaves_center/pages/create_Leave_request_page.dart';
 import '../ui/leaves_center/pages/leave_details_page.dart';
 import '../ui/roll_mangent-center/pages/rolls_mangment_center_page.dart';
 import '../ui/salary_scales_center/pages/scale_salary_details_page.dart';
+import '../ui/user_profile/pages/user_profile_page.dart';
 import '../ui/users List/pages/users_list_page.dart';
 import '../ui/users_finacial_mange/pages/create_or_edit_receipt_page.dart';
 import '../ui/users_finacial_mange/pages/users_finacial_page.dart';
@@ -167,6 +168,14 @@ class GenerateScreen {
           );
         }
 
+      case NameScreen.userProfilePage:
+        {
+          return MaterialPageRoute(
+            builder: (context) => UserProfilePage(
+              id: arg!['id'],
+            ),
+          );
+        }
       // case NameScreen.jobDetails:
       //   {
       //     return MaterialPageRoute(
@@ -236,6 +245,7 @@ class NameScreen {
   static const String leavesCategoriesPage = '/leavesCategoriesPage';
   static const String createLeaveRequestPage = '/createLeaveRequestPage';
   static const String leaveDetailsPage = '/leaveDetailsPage';
+  static const String userProfilePage = '/userProfilePage';
 }
 //  Navigator.push(
 //             context,

@@ -16,6 +16,7 @@ import '../../models/leaveCategory.dart';
 import '../../models/receipt.dart';
 import '../../models/salary-scale-job.dart';
 import '../../models/salary-scale.dart';
+import '../../models/userLeavesCategories.dart';
 
 class ServerApi {
   ServerApi._() {
@@ -27,8 +28,8 @@ class ServerApi {
   static final ServerApi apiClient = ServerApi._();
   static final http.Client _httpClient = http.Client();
   // static const _baseUrl = "https://ite-ria.herokuapp.com/api/v1";
-  // static const _baseUrl = 'http://192.168.137.1:3000/api/v1';
-  static const _baseUrl = 'http://192.168.15.146:3000/api/v1';
+  static const _baseUrl = 'http://192.168.1.3:3000/api/v1';
+  // static const _baseUrl = 'http://192.168.15.146:3000/api/v1';
 
   Map<String, String> getHeaders() {
     print('Bearer ${getLocalToken().toString()}');
@@ -363,6 +364,56 @@ class ServerApi {
   Future<User?> fetchMyProfile() async {
     try {
       final uri = Uri.parse(_baseUrl + '/users/me');
+      final response = await _httpClient.get(
+        uri,
+        headers: getHeaders(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final User user = User.fromJson(json['data']);
+
+        return user;
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+    Future<User?> getMyProfile() async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/users/profiles/my-profile');
+      final response = await _httpClient.get(
+        uri,
+        headers: getHeaders(),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final json = jsonDecode(response.body);
+        final User user = User.fromJson(json['data']);
+
+        return user;
+      }
+    } on SocketException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } on http.ClientException {
+      //this in case internet problems
+      return Future.error("check your internet connection");
+    } catch (e) {
+      print(e.toString());
+      return Future.error(e.toString());
+    }
+  }
+
+   Future<User?> getUserProfile(int id) async {
+    try {
+      final uri = Uri.parse(_baseUrl + '/users/profiles/$id');
       final response = await _httpClient.get(
         uri,
         headers: getHeaders(),
@@ -1118,21 +1169,21 @@ class ServerApi {
 
   Future<User?> changeLeaveCategoryForUser({
     required int userId,
-    required List<LeaveCategory> leavesCategories,
+    required List<UserLeaveCategorie> userLeavesCategories,
   }) async {
     try {
       final uri =
           Uri.parse(_baseUrl + '/auth-for-admin/user-leaves-categories');
       Map<String, dynamic> body = <String, dynamic>{};
-      List<Map<String, dynamic>> userLeavesCategories = leavesCategories
+      List<Map<String, dynamic>> list = userLeavesCategories
           .map((l) => {
                 "leaveCategoryId": l.id,
-                "numberOfDaysAllowed": l.numberOfDaysAllowed!,
+                "numberOfDaysAllowed": l.numberOfDaysAllowed,
               })
           .toList();
       body = {
         "userId": userId,
-        "userLeavesCategories": userLeavesCategories,
+        "userLeavesCategories": list,
       };
       final bodReq = jsonEncode(body);
       final response = await _httpClient.put(

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/generate_screen.dart';
 import '../../../common/theme_helper.dart';
+import '../../../core/utils/costant.dart';
 import '../bloc/users_bloc.dart';
 
 class UserCard extends StatelessWidget {
@@ -183,115 +184,125 @@ class UserCard extends StatelessWidget {
 
   showOptionBottomSheet(BuildContext context, bool isAssignJobAction) {
     return showModalBottomSheet(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.transparent,
         elevation: 3,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(ScreenUtil().radius(17)),
+            topLeft: Radius.circular(ScreenUtil().radius(40)),
             topRight: Radius.circular(
-              ScreenUtil().radius(15),
+              ScreenUtil().radius(40),
             ),
           ),
         ),
         context: context,
         builder: (context) {
-          return Padding(
-            padding: EdgeInsets.all(
-              ScreenUtil().setSp(15),
+          return Container(
+            decoration: BoxDecoration(
+              gradient: ConstatValues.secGradientColor,
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: ScreenUtil().setSp(80),
-                      width: ScreenUtil().setSp(80),
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: AssetImage(
-                              'assets/images/useric.png',
-                            ),
-                            fit: BoxFit.contain,
-                          )),
+            child: Padding(
+              padding: EdgeInsets.all(
+                ScreenUtil().setSp(15),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: ScreenUtil().setSp(80),
+                        width: ScreenUtil().setSp(80),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'assets/images/useric.png',
+                              ),
+                              fit: BoxFit.contain,
+                            )),
+                      ),
+                      SizedBox(
+                        height: ScreenUtil().setHeight(8),
+                      ),
+                      Text(
+                        user.firstName + ' ' + user.lastName,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: ScreenUtil().setSp(18),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: ScreenUtil().setHeight(8),
+                  ),
+                  Divider(
+                    thickness: 2, // thickness of the line
+                    indent: ScreenUtil().setSp(30),
+                    endIndent: ScreenUtil().setSp(30),
+                    color: Colors.grey,
+                    height: ScreenUtil().setHeight(25),
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.account_box,
+                      color: Theme.of(context).secondaryHeaderColor,
+                      size: ScreenUtil().setSp(27),
                     ),
-                    SizedBox(
-                      height: ScreenUtil().setHeight(8),
-                    ),
-                    Text(
-                      user.firstName + ' ' + user.lastName,
+                    title: Text(
+                      'Show User Profile',
                       style: TextStyle(
-                        color: Theme.of(context).secondaryHeaderColor,
-                        fontSize: ScreenUtil().setSp(18),
+                        fontSize: ScreenUtil().setSp(16),
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(
-                  height: ScreenUtil().setHeight(8),
-                ),
-                Divider(
-                  thickness: 2, // thickness of the line
-                  indent: ScreenUtil().setSp(30),
-                  endIndent: ScreenUtil().setSp(30),
-                  color: Colors.grey,
-                  height: ScreenUtil().setHeight(25),
-                ),
-                ListTile(
-                  leading: Icon(
-                    Icons.account_box,
-                    color: Theme.of(context).secondaryHeaderColor,
-                    size: ScreenUtil().setSp(27),
+                    onTap: () {
+                      Navigator.pushNamed(context, NameScreen.userProfilePage,
+                          arguments: {
+                            'id': user.id,
+                          });
+                    },
                   ),
-                  title: Text(
-                    'Show User Profile',
-                    style: TextStyle(
-                      fontSize: ScreenUtil().setSp(16),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  ListTile(
+                    leading: Icon(
+                      Icons.beach_access_rounded,
+                      color: Theme.of(context).secondaryHeaderColor,
+                      size: ScreenUtil().setSp(27),
                     ),
-                  ),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: Icon(
-                    Icons.beach_access_rounded,
-                    color: Theme.of(context).secondaryHeaderColor,
-                    size: ScreenUtil().setSp(27),
-                  ),
-                  title: Text(
-                    'Edit User Leaves',
-                    style: TextStyle(
-                      fontSize: ScreenUtil().setSp(16),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                    title: Text(
+                      'Edit User Leaves',
+                      style: TextStyle(
+                        fontSize: ScreenUtil().setSp(16),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
+                    onTap: () {},
                   ),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: Icon(
-                    Icons.business_center,
-                    color: Theme.of(context).secondaryHeaderColor,
-                    size: ScreenUtil().setSp(27),
-                  ),
-                  title: Text(
-                    !isAssignJobAction ? 'Edit Job' : 'Assign Job',
-                    style: TextStyle(
-                      fontSize: ScreenUtil().setSp(16),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  ListTile(
+                    leading: Icon(
+                      Icons.business_center,
+                      color: Theme.of(context).secondaryHeaderColor,
+                      size: ScreenUtil().setSp(27),
                     ),
+                    title: Text(
+                      !isAssignJobAction ? 'Edit Job' : 'Assign Job',
+                      style: TextStyle(
+                        fontSize: ScreenUtil().setSp(16),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           );
         });

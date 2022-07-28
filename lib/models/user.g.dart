@@ -7,6 +7,10 @@ part of 'user.dart';
 // **************************************************************************
 
 User _$UserFromJson(Map<String, dynamic> json) => User(
+      salaryScaleJob: json['salaryScaleJob'] == null
+          ? null
+          : SalaryScaleJob.fromJson(json['salaryScaleJob']),
+      salary: json['salary'] as int?,
       jobId: json['jobId'] as int?,
       level: json['level'] as String?,
       id: json['id'] as int?,
@@ -45,4 +49,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'jobId': instance.jobId,
       'level': instance.level,
       'departmentId': instance.departmentId,
+      'salaryScaleJob': instance.salaryScaleJob,
+      'salary': instance.salary,
+      'userLeavesCategories': instance.userLeavesCategories,
     };

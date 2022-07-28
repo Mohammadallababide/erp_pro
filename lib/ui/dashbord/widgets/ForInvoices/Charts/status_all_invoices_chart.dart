@@ -51,7 +51,8 @@ class _StatusAllInvoicesChartState extends State<StatusAllInvoicesChart> {
             fit: StackFit.expand,
             children: [
               Card(
-                elevation: 3,
+                color:Colors.white.withOpacity(0.35),
+                elevation: 0,
                 child: Container(
                   child: SfCircularChart(
                     borderColor: Theme.of(context).primaryColor,

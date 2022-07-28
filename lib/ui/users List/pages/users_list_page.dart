@@ -114,7 +114,7 @@ class _UsersListPageState extends State<UsersListPage> {
                                           endIndent:
                                               ScreenUtil().setSp(30), 
                                           color: Colors
-                                              .grey, 
+                                              .teal, 
                                           height:
                                               ScreenUtil().setHeight(25),
                                         )
