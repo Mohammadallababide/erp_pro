@@ -28,8 +28,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                   colors: [
-                    Theme.of(context).primaryColor.withOpacity(0.4),
-                    Theme.of(context).colorScheme.secondary.withOpacity(0.7),
+                     
+                    Colors.indigo.withOpacity(0.4),
+                    Colors.teal.withOpacity(0.7),
                   ],
                   begin: const FractionalOffset(0.0, 0.0),
                   end: const FractionalOffset(1.0, 0.0),
@@ -49,8 +50,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                   colors: [
-                    Theme.of(context).primaryColor.withOpacity(0.4),
-                    Theme.of(context).colorScheme.secondary.withOpacity(0.4),
+                   Colors.indigo.withOpacity(0.4),
+                    Colors.teal.withOpacity(0.4),
                   ],
                   begin: const FractionalOffset(0.0, 0.0),
                   end: const FractionalOffset(1.0, 0.0),
@@ -70,8 +71,8 @@ class _HeaderWidgetState extends State<HeaderWidget> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                   colors: [
-                    Theme.of(context).primaryColor,
-                    Theme.of(context).colorScheme.secondary,
+                 Colors.indigo.withOpacity(0.8),
+                    Colors.teal.withOpacity(0.8),
                   ],
                   begin: const FractionalOffset(0.0, 0.0),
                   end: const FractionalOffset(1.0, 0.0),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/utils/costant.dart';
 import '../../../../models/invoice.dart';
 import '../../bloc/invoice_bloc.dart';
 import 'Invoice_action_button_listener.dart';
@@ -60,16 +61,23 @@ class InvoiceActionButton extends StatelessWidget {
           }
 
           return childWidget == null
-              ? FloatingActionButton(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  heroTag: null,
-                  child: Center(
-                    child: Icon(
-                      Icons.send_rounded,
-                      color: Colors.white,
-                    ),
+              ? Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: ConstatValues.secGradientColor,
                   ),
-                  onPressed: () => showInvoiceActionList(context),
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    heroTag: null,
+                    child: Center(
+                      child: Icon(
+                        Icons.send_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () => showInvoiceActionList(context),
+                  ),
                 )
               : InkWell(
                   child: childWidget,

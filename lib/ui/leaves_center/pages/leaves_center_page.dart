@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/animationAppWidget.dart';
+import '../../../common/common_widgets/common_add_FLB.dart';
 import '../../../common/common_widgets/common_scaffold_app.dart';
 import '../../../common/common_widgets/custom_app_button.dart';
 import '../../../common/controllers/leaves_controller.dart';
@@ -20,14 +21,16 @@ class LeavesCenter extends StatefulWidget {
   State<LeavesCenter> createState() => _LeavesCenterState();
 }
 
-class _LeavesCenterState extends State<LeavesCenter> {
+class _LeavesCenterState extends State<LeavesCenter>
+    with SingleTickerProviderStateMixin {
   LeaveCenterBloc leaveCenterBloc = LeaveCenterBloc();
   late List<Leave> leaves = [];
   late bool isLoading = true;
-
+  late TabController _controller;
   @override
   void initState() {
     super.initState();
+    _controller = new TabController(length: 2, vsync: this);
     leaveCenterBloc.add(GetLeaves());
     setState(() => {
           isLoading = true,
@@ -62,52 +65,49 @@ class _LeavesCenterState extends State<LeavesCenter> {
           });
         }
       },
-      child: DefaultTabController(
-        length: 2,
-        child: CommonScaffoldApp(
-            title: 'Leaves Center',
-            actions: [
-              IconButton(
-                icon: Icon(Icons.add_circle),
-                onPressed: () {
-                  Navigator.pushNamed(
-                      context, NameScreen.createLeaveRequestPage,
-                      arguments: {'actionCallBack': listneToAddNewLeaveAction});
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.category_outlined),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    NameScreen.leavesCategoriesPage,
-                  );
-                },
-              ),
-            ],
-            flb: buildFloattingctionsButton(),
-            bottom: PreferredSize(
-              preferredSize: Size(
-                0,
-                ScreenUtil().setHeight(60),
-              ),
-              child: const TabBar(
-                tabs: [
-                  Tab(
-                    icon: null,
-                    text: 'pending approval',
-                    iconMargin: const EdgeInsets.all(0),
-                  ),
-                  Tab(
-                    icon: null,
-                    text: 'Archived',
-                    iconMargin: const EdgeInsets.all(0),
-                  ),
-                ],
-              ),
+      child: CommonScaffoldApp(
+          title: 'Leaves Center',
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add_circle),
+              onPressed: () {
+                Navigator.pushNamed(context, NameScreen.createLeaveRequestPage,
+                    arguments: {'actionCallBack': listneToAddNewLeaveAction});
+              },
             ),
-            child: buildPageBody()),
-      ),
+            IconButton(
+              icon: Icon(Icons.category_outlined),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  NameScreen.leavesCategoriesPage,
+                );
+              },
+            ),
+          ],
+          flb: buildFloattingctionsButton(),
+          bottom: PreferredSize(
+            preferredSize: Size(
+              0,
+              ScreenUtil().setHeight(60),
+            ),
+            child: TabBar(
+              controller: _controller,
+              tabs: [
+                Tab(
+                  icon: null,
+                  text: 'pending approval',
+                  iconMargin: const EdgeInsets.all(0),
+                ),
+                Tab(
+                  icon: null,
+                  text: 'Archived',
+                  iconMargin: const EdgeInsets.all(0),
+                ),
+              ],
+            ),
+          ),
+          child: buildPageBody()),
     );
   }
 
@@ -154,6 +154,7 @@ class _LeavesCenterState extends State<LeavesCenter> {
                 LeavesController leavesController =
                     LeavesController(state.leaves);
                 return TabBarView(
+                  controller: _controller,
                   children: [
                     // for pending approval filter
                     LeaveFilter(
@@ -179,36 +180,25 @@ class _LeavesCenterState extends State<LeavesCenter> {
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        FloatingActionButton(
-            backgroundColor: Theme.of(context).primaryColor,
-            heroTag: null,
-            child: Center(
-              child: Icon(Icons.category_outlined,
-                  color: Colors.white, size: ScreenUtil().setSp(25)),
-            ),
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                NameScreen.leavesCategoriesPage,
-              );
-            }),
+        CommonAddFLB(
+          icon: Icons.category_outlined,
+          func: () {
+            Navigator.pushNamed(
+              context,
+              NameScreen.leavesCategoriesPage,
+            );
+          },
+        ),
         SizedBox(
           height: ScreenUtil().setHeight(5),
         ),
-        FloatingActionButton(
-            backgroundColor: Theme.of(context).primaryColor,
-            heroTag: null,
-            child: Center(
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-                size: ScreenUtil().setSp(30),
-              ),
-            ),
-            onPressed: () {
-              Navigator.pushNamed(context, NameScreen.createLeaveRequestPage,
-                  arguments: {'actionCallBack': listneToAddNewLeaveAction});
-            }),
+        CommonAddFLB(
+          icon: Icons.add,
+          func: () {
+            Navigator.pushNamed(context, NameScreen.createLeaveRequestPage,
+                arguments: {'actionCallBack': listneToAddNewLeaveAction});
+          },
+        ),
       ],
     );
   }

@@ -7,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/animationAppWidget.dart';
 import '../../../common/common_widgets/app_drawer.dart';
+import '../../../common/common_widgets/common_add_FLB.dart';
+import '../../../common/common_widgets/common_scaffold_app.dart';
 import '../../../common/common_widgets/custom_app_button.dart';
 import '../../../common/controllers/invoices_controller.dart';
 import '../bloc/invoice_bloc.dart';
@@ -20,12 +22,15 @@ class InvoicesCenterPage extends StatefulWidget {
   State<InvoicesCenterPage> createState() => _InvoicesCenterPageState();
 }
 
-class _InvoicesCenterPageState extends State<InvoicesCenterPage> {
+class _InvoicesCenterPageState extends State<InvoicesCenterPage>
+    with SingleTickerProviderStateMixin {
   InvoiceBloc invoiceBloc = InvoiceBloc();
   late bool isLoading = true;
   late bool isError = false;
+  late TabController _controller;
   @override
   void initState() {
+    _controller = new TabController(length: 4, vsync: this);
     super.initState();
     invoiceBloc.add(GetInvoices());
   }
@@ -112,117 +117,120 @@ class _InvoicesCenterPageState extends State<InvoicesCenterPage> {
                   ],
                 ),
               )
-            : DefaultTabController(
-                length: 4,
-                child: Scaffold(
-                  appBar: AppBar(
-                    centerTitle: true,
-                    title: const Text(
-                      'Company Invoices',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    elevation: 0.0,
-                    backgroundColor: Theme.of(context).primaryColor,
-                    iconTheme: const IconThemeData(
-                      color: Colors.white,
-                    ),
-                    bottom: PreferredSize(
-                      preferredSize: Size(
-                        0,
-                        ScreenUtil().setHeight(60),
-                      ),
-                      child: const TabBar(
-                        tabs: [
-                          Tab(
-                            icon: null,
-                            text: 'All',
-                            iconMargin: const EdgeInsets.all(0),
-                          ),
-                          Tab(
-                            icon: null,
-                            text: 'Review',
-                            iconMargin: const EdgeInsets.all(0),
-                          ),
-                          Tab(
-                            icon: null,
-                            text: 'Approval',
-                            iconMargin: const EdgeInsets.all(0),
-                          ),
-                          Tab(
-                            icon: null,
-                            text: 'Payment',
-                            iconMargin: const EdgeInsets.all(0),
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: [
-                      IconButton(
-                        onPressed: () async {
-                          final bool? shouldRefresh =
-                              await Navigator.push<bool>(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateInvoicePage(),
-                            ),
-                          );
-                          if (shouldRefresh != null) {
-                            if (shouldRefresh) {
-                              // refresh invoice center page ...
-                              invoiceBloc.add(GetInvoices());
-                            }
-                          }
-                        },
-                        icon: Icon(
-                          Icons.add_circle,
-                          size: ScreenUtil().setSp(28),
+            : CommonScaffoldApp(
+                title: 'Company Invoices',
+                actions: [
+                  IconButton(
+                    onPressed: () async {
+                      final bool? shouldRefresh = await Navigator.push<bool>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CreateInvoicePage(),
                         ),
+                      );
+                      if (shouldRefresh != null) {
+                        if (shouldRefresh) {
+                          // refresh invoice center page ...
+                          invoiceBloc.add(GetInvoices());
+                        }
+                      }
+                    },
+                    icon: Icon(
+                      Icons.add_circle,
+                      size: ScreenUtil().setSp(28),
+                    ),
+                  ),
+                ],
+                flb: CommonAddFLB(
+                  icon: Icons.add,
+                  func: () async {
+                    final bool? shouldRefresh = await Navigator.push<bool>(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CreateInvoicePage(),
+                      ),
+                    );
+                    if (shouldRefresh != null) {
+                      if (shouldRefresh) {
+                        // refresh invoice center page ...
+                        invoiceBloc.add(GetInvoices());
+                      }
+                    }
+                  },
+                ),
+                bottom: PreferredSize(
+                  preferredSize: Size(
+                    0,
+                    ScreenUtil().setHeight(60),
+                  ),
+                  child: TabBar(
+                    controller: _controller,
+                    tabs: [
+                      Tab(
+                        icon: null,
+                        text: 'All',
+                        iconMargin: const EdgeInsets.all(0),
+                      ),
+                      Tab(
+                        icon: null,
+                        text: 'Review',
+                        iconMargin: const EdgeInsets.all(0),
+                      ),
+                      Tab(
+                        icon: null,
+                        text: 'Approval',
+                        iconMargin: const EdgeInsets.all(0),
+                      ),
+                      Tab(
+                        icon: null,
+                        text: 'Payment',
+                        iconMargin: const EdgeInsets.all(0),
                       ),
                     ],
                   ),
-                  body: isLoading
-                      ? AnimationAppWidget(
-                          name: AnimationWidgetNames.ProgressIndicator,
-                        )
-                      : BlocBuilder(
-                          bloc: invoiceBloc,
-                          builder: (context, state) {
-                            if (state is SuccessGettingInvoices) {
-                              InvoicesController invoicesController =
-                                  InvoicesController(state.invoiceList);
-                              return TabBarView(
-                                children: [
-                                  // for all filter
-                                  InvFilter(
-                                    invoiceList: state.invoiceList,
-                                    invBloc: invoiceBloc,
-                                  ),
-                                  // for review filter
-                                  InvFilter(
-                                    invoiceList: invoicesController
-                                        .getToBeReviwedInvoices(),
-                                    invBloc: invoiceBloc,
-                                  ),
-                                  // for approve filter
-                                  InvFilter(
-                                    invoiceList: invoicesController
-                                        .getToBeApprovedInvoices(),
-                                    invBloc: invoiceBloc,
-                                  ),
-                                  // for payment filter
-                                  InvFilter(
-                                    invoiceList: invoicesController
-                                        .getToBePaidInvoices(),
-                                    invBloc: invoiceBloc,
-                                  ),
-                                ],
-                              );
-                            }
-                            return Container();
-                          },
-                        ),
-                  drawer: const AppDrawer(),
                 ),
+                child: isLoading
+                    ? AnimationAppWidget(
+                        name: AnimationWidgetNames.ProgressIndicator,
+                      )
+                    : BlocBuilder(
+                        bloc: invoiceBloc,
+                        builder: (context, state) {
+                          if (state is SuccessGettingInvoices) {
+                            InvoicesController invoicesController =
+                                InvoicesController(state.invoiceList);
+                            return TabBarView(
+                              controller: _controller,
+                              children: [
+                                // for all filter
+                                InvFilter(
+                                  invoiceList: state.invoiceList,
+                                  invBloc: invoiceBloc,
+                                ),
+                                // for review filter
+                                InvFilter(
+                                  invoiceList: invoicesController
+                                      .getToBeReviwedInvoices(),
+                                  invBloc: invoiceBloc,
+                                ),
+                                // for approve filter
+                                InvFilter(
+                                  invoiceList: invoicesController
+                                      .getToBeApprovedInvoices(),
+                                  invBloc: invoiceBloc,
+                                ),
+                                // for payment filter
+                                InvFilter(
+                                  invoiceList:
+                                      invoicesController.getToBePaidInvoices(),
+                                  invBloc: invoiceBloc,
+                                ),
+                              ],
+                            );
+                          }
+                          return Container();
+                        },
+                      ),
               ),
       ),
     );

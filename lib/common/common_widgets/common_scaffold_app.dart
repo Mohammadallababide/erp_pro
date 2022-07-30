@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
+import '../../core/utils/costant.dart';
 import 'app_drawer.dart';
+import 'common_bottom_navigation_bar.dart';
 
 class CommonScaffoldApp extends StatefulWidget {
   final String title;
@@ -56,6 +58,7 @@ class _CommonScaffoldAppState extends State<CommonScaffoldApp> {
       },
       child: Scaffold(
         drawer: widget.isDrawer != null ? AppDrawer() : null,
+        bottomNavigationBar: CommonBottomNavigationBar(),
         appBar: AppBar(
           elevation: 0.0,
           automaticallyImplyLeading: widget.automaticallyImplyLeading!,
@@ -65,6 +68,9 @@ class _CommonScaffoldAppState extends State<CommonScaffoldApp> {
             style: const TextStyle(color: Colors.white),
           ),
           backgroundColor: Theme.of(context).primaryColor,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(gradient: ConstatValues.secGradientColor),
+          ),
           iconTheme: const IconThemeData(
             color: Colors.white,
           ),

@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../common/common_widgets/commomn_app_bar.dart';
 import '../../../models/user.dart';
 import '../../users List/bloc/users_bloc.dart';
-import '../../../common/common_widgets/user_card_tile.dart';
+import '../../../common/common_widgets/CardTilesWidgets/user_card_tile.dart';
 
 class SelectAssignmentUserSalaryPage extends StatefulWidget {
   final Function salaryUserCallBack;

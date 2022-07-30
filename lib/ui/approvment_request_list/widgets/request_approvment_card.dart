@@ -80,7 +80,39 @@ class _RequestApprovmentCardState extends State<RequestApprovmentCard> {
               });
         }
       },
-      child: _contentCard(),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          ScreenUtil().setWidth(5),
+          ScreenUtil().setHeight(0),
+          ScreenUtil().setWidth(5),
+          ScreenUtil().setHeight(0),
+        ),
+        child: ListTile(
+          title: Text(
+            widget.user.firstName + ' ' + widget.user.lastName,
+            style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: ScreenUtil().setSp(14)),
+          ),
+          subtitle:
+              Text(widget.user.roles != null ? widget.user.roles![0] : ''),
+          leading: Container(
+            height: ScreenUtil().setSp(35),
+            width: ScreenUtil().setSp(35),
+            decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                shape: BoxShape.circle,
+                image: const DecorationImage(
+                  image: AssetImage(
+                    'assets/images/useric.png',
+                  ),
+                  fit: BoxFit.contain,
+                )),
+          ),
+          trailing: SizedBox(
+              width: ScreenUtil().setWidth(80),
+              child: _getApprovmentCardState()),
+        ),
+      ),
     );
   }
 
@@ -168,10 +200,10 @@ class _RequestApprovmentCardState extends State<RequestApprovmentCard> {
                   child: Icon(
                     Icons.close,
                     color: Colors.red,
-                    size: ScreenUtil().setSp(35),
+                    size: ScreenUtil().setSp(28),
                   )),
               SizedBox(
-                width: ScreenUtil().setWidth(20),
+                width: ScreenUtil().setWidth(15),
               ),
               InkWell(
                   onTap: () {
@@ -180,7 +212,7 @@ class _RequestApprovmentCardState extends State<RequestApprovmentCard> {
                   child: Icon(
                     Icons.check,
                     color: Colors.green,
-                    size: ScreenUtil().setSp(35),
+                    size: ScreenUtil().setSp(28),
                   )),
             ],
           );

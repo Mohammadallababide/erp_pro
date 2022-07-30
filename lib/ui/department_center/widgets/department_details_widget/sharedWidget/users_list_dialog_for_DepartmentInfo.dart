@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../../../common/theme_helper.dart';
 import '../../../../../models/user.dart';
 import '../../../../users List/bloc/users_bloc.dart';
-import '../../../../../common/common_widgets/user_card_tile.dart';
+import '../../../../../common/common_widgets/CardTilesWidgets/user_card_tile.dart';
 
 class UsersListDialogForDepartmentInfo extends StatelessWidget {
   // [users] just for now ....

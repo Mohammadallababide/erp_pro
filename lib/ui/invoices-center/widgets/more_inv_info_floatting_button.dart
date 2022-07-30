@@ -2,6 +2,7 @@ import 'package:erb_mobo/ui/invoices-center/widgets/section_card_related_to_user
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/utils/costant.dart';
 import '../../../models/invoice.dart';
 
 class MoreInvInfoFloattingButton extends StatelessWidget {
@@ -13,16 +14,23 @@ class MoreInvInfoFloattingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      backgroundColor: Theme.of(context).primaryColor,
-      heroTag: null,
-      child: Center(
-        child: Icon(
-          Icons.more_horiz,
-          color: Colors.white,
-        ),
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: ConstatValues.secGradientColor,
       ),
-      onPressed: () => showMoreInvoiceInfo(context),
+      child: FloatingActionButton(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        heroTag: null,
+        child: Center(
+          child: Icon(
+            Icons.more_horiz,
+            color: Colors.white,
+          ),
+        ),
+        onPressed: () => showMoreInvoiceInfo(context),
+      ),
     );
   }
 

@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../common/animationAppWidget.dart';
 import '../../../common/common_widgets/app_drawer.dart';
 import '../../../common/common_widgets/common_bottom_navigation_bar.dart';
+import '../../../common/common_widgets/common_scaffold_app.dart';
 import '../../../common/common_widgets/custom_app_button.dart';
 import '../../../common/controllers/invoices_controller.dart';
 import '../../../models/invoice.dart';
@@ -41,11 +42,9 @@ class _DashboardPageState extends State<DashboardPage> {
         SystemNavigator.pop();
         return false;
       },
-      child: Scaffold(
-        appBar: commonAppBar(context: context, title: 'Dashboard'),
-        drawer: const AppDrawer(),
-        bottomNavigationBar: CommonBottomNavigationBar(),
-        body: BlocListener(
+      child: CommonScaffoldApp(
+        title: 'Dashboard',
+        child: BlocListener(
           bloc: invoiceBloc,
           listener: (context, state) async {
             if (state is SuccessGettingInvoices) {
@@ -195,5 +194,3 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 }
-
-

@@ -94,9 +94,21 @@ class _ApprovmentRequestsListState extends State<ApprovmentRequestsList> {
                       : ListView.builder(
                           itemCount: usersRequests.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return RequestApprovmentCard(
-                              user: usersRequests[index],
-                              usersRequestsCallBack: listenToApprovmentRequests,
+                            return Column(
+                              children: [
+                                RequestApprovmentCard(
+                                  user: usersRequests[index],
+                                  usersRequestsCallBack:
+                                      listenToApprovmentRequests,
+                                ),
+                                Divider(
+                                  thickness: 2, // thickness of the line
+                                  indent: ScreenUtil().setSp(30),
+                                  endIndent: ScreenUtil().setSp(30),
+                                  color: Colors.teal,
+                                  height: ScreenUtil().setHeight(25),
+                                )
+                              ],
                             );
                           },
                         );

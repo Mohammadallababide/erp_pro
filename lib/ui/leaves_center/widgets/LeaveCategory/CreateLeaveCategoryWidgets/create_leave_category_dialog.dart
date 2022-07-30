@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../../common/common_widgets/common_add_FLB.dart';
 import '../../../../../common/theme_helper.dart';
 import '../../../../../core/utils/app_flash_bar.dart';
 import '../../../../../core/utils/app_snack_bar.dart';
@@ -11,9 +12,11 @@ import '../../../bloc/leave_center_bloc.dart';
 
 class CreateLeaveCategoryDialog extends StatefulWidget {
   final Function ActionCallBack;
+  final bool? isInAppBar;
   const CreateLeaveCategoryDialog({
     Key? key,
     required this.ActionCallBack,
+    this.isInAppBar,
   }) : super(key: key);
 
   @override
@@ -26,11 +29,13 @@ class _CreateLeaveCategoryDialogState extends State<CreateLeaveCategoryDialog> {
   late TextEditingController _nameController;
   late TextEditingController _deductionAmountController;
   final LeaveCenterBloc leaveCenterBloc = LeaveCenterBloc();
+  late bool isInAppBarValue;
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController();
     _deductionAmountController = TextEditingController();
+    isInAppBarValue = widget.isInAppBar ?? false;
   }
 
   @override
@@ -53,15 +58,15 @@ class _CreateLeaveCategoryDialogState extends State<CreateLeaveCategoryDialog> {
               context: context));
         }
       },
-      child: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
-        heroTag: null,
-        child: Center(
-          child: Icon(Icons.add,
-              color: Colors.white, size: ScreenUtil().setSp(30)),
-        ),
-        onPressed: () => createNewLeaveCategoryDialog(),
-      ),
+      child: isInAppBarValue
+          ? IconButton(
+              icon: Icon(Icons.add_circle),
+              onPressed: () => createNewLeaveCategoryDialog(),
+            )
+          : CommonAddFLB(
+              icon: Icons.add,
+              func: () => createNewLeaveCategoryDialog(),
+            ),
     );
   }
 

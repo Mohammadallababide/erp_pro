@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 
+import '../core/utils/costant.dart';
+
 class ThemeHelper {
   InputDecoration textInputDecoration(
       [String lableText = "", String hintText = ""]) {
@@ -45,8 +47,11 @@ class ThemeHelper {
     ]);
   }
 
-  BoxDecoration buttonBoxDecoration({required BuildContext context,
-      String color1 = "", String color2 = "", double radius = 30}) {
+  BoxDecoration buttonBoxDecoration(
+      {required BuildContext context,
+      String color1 = "",
+      String color2 = "",
+      double radius = 30}) {
     Color c1 = Theme.of(context).primaryColor;
     Color c2 = Theme.of(context).accentColor;
     if (color1.isEmpty == false) {
@@ -60,15 +65,7 @@ class ThemeHelper {
       boxShadow: [
         BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
       ],
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        stops: [0.0, 1.0],
-        colors: [
-          c1,
-          c2,
-        ],
-      ),
+      gradient: ConstatValues.secGradientColor,
       color: Colors.deepPurple.shade300,
       borderRadius: BorderRadius.circular(radius),
     );
@@ -124,4 +121,4 @@ class ThemeClass {
       ));
 }
 
-class LoginFormStyle {}
+

@@ -32,4 +32,11 @@ class ConstatValues {
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
       colors: <Color>[Colors.teal, Colors.indigo]);
+  static Gradient thrGradientColor = LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: <Color>[
+        Colors.teal.withOpacity(0.6),
+        Colors.indigo.withOpacity(0.6)
+      ]);
 }

@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../common/animationAppWidget.dart';
 import '../../../common/common_widgets/commomn_app_bar.dart';
+import '../../../common/common_widgets/common_scaffold_app.dart';
 import '../../../common/common_widgets/custom_app_button.dart';
 import '../../../models/leaveCategory.dart';
 import '../bloc/leave_center_bloc.dart';
@@ -65,12 +66,17 @@ class _CategoriesLeavesCenterPageState
           });
         }
       },
-      child: Scaffold(
-        appBar: commonAppBar(
-          context: context,
-          title: 'Leaves Categories Center',
-        ),
-        floatingActionButton: Column(
+      child: CommonScaffoldApp(
+        isBakedNav: true,
+        isDrawer: false,
+        title: 'Leaves Categories Center',
+        actions: [
+          CreateLeaveCategoryDialog(
+            ActionCallBack: listenOnCreattedNewLeaveCategeryAction,
+            isInAppBar: true,
+          ),
+        ],
+        flb: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -78,7 +84,7 @@ class _CategoriesLeavesCenterPageState
                 ActionCallBack: listenOnCreattedNewLeaveCategeryAction),
           ],
         ),
-        body: !isLoading
+        child: !isLoading
             ? BlocBuilder(
                 bloc: leaveCenterBloc,
                 builder: (context, state) {

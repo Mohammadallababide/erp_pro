@@ -53,7 +53,7 @@ class CommonBottomNavigationBar extends StatelessWidget {
             // title: 'my profile',
           ),
         ],
-        initialActiveIndex: 1,
+        initialActiveIndex: 2,
         onTap: (int i) => print('click index=$i'),
       ),
     );

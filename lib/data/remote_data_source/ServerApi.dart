@@ -28,8 +28,8 @@ class ServerApi {
   static final ServerApi apiClient = ServerApi._();
   static final http.Client _httpClient = http.Client();
   // static const _baseUrl = "https://ite-ria.herokuapp.com/api/v1";
-  static const _baseUrl = 'http://192.168.1.3:3000/api/v1';
-  // static const _baseUrl = 'http://192.168.15.146:3000/api/v1';
+  // static const _baseUrl = 'http://192.168.1.3:3000/api/v1';
+  static const _baseUrl = 'http://192.168.15.146:3000/api/v1';
 
   Map<String, String> getHeaders() {
     print('Bearer ${getLocalToken().toString()}');

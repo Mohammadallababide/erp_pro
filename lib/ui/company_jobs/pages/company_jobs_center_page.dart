@@ -6,6 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../common/animationAppWidget.dart';
 import '../../../common/common_widgets/app_drawer.dart';
+import '../../../common/common_widgets/common_add_FLB.dart';
+import '../../../common/common_widgets/common_scaffold_app.dart';
 import '../../../common/common_widgets/custom_app_button.dart';
 import '../../../common/theme_helper.dart';
 import '../../../core/utils/app_snack_bar.dart';
@@ -47,85 +49,82 @@ class _CompanyJobsCenterPageState extends State<CompanyJobsCenterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        SystemNavigator.pop();
-        return false;
-      },
-      child: Scaffold(
-        // backgroundColor: Colors.white,
-        appBar: commonAppBar(
-          context: context,
-          title: 'Jobs Center',
-          actions: [
-            CreateNewJob(jobListCallBack: listenCreateNewJob),
-          ],
-        ),
-        drawer: const AppDrawer(),
-        body: BlocListener(
-          bloc: jobBloc,
-          listener: (context, state) async {
-            if (state is ErrorGettingJobs) {
-              await Future.delayed(
-                Duration(seconds: 3),
-              );
-              setState(() => isLoading = false);
-              ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
-                  message: 'Faild Getting Jobs !', context: context));
-            } else if (state is SuccessGettingJobs) {
-              await Future.delayed(
-                Duration(seconds: 3),
-              );
-              setState(() {
-                isLoading = false;
-                jobs = state.jobs.toList();
-              });
-            }
-          },
-          child: isLoading
-              ? AnimationAppWidget(
-                  name: AnimationWidgetNames.ProgressIndicator,
-                )
-              : BlocBuilder(
-                  bloc: jobBloc,
-                  builder: (context, state) {
-                    if (state is SuccessGettingJobs) {
-                      state.jobs.reversed.toList();
-                      return jobs.isEmpty
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                AnimationAppWidget(
-                                  name: AnimationWidgetNames.empty1,
-                                ),
-                                SizedBox(height: ScreenUtil().setHeight(20)),
-                                Column(
-                                  children: [
-                                    Text(
-                                      'There is no jobs created yet!',
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.bebasNeue(
-                                        fontStyle: FontStyle.normal,
-                                        textStyle: TextStyle(
-                                          fontSize: ScreenUtil().setSp(25),
-                                          color: Theme.of(context).primaryColor,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+    return CommonScaffoldApp(
+      title: 'Jobs Center',
+      actions: [
+        CreateNewJob(jobListCallBack: listenCreateNewJob),
+      ],
+      flb: CreateNewJob(
+        jobListCallBack: listenCreateNewJob,
+        childWidget: CommonAddFLB(icon:Icons.add,),
+      ),
+      child: BlocListener(
+        bloc: jobBloc,
+        listener: (context, state) async {
+          if (state is ErrorGettingJobs) {
+            await Future.delayed(
+              Duration(seconds: 3),
+            );
+            setState(() => isLoading = false);
+            ScaffoldMessenger.of(context).showSnackBar(getAppSnackBar(
+                message: 'Faild Getting Jobs !', context: context));
+          } else if (state is SuccessGettingJobs) {
+            await Future.delayed(
+              Duration(seconds: 3),
+            );
+            setState(() {
+              isLoading = false;
+              jobs = state.jobs.toList();
+            });
+          }
+        },
+        child: isLoading
+            ? AnimationAppWidget(
+                name: AnimationWidgetNames.ProgressIndicator,
+              )
+            : BlocBuilder(
+                bloc: jobBloc,
+                builder: (context, state) {
+                  if (state is SuccessGettingJobs) {
+                    state.jobs.reversed.toList();
+                    return jobs.isEmpty
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AnimationAppWidget(
+                                name: AnimationWidgetNames.empty1,
+                              ),
+                              SizedBox(height: ScreenUtil().setHeight(20)),
+                              Column(
+                                children: [
+                                  Text(
+                                    'There is no jobs created yet!',
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.bebasNeue(
+                                      fontStyle: FontStyle.normal,
+                                      textStyle: TextStyle(
+                                        fontSize: ScreenUtil().setSp(25),
+                                        color: Theme.of(context).primaryColor,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    SizedBox(
-                                        height: ScreenUtil().setHeight(20)),
-                                    CreateNewJob(
-                                      jobListCallBack: listenCreateNewJob,
-                                      childWidget: CustomAppButton(
-                                        title: 'add new one',
-                                      ),
+                                  ),
+                                  SizedBox(height: ScreenUtil().setHeight(20)),
+                                  CreateNewJob(
+                                    jobListCallBack: listenCreateNewJob,
+                                    childWidget: CustomAppButton(
+                                      title: 'add new one',
                                     ),
-                                  ],
-                                )
-                              ],
-                            )
-                          : ListView.builder(
+                                  ),
+                                ],
+                              )
+                            ],
+                          )
+                        : Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: ScreenUtil().setHeight(5),
+                            ),
+                            child: ListView.builder(
                               itemBuilder: (BuildContext context, int index) {
                                 return JobCard(
                                   jobDetails: jobs[index],
@@ -134,46 +133,46 @@ class _CompanyJobsCenterPageState extends State<CompanyJobsCenterPage> {
                                 );
                               },
                               itemCount: jobs.length,
-                            );
-                    } else if (state is ErrorGettingJobs) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          AnimationAppWidget(
-                            name: AnimationWidgetNames.networkError,
-                          ),
-                          SizedBox(height: ScreenUtil().setHeight(20)),
-                          Text(
-                            'There Some Thing Wrong!',
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.bebasNeue(
-                              fontStyle: FontStyle.normal,
-                              textStyle: TextStyle(
-                                fontSize: ScreenUtil().setSp(25),
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            ),
+                          );
+                  } else if (state is ErrorGettingJobs) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AnimationAppWidget(
+                          name: AnimationWidgetNames.networkError,
+                        ),
+                        SizedBox(height: ScreenUtil().setHeight(20)),
+                        Text(
+                          'There Some Thing Wrong!',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.bebasNeue(
+                            fontStyle: FontStyle.normal,
+                            textStyle: TextStyle(
+                              fontSize: ScreenUtil().setSp(25),
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
-                          SizedBox(height: ScreenUtil().setHeight(20)),
-                          InkWell(
-                            onTap: () {
-                              setState(() => {
-                                    isLoading = true,
-                                  });
-                              jobBloc.add(GetJobs());
-                            },
-                            child: CustomAppButton(
-                              title: 'retry',
-                            ),
+                        ),
+                        SizedBox(height: ScreenUtil().setHeight(20)),
+                        InkWell(
+                          onTap: () {
+                            setState(() => {
+                                  isLoading = true,
+                                });
+                            jobBloc.add(GetJobs());
+                          },
+                          child: CustomAppButton(
+                            title: 'retry',
                           ),
-                        ],
-                      );
-                    }
-                    return Container();
-                  },
-                ),
-        ),
+                        ),
+                      ],
+                    );
+                  }
+                  return Container();
+                },
+              ),
       ),
     );
   }

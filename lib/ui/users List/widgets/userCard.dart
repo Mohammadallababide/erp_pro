@@ -199,6 +199,12 @@ class UserCard extends StatelessWidget {
           return Container(
             decoration: BoxDecoration(
               gradient: ConstatValues.secGradientColor,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(ScreenUtil().radius(40)),
+                topRight: Radius.circular(
+                  ScreenUtil().radius(40),
+                ),
+              ),
             ),
             child: Padding(
               padding: EdgeInsets.all(
@@ -261,6 +267,7 @@ class UserCard extends StatelessWidget {
                       ),
                     ),
                     onTap: () {
+                      Navigator.pop(context);
                       Navigator.pushNamed(context, NameScreen.userProfilePage,
                           arguments: {
                             'id': user.id,
@@ -299,6 +306,14 @@ class UserCard extends StatelessWidget {
                     ),
                     onTap: () {
                       Navigator.pop(context);
+                      Navigator.pushNamed(
+                          context, NameScreen.assignJobCenterPage,
+                          arguments: {
+                            'user': user,
+                            'jobId': user.jobId,
+                            'jobLevel': user.level,
+                            'refreshDataCallBack': listenToRefreshDataAction,
+                          });
                     },
                   ),
                 ],

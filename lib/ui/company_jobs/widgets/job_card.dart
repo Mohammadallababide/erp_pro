@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../common/common_widgets/CardTilesWidgets/job_card_tile.dart';
 import '../../../core/utils/app_snack_bar.dart';
 import '../../../common/common_widgets/commonDialog/confirm_process_Dialog.dart';
 import '../../../common/theme_helper.dart';
@@ -54,169 +55,127 @@ class _JobCardState extends State<JobCard> {
           });
         }
       },
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: ScreenUtil().setWidth(5),
-        ),
-        child: SizedBox(
-          width: double.infinity,
-          child: Card(
-            elevation: 2.0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: ScreenUtil().setWidth(10),
-                vertical: ScreenUtil().setHeight(10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      child: buildJobCard(context),
+    );
+  }
+
+  Widget buildJobCard(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        // horizontal: ScreenUtil().setWidth(5),
+        vertical: ScreenUtil().setHeight(5),
+      ),
+      child: Column(
+        children: [
+          JobCardTile(
+            job: jobInfo,
+            actionsRow: SizedBox(
+              width: ScreenUtil().setWidth(ScreenUtil().setWidth(90)),
+              child: Row(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            height:
-                                ScreenUtil().setSp(ScreenUtil().radius(15) * 2),
-                            width:
-                                ScreenUtil().setSp(ScreenUtil().radius(15) * 2),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.2),
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                fit: BoxFit.contain,
-                                image: AssetImage('assets/images/job.png'),
-                              ),
-                            ),
+                  BlocBuilder(
+                    bloc: jobBloc,
+                    builder: (context, state) {
+                      if (state is DelettingJob) {
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: CircularProgressIndicator(
+                            color: Colors.red,
+                            strokeWidth: ScreenUtil().setWidth(3),
                           ),
-                          SizedBox(width: ScreenUtil().setWidth(8)),
-                          Text(
-                            jobInfo.name,
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: ScreenUtil().setSp(17),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          BlocBuilder(
-                            bloc: jobBloc,
-                            builder: (context, state) {
-                              if (state is DelettingJob) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: CircularProgressIndicator(
-                                    color: Colors.red,
-                                    strokeWidth: ScreenUtil().setWidth(3),
-                                  ),
-                                );
-                              }
-                              return IconButton(
-                                onPressed: () => showConfeirmProcessAlert(
-                                  context: context,
-                                  cancelProcessFun: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  submitProcessFun: () {
-                                    Navigator.of(context).pop();
-                                    jobBloc.add(DeleteJob(jobInfo.id));
-                                  },
-                                  prcessedText:
-                                      "Are You Sure Want To Delete this Job Card ?",
-                                  icon: Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                                iconSize: ScreenUtil().setSp(25),
-                              );
-                            },
+                        );
+                      }
+                      return IconButton(
+                        onPressed: () => showConfeirmProcessAlert(
+                          context: context,
+                          cancelProcessFun: () {
+                            Navigator.of(context).pop();
+                          },
+                          submitProcessFun: () {
+                            Navigator.of(context).pop();
+                            jobBloc.add(DeleteJob(jobInfo.id));
+                          },
+                          prcessedText:
+                              "Are You Sure Want To Delete this Job Card ?",
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
                           ),
-                          BlocBuilder(
-                            bloc: jobBloc,
-                            builder: (context, state) {
-                              if (state is EdittingJob) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: CircularProgressIndicator(
-                                    color: Theme.of(context).primaryColor,
-                                    strokeWidth: ScreenUtil().setWidth(3),
-                                  ),
-                                );
-                              }
-                              return EditJobForm(
-                                jobInfo: jobInfo,
-                                edittingJobCallBack: listenToEdittingJob,
-                              );
-                            },
+                        ),
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        iconSize: ScreenUtil().setSp(25),
+                      );
+                    },
+                  ),
+                  BlocBuilder(
+                    bloc: jobBloc,
+                    builder: (context, state) {
+                      if (state is EdittingJob) {
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: CircularProgressIndicator(
+                            color: Theme.of(context).primaryColor,
+                            strokeWidth: ScreenUtil().setWidth(3),
                           ),
-                        ],
-                      ),
-                    ],
+                        );
+                      }
+                      return EditJobForm(
+                        jobInfo: jobInfo,
+                        edittingJobCallBack: listenToEdittingJob,
+                      );
+                    },
                   ),
-                  SizedBox(
-                    height: ScreenUtil().setHeight(10),
-                  ),
-                  Text(
-                    jobInfo.description,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: ScreenUtil().setSp(15),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(
-                    height: ScreenUtil().setHeight(10),
-                  ),
-                  buildDetailsButton(jobInfo),
                 ],
               ),
             ),
           ),
-        ),
+          buildDetailsButton(jobInfo),
+          Divider(
+            thickness: 2, // thickness of the line
+            indent: ScreenUtil().setSp(30),
+            endIndent: ScreenUtil().setSp(30),
+            color: Colors.teal,
+            height: ScreenUtil().setHeight(20),
+          )
+        ],
       ),
     );
   }
 
-  Align buildDetailsButton(Job jobDetails) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => JobDetailsPage(
-                        jobDetails: jobDetails,
-                      )));
-        },
-        child: Container(
-          height: ScreenUtil().setHeight(40),
-          width: ScreenUtil().setWidth(75),
-          decoration: ThemeHelper().buttonBoxDecoration(context: context),
-          child: Center(
-            child: Text(
-              'Details',
-              style: GoogleFonts.belleza(
-                fontStyle: FontStyle.normal,
-                textStyle: TextStyle(
-                  fontSize: ScreenUtil().setSp(14),
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+  Widget buildDetailsButton(Job jobDetails) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: ScreenUtil().setWidth(20),
+        vertical: ScreenUtil().setHeight(15),
+      ),
+      child: Align(
+        alignment: Alignment.center,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => JobDetailsPage(
+                          jobDetails: jobDetails,
+                        )));
+          },
+          child: Container(
+            height: ScreenUtil().setHeight(40),
+            width: ScreenUtil().setWidth(300),
+            decoration: ThemeHelper().buttonBoxDecoration(context: context),
+            child: Center(
+              child: Text(
+                'Details',
+                style: GoogleFonts.belleza(
+                  fontStyle: FontStyle.normal,
+                  textStyle: TextStyle(
+                    fontSize: ScreenUtil().setSp(16),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -226,3 +185,78 @@ class _JobCardState extends State<JobCard> {
     );
   }
 }
+ // Padding(
+    //   padding: EdgeInsets.symmetric(
+    //     horizontal: ScreenUtil().setWidth(5),
+    //   ),
+    //   child: SizedBox(
+    //     width: double.infinity,
+    //     child: Card(
+    //       elevation: 2.0,
+    //       shape: RoundedRectangleBorder(
+    //         borderRadius: BorderRadius.circular(20.0),
+    //       ),
+    //       child: Padding(
+    //         padding: EdgeInsets.symmetric(
+    //           horizontal: ScreenUtil().setWidth(10),
+    //           vertical: ScreenUtil().setHeight(10),
+    //         ),
+    //         child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: [
+    //             Row(
+    //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //               children: [
+    //                 Row(
+    //                   children: [
+    //                     Container(
+    //                       height:
+    //                           ScreenUtil().setSp(ScreenUtil().radius(15) * 2),
+    //                       width:
+    //                           ScreenUtil().setSp(ScreenUtil().radius(15) * 2),
+    //                       decoration: BoxDecoration(
+    //                         color:
+    //                             Theme.of(context).primaryColor.withOpacity(0.2),
+    //                         shape: BoxShape.circle,
+    //                         image: DecorationImage(
+    //                           fit: BoxFit.contain,
+    //                           image: AssetImage('assets/images/job.png'),
+    //                         ),
+    //                       ),
+    //                     ),
+    //                     SizedBox(width: ScreenUtil().setWidth(8)),
+    //                     Text(
+    //                       jobInfo.name,
+    //                       style: TextStyle(
+    //                         color: Theme.of(context).primaryColor,
+    //                         fontSize: ScreenUtil().setSp(17),
+    //                         fontWeight: FontWeight.bold,
+    //                       ),
+    //                     )
+    //                   ],
+    //                 ),
+    //               ],
+    //             ),
+    //             SizedBox(
+    //               height: ScreenUtil().setHeight(10),
+    //             ),
+    //             Text(
+    //               jobInfo.description,
+    //               maxLines: 3,
+    //               overflow: TextOverflow.ellipsis,
+    //               style: TextStyle(
+    //                 color: Colors.grey,
+    //                 fontSize: ScreenUtil().setSp(15),
+    //                 fontWeight: FontWeight.bold,
+    //               ),
+    //             ),
+    //             SizedBox(
+    //               height: ScreenUtil().setHeight(10),
+    //             ),
+    //             buildDetailsButton(jobInfo),
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
